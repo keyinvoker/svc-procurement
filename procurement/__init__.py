@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from logging import getLogger
 from flask import Flask
 from flask_marshmallow import Marshmallow
@@ -9,7 +10,7 @@ from procurement.config import APP_NAME, Config
 app_logger = getLogger('app')
 error_logger = getLogger('error')
 
-db = SQLAlchemy()
+db: sa = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 
