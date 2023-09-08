@@ -7,10 +7,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 from procurement.config import APP_NAME, Config
 
-app_logger = getLogger('app')
-error_logger = getLogger('error')
+app_logger = getLogger("app")
+error_logger = getLogger("error")
 
-db: sa = SQLAlchemy()
+db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 

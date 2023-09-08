@@ -5,19 +5,17 @@ from procurement import db
 from procurement.models.base_model import BaseModel
 
 
-class Admin(BaseModel):
-    __tablename__ = "admins"
+class Branch(BaseModel):
+    __tablename__ = "branches"
 
     role_id = sa.Column(
         sa.BigInteger,
         sa.ForeignKey("roles.id"),
         nullable=True
     )
+    code = sa.Column(sa.String(255), nullable=False)
     name = sa.Column(sa.String(255), nullable=False)
-    employee_identification_number = sa.Column(sa.String(255), nullable=False)
-    email = sa.Column(sa.String(255), nullable=False)
-    password = sa.Column(sa.String(255), nullable=False)
-    password_updated_at = sa.Column(sa.DateTime(), default=None)
+    description = sa.Column(sa.Text(), default=None)
     is_approved = sa.Column(
         sa.Boolean(),
         default=False,
@@ -27,7 +25,3 @@ class Admin(BaseModel):
     role = db.relationship(
         "Role", backref=backref(__tablename__, uselist=False)
     )
-    # TODO: correct relationship?
-    # division = db.relationship(
-    #     "Division", backref=backref(__tablename__, uselist=False)
-    # )

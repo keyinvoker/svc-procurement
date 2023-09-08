@@ -1,7 +1,11 @@
 psycopg2
+pg8000
+
+marshmallow-sqlalchemy
 
 flask
 flask-restful
 flask-sqlalchemy
 flask-marshmallow
 flask-migrate
+flask-shell-ipython
