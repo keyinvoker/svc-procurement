@@ -15,8 +15,9 @@ class Admin(BaseModel):
     )
     name = sa.Column(sa.String(255), nullable=False)
     employee_identification_number = sa.Column(sa.String(255), nullable=False)
-    email = sa.Column(sa.String(255), nullable=False)
+    email = sa.Column(sa.String(255), nullable=False, unique=True)
     password = sa.Column(sa.String(255), nullable=False)
+    salt = sa.Column(sa.String(225), nullable=False)
     password_updated_at = sa.Column(sa.DateTime(), default=None)
     is_approved = sa.Column(
         sa.Boolean(),

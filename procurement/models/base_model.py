@@ -17,7 +17,7 @@ class utcnow(FunctionElement):
 
 
 @compiles(utcnow, "postgresql")
-def pg_utcnow(element, compiler, **kw):
+def pg_utcnow(element, compiler, **kwargs):
     return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
 
 
@@ -27,7 +27,7 @@ class BaseModel(db.Model):
         primary_key=True,
         autoincrement=True,
     )
-    created_at: sa.Column(
+    created_at = sa.Column(
         sa.DateTime(),
         default=datetime.utcnow,
         server_default=utcnow(),
@@ -39,12 +39,12 @@ class BaseModel(db.Model):
         server_default=utcnow(),
         server_onupdate=utcnow(),
     )
-    is_deleted: sa.Column(
+    is_deleted = sa.Column(
         sa.Boolean(),
         default=False,
         server_default="false",
     )
-    deleted_at: sa.Column(sa.DateTime(), default=None)
+    deleted_at = sa.Column(sa.DateTime(), default=None)
 
     def save(self) -> "BaseModel":
         try:

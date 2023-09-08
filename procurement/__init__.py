@@ -24,7 +24,9 @@ def create_app() -> Flask:
         migrate.init_app(app, db)
 
         from procurement.blueprints.healthz import healthz_blueprint
+        from procurement.blueprints.auth import auth_blueprint
         app.register_blueprint(healthz_blueprint)
+        app.register_blueprint(auth_blueprint)
 
         print(f"\nEndpoints:")
         for api in app.url_map.iter_rules():
