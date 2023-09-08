@@ -1,4 +1,3 @@
-import sqlalchemy as sa
 from logging import getLogger
 from flask import Flask
 from flask_marshmallow import Marshmallow
@@ -27,6 +26,11 @@ def create_app() -> Flask:
         from procurement.blueprints.healthz import healthz_blueprint
         app.register_blueprint(healthz_blueprint)
 
-        print(f"\nEndpoints:\n>> {app.url_map.iter_rules}\n")
+        print(f"\nEndpoints:")
+        for api in app.url_map.iter_rules():
+            if api.endpoint == "static":
+                continue
+            print(f"- {api.rule} <{api.endpoint}>")
+        print()
 
         return app
