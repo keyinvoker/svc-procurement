@@ -1,7 +1,6 @@
 # Master
 from procurement.models.master.login_parameters import LoginParameter
 
-
 # Auth
 from procurement.models.auth.roles import Role
 from procurement.models.auth.permissions import Permission
@@ -14,6 +13,11 @@ from procurement.models.users.admins import Admin
 from procurement.models.companies.branches import Branch
 from procurement.models.companies.departments import Department
 from procurement.models.companies.divisions import Division
+
+# Vendors
+from procurement.models.vendors.vendor_companies import VendorCompany
+from procurement.models.vendors.vendor_contact_persons import VendorContactPerson
+from procurement.models.vendors.items import Item
 
 # Logs
 from procurement.models.logs.audit_trails import AuditTrail
