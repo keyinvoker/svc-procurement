@@ -13,6 +13,10 @@ class ItemController:
         self.schema = ItemAutoSchema()
         self.many_schema = ItemAutoSchema(many=True)
 
+        self.item_id: int = kwargs.get("item_id")
+        self.category: str = kwargs.get("category")
+        self.name: str = kwargs.get("name")
+        self.description: str = kwargs.get("description")
         self.item_id_list: List[int] = kwargs.get("item_id_list")
         self.category_list: List[str] = kwargs.get("category_list")
         self.search_query: str = kwargs.get("search_query").strip()
@@ -120,8 +124,37 @@ class ItemController:
 
         return http_status, message, data
 
-    def update(self):
-        ...
+    def update(self) -> Tuple[HTTPStatus, str]:
+        item: Item = (
+            Item.query
+            .filter(Item.id == self.item_id)
+            .filter(Item.is_deleted.is_(False))
+            .first()
+        )
+        if not item:
+            return HTTPStatus.NOT_FOUND, "Barang tidak ditemukan."
+        elif (
+            not self.category
+            and not self.name
+            and not self.description
+        ):
+            return (
+                HTTPStatus.BAD_REQUEST,
+                "Data barang sama dan tidak perlu diperbarui."
+            )
+
+        if self.category:
+            item.category = self.category
+
+        if self.name:
+            item.name = self.name
+
+        if self.description:
+            item.description = self.description
+
+        item.save()
+
+        return HTTPStatus.OK, "Data barang berhasil diperbarui."
 
     def delete(self) -> Tuple[HTTPStatus, str]:
         item_list: List[Item] = (
