@@ -11,20 +11,24 @@ class RegisterController:
     def __init__(self, **kwargs) -> Tuple[HTTPStatus, str, dict]:
         self.admin_schema = AdminSchema()
 
-    def register(self, **kwargs):
-        email: str = kwargs.get("email")
-        password: str = kwargs.get("password")
-        employee_identification_number = kwargs.get("employee_identification_number")
+        self.name: str = kwargs.get("name")
+        self.email: str = kwargs.get("email")
+        self.password: str = kwargs.get("password")
+        self.employee_identification_number: str = kwargs.get(
+            "employee_identification_number"
+        )
 
+    def register(self):
         salt = secrets.token_hex(16)
 
-        salted_password = password + salt
+        salted_password = self.password + salt
         hashed_password = sha256(
             salted_password.encode("utf-8")
         ).hexdigest()
 
         new_admin = Admin(
-            email=email,
+            name=self.name,
+            email=self.email,
             password=hashed_password,
             salt=salt,
         ).save()

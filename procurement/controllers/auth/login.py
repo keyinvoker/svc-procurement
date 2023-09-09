@@ -5,10 +5,14 @@ from procurement.models.users.admins import Admin
 
 
 class LoginController:
-    def login(self, email: str, password: str) -> bool:
-        salt = get_salt_from_database(email)
+    def __init__(self, **kwargs):
+        self.email: str = kwargs.get("email")
+        self.password: str = kwargs.get("password")
 
-        salted_password = password + salt
+    def login(self) -> bool:
+        salt = get_salt_from_database(self.email)
+
+        salted_password = self.password + salt
 
         hashed_password = sha256(
             salted_password.encode("utf-8")
@@ -16,7 +20,7 @@ class LoginController:
 
         admin: Admin = (
             Admin.query
-            .filter(Admin.email == email)
+            .filter(Admin.email == self.email)
             .first()
         )
 

@@ -22,6 +22,8 @@ def pg_utcnow(element, compiler, **kwargs):
 
 
 class BaseModel(db.Model):
+    __abstract__ = True
+
     id = sa.Column(
         sa.BigInteger(),
         primary_key=True,

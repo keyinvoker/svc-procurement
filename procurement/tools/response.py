@@ -16,8 +16,8 @@ default_messages: dict = {
 
 def make_json_response(
     http_status: Union[HTTPStatus, int],
-    data: Optional[dict] = None,
     message: str = "",
+    data: Optional[dict] = None,
 ) -> Response:
 
     if not message:

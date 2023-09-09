@@ -31,7 +31,7 @@ def schema_validate_and_load(
     schema: Union[Schema, SQLAlchemyAutoSchema],
     payload: dict,
     message: Optional[str] = "Terjadi ketidaksesuaian pada data yang dimasukkan."
-) -> Tuple[bool, Optional[Response], Optional[dict]]:
+) -> Tuple[bool, Optional[Response], dict]:
 
     is_valid, response = schema_validate(
         schema=schema,
@@ -40,6 +40,6 @@ def schema_validate_and_load(
     )
 
     if not is_valid:
-        return False, response, None
+        return False, response, {}
     
     return True, None, schema.load(payload)
