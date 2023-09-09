@@ -35,7 +35,7 @@ class ItemResource(Resource):
             )
             if not is_valid:
                 return response
-            
+
             (
                 http_status, message, item_data_list, total
             ) = ItemController(**payload).get_list()
