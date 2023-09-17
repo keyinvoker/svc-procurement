@@ -38,7 +38,7 @@ class ItemResource(Resource):
 
             (
                 http_status, message, item_data_list, total
-            ) = ItemController(**payload).get_list()
+            ) = ItemController().get_list(**payload)
 
             data = dict(
                 data=item_data_list,
@@ -93,7 +93,7 @@ class ItemResource(Resource):
             if not is_valid:
                 return response
             
-            ItemController(**payload).update()
+            ItemController().update(**payload)
 
             return make_json_response(
                 http_status=HTTPStatus.OK
@@ -117,7 +117,7 @@ class ItemResource(Resource):
                 return response
 
             return make_json_response(
-                ItemController(**payload).delete()
+                ItemController().delete(payload["item_id_list"])
             )
         except Exception as e:
             error_logger.error(f"Error on Item [DELETE] :: {e}, {format_exc()}")

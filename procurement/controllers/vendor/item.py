@@ -9,52 +9,48 @@ from procurement.schemas.vendors.items import ItemAutoSchema
 
 
 class ItemController:
-    def __init__(self, **kwargs):
+    def __init__(self):
         self.schema = ItemAutoSchema()
         self.many_schema = ItemAutoSchema(many=True)
 
-        self.item_id: int = kwargs.get("item_id")
-        self.category: str = kwargs.get("category")
-        self.name: str = kwargs.get("name")
-        self.description: str = kwargs.get("description")
-        self.item_id_list: List[int] = kwargs.get("item_id_list")
-        self.category_list: List[str] = kwargs.get("category_list")
-        self.search_query: str = kwargs.get("search_query").strip()
-        self.limit: int = kwargs.get("limit")
-        self.offset: int = kwargs.get("offset")
+    def get_list(self, **kwargs) -> Tuple[HTTPStatus, str, List[dict], int]:
+        item_id_list: List[int] = kwargs.get("item_id_list")
+        category_list: List[str] = kwargs.get("category_list")
+        search_query: str = kwargs.get("search_query").strip()
+        limit: int = kwargs.get("limit")
+        offset: int = kwargs.get("offset")
 
-    def get_list(self) -> Tuple[HTTPStatus, str, List[dict], int]:
         item_query = Item.query.filter(Item.is_deleted.is_(False))
 
-        if self.item_id_list:
+        if item_id_list:
             item_query = (
                 item_query
-                .filter(Item.id.in_(self.item_id_list))
+                .filter(Item.id.in_(item_id_list))
             )
 
-        if self.category_list:
+        if category_list:
             item_query = (
                 item_query
-                .filter(Item.category.in_(self.category_list))
+                .filter(Item.category.in_(category_list))
             )
 
-        if self.search_query:
+        if search_query:
             item_query = (
                 item_query
                 .filter(or_(
-                    Item.category.ilike(f"%{self.search_query}%"),
-                    Item.name.ilike(f"%{self.search_query}%"),
-                    Item.description.ilike(f"%{self.search_query}%"),
+                    Item.category.ilike(f"%{search_query}%"),
+                    Item.name.ilike(f"%{search_query}%"),
+                    Item.description.ilike(f"%{search_query}%"),
                 ))
             )
 
         total = item_query.count()
 
-        if self.limit:
-            item_query = item_query.limit(self.limit)
+        if limit:
+            item_query = item_query.limit(limit)
 
-        if self.offset > 0:
-            item_query = item_query.offset(self.offset)
+        if offset > 0:
+            item_query = item_query.offset(offset)
 
         item_list: List[Item] = item_query.all()
         if not item_list:
@@ -73,15 +69,15 @@ class ItemController:
             total,
         )
 
-    def insert(self, data_list: List[dict]) -> Tuple[HTTPStatus, str, dict]:
+    def insert(self, payload_list: List[dict]) -> Tuple[HTTPStatus, str, dict]:
         new_item_list: List[dict] = list()
         existing_item_list: List[dict] = list()
     
-        for data in data_list:
+        for payload in payload_list:
             try:
-                category = data.get("category")
-                name = data.get("name")
-                description = data.get("description")
+                category = payload.get("category")
+                name = payload.get("name")
+                description = payload.get("description")
 
                 existing_item: Item = (
                     Item.query
@@ -124,42 +120,47 @@ class ItemController:
 
         return http_status, message, data
 
-    def update(self) -> Tuple[HTTPStatus, str]:
+    def update(self, **kwargs) -> Tuple[HTTPStatus, str]:
+        item_id: int = kwargs.get("item_id")
+        category: str = kwargs.get("category")
+        name: str = kwargs.get("name")
+        description: str = kwargs.get("description")
+
         item: Item = (
             Item.query
-            .filter(Item.id == self.item_id)
+            .filter(Item.id == item_id)
             .filter(Item.is_deleted.is_(False))
             .first()
         )
         if not item:
             return HTTPStatus.NOT_FOUND, "Barang tidak ditemukan."
         elif (
-            not self.category
-            and not self.name
-            and not self.description
+            not category
+            and not name
+            and not description
         ):
             return (
                 HTTPStatus.BAD_REQUEST,
                 "Data barang sama dan tidak perlu diperbarui."
             )
 
-        if self.category:
-            item.category = self.category
+        if category:
+            item.category = category
 
-        if self.name:
-            item.name = self.name
+        if name:
+            item.name = name
 
-        if self.description:
-            item.description = self.description
+        if description:
+            item.description = description
 
         item.save()
 
         return HTTPStatus.OK, "Data barang berhasil diperbarui."
 
-    def delete(self) -> Tuple[HTTPStatus, str]:
+    def delete(self, item_id_list: List[int]) -> Tuple[HTTPStatus, str]:
         item_list: List[Item] = (
             Item.query
-            .filter(Item.id.in_(self.item_id_list))
+            .filter(Item.id.in_(item_id_list))
             .filter(Item.is_deleted.is_(False))
             .all()
         )

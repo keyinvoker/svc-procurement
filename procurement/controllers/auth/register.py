@@ -8,27 +8,28 @@ from procurement.schemas.users.admins import AdminSchema
 
 
 class RegisterController:
-    def __init__(self, **kwargs) -> Tuple[HTTPStatus, str, dict]:
+    def __init__(self):
         self.admin_schema = AdminSchema()
 
-        self.name: str = kwargs.get("name")
-        self.email: str = kwargs.get("email")
-        self.password: str = kwargs.get("password")
-        self.employee_identification_number: str = kwargs.get(
-            "employee_identification_number"
-        )
+    def register(
+        self,
+        name: str,
+        employee_identification_number: str,
+        email: str,
+        password: str,
+    ) -> Tuple[HTTPStatus, str, dict]:
 
-    def register(self):
         salt = secrets.token_hex(16)
 
-        salted_password = self.password + salt
+        salted_password = password + salt
         hashed_password = sha256(
             salted_password.encode("utf-8")
         ).hexdigest()
 
         new_admin = Admin(
-            name=self.name,
-            email=self.email,
+            name=name,
+            employee_identification_number=employee_identification_number,
+            email=email,
             password=hashed_password,
             salt=salt,
         ).save()

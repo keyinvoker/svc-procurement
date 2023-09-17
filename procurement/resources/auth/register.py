@@ -24,7 +24,12 @@ class RegisterResource(Resource):
                 return response
 
             return make_json_response(
-                RegisterController(**payload).register()
+                RegisterController().register(
+                    name=payload["name"],
+                    employee_identification_number=payload["employee_identification_number"],
+                    email=payload["email"],
+                    password=payload["password"],
+                )
             )
         except Exception as e:
             error_logger.error(f"Error on Register [POST] :: {e}, {format_exc()}")

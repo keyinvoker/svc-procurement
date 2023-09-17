@@ -67,8 +67,6 @@ class ItemDeleteInputSchema(Schema):
     item_id_list = fields.List(
         fields.Integer(),
         required=True,
-        dump_default=[],
-        load_default=[],
     )
 
     class Meta:
