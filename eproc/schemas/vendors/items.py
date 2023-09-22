@@ -30,7 +30,11 @@ class ItemGetInputSchema(Schema):
         dump_default="",
         load_default="",
     )
-    limit = fields.Integer(allow_none=True)
+    limit = fields.Integer(
+        allow_none=True,
+        dump_default=None,
+        load_default=None,
+    )
     offset = fields.Integer(
         allow_none=True,
         dump_default=0,

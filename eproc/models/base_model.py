@@ -25,9 +25,23 @@ def pg_utcnow(element, compiler, **kwargs):
 class BaseModel(db.Model):
     __abstract__ = True
 
-    isact = sa.Column("isact", sa.Integer(), default=0)  # TODO: change to boolean
-    updated_by = sa.Column("lunam", sa.String(), default=None)
-    updated_at = sa.Column("ludat", sa.DateTime(), default=None)
+    created_at = sa.Column(
+        sa.DateTime(),
+        default=datetime.utcnow,
+        server_default=utcnow(),
+        nullable=False,
+    )
+    updated_by = sa.Column(sa.String(), default=None)
+    updated_at = sa.Column(
+        sa.DateTime(),
+        default=datetime.utcnow,
+        onupdate=utcnow(),
+        nullable=False,
+        server_default=utcnow(),
+        server_onupdate=utcnow(),
+    )
+    is_deleted = sa.Column(sa.Boolean(), default=False, server_default="false")
+    deleted_at = sa.Column(sa.DateTime(), default=None)
 
     def save(self) -> "BaseModel":
         try:

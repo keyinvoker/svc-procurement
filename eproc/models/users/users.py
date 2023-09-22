@@ -40,7 +40,7 @@ class User(BaseModel):
     llkdt = sa.Column("llkdt", sa.DateTime(), default=None)
     lpcdt = sa.Column("lpcdt", sa.DateTime(), default=None)  # last procurement date?
     comment = sa.Column("comnt", sa.Integer(), default=None)
-    phone = sa.Column("phono", sa.Integer(), default=None)
+    phone_number = sa.Column("phono", sa.Integer(), default=None)
     phonc = sa.Column("phonc", sa.Integer(), default=0)  # TODO: change to boolean
     tface = sa.Column("tface", sa.Integer(), default=0)  # TODO: change to boolean
     locen = sa.Column("locen", sa.Integer(), default=0)  # TODO: change to boolean
@@ -54,8 +54,10 @@ class User(BaseModel):
     flag2 = sa.Column("flag2", sa.String(15), default=None)
     stats = sa.Column("stats", sa.Integer(), default=None)  # TODO: has to be a Foreign Key to another table that contains the string values
     temps = sa.Column("temps", sa.String(100), default=None)
+
+    isact = sa.Column("isact", sa.Integer(), default=0)  # TODO: change to boolean
     is_active = column_property(
-        case((BaseModel.isact == 1, True), else_=False)
+        case((isact == 1, True), else_=False)
     )
 
     # region: TODO: NEW

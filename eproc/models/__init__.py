@@ -8,6 +8,7 @@
 
 # Users
 from eproc.models.users.users import User
+from eproc.models.users.references import Reference
 
 # # Companies
 # from eproc.models.companies.branches import Branch
@@ -15,7 +16,8 @@ from eproc.models.users.users import User
 # from eproc.models.companies.divisions import Division
 
 # # Vendors
-# from eproc.models.vendors.vendor_companies import VendorCompany
+from eproc.models.vendors.vendors import Vendor
+from eproc.models.vendors.vendor_reviews import VendorReview
 # from eproc.models.vendors.vendor_contact_persons import VendorContactPerson
 # from eproc.models.vendors.items import Item
 
