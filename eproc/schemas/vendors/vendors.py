@@ -14,15 +14,15 @@ class VendorDetailAutoSchema(SQLAlchemyAutoSchema):
             if isinstance(value, Decimal):
                 data[key] = float(value)
 
-        if data.get("status_id"):
+        if data.get("reference_id"):
             from eproc.models.users.references import Reference
-            data["status"] = Reference.query.filter(Reference.cdnum == data["status_id"]).first().description  # TODO improve this using Foreign Key
+            data["status"] = Reference.query.filter(Reference.cdnum == data["reference_id"]).first().description  # TODO improve this using Foreign Key
 
         from eproc.models.vendors.vendor_assessments import VendorAssessment
         vendor_review = VendorAssessment.query.filter(VendorAssessment.vendor_id == data["id"]).first()
-        data["review_notes"] = None
+        data["assessment_notes"] = None
         if vendor_review:
-            data["review_notes"] = vendor_review.review_notes
+            data["assessment_notes"] = vendor_review.assessment_notes
 
         return data
 

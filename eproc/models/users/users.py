@@ -9,7 +9,7 @@ from eproc.models.base_model import BaseModel
 class User(BaseModel):
     __tablename__ = "users"
 
-    id = sa.Column("usrid", sa.String(), primary_key=True)
+    id = sa.Column(sa.String(), primary_key=True)
     app_id = sa.Column("appid", sa.String(), default=None)
     username = sa.Column("uname", sa.String(), default=None)  # TODO: delete later, because literally same as `usrid`
     full_name = sa.Column("ffnam", sa.String(), default=None)
@@ -52,7 +52,7 @@ class User(BaseModel):
     third_approver_id = sa.Column("ldid3", sa.String(), default=None)
     flag1 = sa.Column("flag1", sa.String(15), default=None)
     flag2 = sa.Column("flag2", sa.String(15), default=None)
-    stats = sa.Column("stats", sa.Integer(), default=None)  # TODO: has to be a Foreign Key to another table that contains the string values
+    reference_id = sa.Column("stats", sa.Integer(), sa.ForeignKey("references.id"))
     temps = sa.Column("temps", sa.String(100), default=None)
 
     isact = sa.Column("isact", sa.Integer(), default=0)  # TODO: change to boolean
@@ -60,18 +60,6 @@ class User(BaseModel):
         case((isact == 1, True), else_=False)
     )
 
-    # region: TODO: NEW
-    # role_id = sa.Column(
-    #     sa.BigInteger,
-    #     sa.ForeignKey("roles.id"),
-    #     nullable=True
-    # )
-    
-    # employee_identification_number = sa.Column(sa.String(255), nullable=False)
-
-    # password_updated_at = sa.Column(sa.DateTime(), default=None)
-
-    # role = db.relationship(
-    #     "Role", backref=backref(__tablename__, uselist=False)
-    # )
-    # endregion
+    reference = db.relationship(
+        "Reference", backref=backref(__tablename__, uselist=False)
+    )

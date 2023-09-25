@@ -1,7 +1,8 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import column_property
+from sqlalchemy.orm import backref, column_property
 from sqlalchemy.sql import case
 
+from eproc import db
 from eproc.models.base_model import BaseModel
 
 
@@ -9,7 +10,7 @@ class Vendor(BaseModel):
     __tablename__ = "vendors"
 
     # region: General Information
-    id = sa.Column("vdrid", sa.String(), primary_key=True)
+    id = sa.Column(sa.String(), primary_key=True)
     name = sa.Column("vdrnm", sa.String(), nullable=False)
     organization_type = sa.Column("orgty", sa.String())  # TODO: BUMN, dll. || dictionary -> Foreign Key
     business_type = sa.Column("bnsty", sa.String())  # TODO: CV, PO, PD, PT
@@ -150,7 +151,7 @@ class Vendor(BaseModel):
     other_document_file = sa.Column("iotdc", sa.String(10485760))
     # endregion
 
-    status_id = sa.Column("stats", sa.Integer())  # TODO: Foreign Key to `references.cdnum
+    reference_id = sa.Column("stats", sa.Integer(), sa.ForeignKey("references.id"))
 
     ippkp = sa.Column("ippkp", sa.String(10485760))
     ipctf = sa.Column("ipctf", sa.String(10485760))
@@ -184,4 +185,8 @@ class Vendor(BaseModel):
     isact = sa.Column("isact", sa.Integer(), default=0)  # TODO: change to boolean
     is_active = column_property(
         case((isact == 1, True), else_=False)
+    )
+
+    reference = db.relationship(
+        "Reference", backref=backref(__tablename__, uselist=False)
     )
