@@ -17,7 +17,7 @@ class VendorController:
         self.many_schema = VendorAutoSchema(many=True)
         self.detail_schema = VendorDetailAutoSchema()
 
-    def get_detail(self, id: int) -> Tuple[HTTPStatus, str, Optional[dict]]:
+    def get_detail(self, id: str) -> Tuple[HTTPStatus, str, Optional[dict]]:
 
         vendor: Vendor = (
             Vendor.query
