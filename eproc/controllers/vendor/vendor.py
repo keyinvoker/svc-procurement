@@ -46,7 +46,7 @@ class VendorController:
         **kwargs
     ) -> Tuple[HTTPStatus, str, List[Optional[dict]], int]:
 
-        id_list: List[int] = kwargs.get("id_list")
+        id_list: List[str] = kwargs.get("id_list")
         search_query: str = kwargs.get("search_query").strip()
         limit: int = kwargs.get("limit")
         offset: int = kwargs.get("offset")
