@@ -17,7 +17,7 @@ from eproc.models.users.references import Reference
 
 # # Vendors
 from eproc.models.vendors.vendors import Vendor
-from eproc.models.vendors.vendor_reviews import VendorReview
+from eproc.models.vendors.vendor_assessments import VendorAssessment
 # from eproc.models.vendors.vendor_contact_persons import VendorContactPerson
 # from eproc.models.vendors.items import Item
 

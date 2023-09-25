@@ -5,7 +5,7 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from eproc.models.vendors.vendors import Vendor
 
 
-class VendorAutoSchema(SQLAlchemyAutoSchema):
+class VendorDetailAutoSchema(SQLAlchemyAutoSchema):
     status_text = fields.String()
 
     @post_dump
@@ -17,9 +17,9 @@ class VendorAutoSchema(SQLAlchemyAutoSchema):
         if data.get("status_id"):
             from eproc.models.users.references import Reference
             data["status"] = Reference.query.filter(Reference.cdnum == data["status_id"]).first().description  # TODO improve this using Foreign Key
-        
-        from eproc.models.vendors.vendor_reviews import VendorReview
-        vendor_review = VendorReview.query.filter(VendorReview.vendor_id == data["id"]).first()
+
+        from eproc.models.vendors.vendor_assessments import VendorAssessment
+        vendor_review = VendorAssessment.query.filter(VendorAssessment.vendor_id == data["id"]).first()
         data["review_notes"] = None
         if vendor_review:
             data["review_notes"] = vendor_review.review_notes
@@ -54,6 +54,38 @@ class VendorAutoSchema(SQLAlchemyAutoSchema):
             "sknkp_file",
             "other_document_file",
         )
+
+
+class VendorAutoSchema(VendorDetailAutoSchema):
+    class Meta:
+        model = Vendor
+        load_instance = True
+        ordered = True
+        unknown = EXCLUDE
+        exclude = (
+            "office_area_file",
+            "warehouse_area_file",
+            "manufacture_area_file",
+            "others_area_file",
+            "npwp_file",
+            "jamsostek_file",
+            "business_establishment_deed_file",
+            "siup_file",
+            "nbnib_file",
+            "siujk_file",
+            "sbujk_file",
+            "iup_file",
+            "sku_file",
+            "skdp_file",
+            "situ_file",
+            "sppkp_file",
+            "skt_file",
+            "tdp_file",
+            "kadin_file",
+            "sknkp_file",
+            "other_document_file",
+        )
+
 
 class VendorGetInputSchema(Schema):
     id_list = fields.List(
@@ -108,6 +140,14 @@ class VendorDeleteInputSchema(Schema):
         fields.Integer(),
         required=True,
     )
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
+class VendorDetailGetInputSchema(Schema):
+    id = fields.String(required=True)
 
     class Meta:
         ordered = True

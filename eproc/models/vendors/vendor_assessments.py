@@ -5,8 +5,8 @@ from sqlalchemy.sql import case
 from eproc.models.base_model import BaseModel
 
 
-class VendorReview(BaseModel):
-    __tablename__ = "vendor_reviews"
+class VendorAssessment(BaseModel):
+    __tablename__ = "vendor_assessments"
 
     id = sa.Column("apvno", sa.Integer(), primary_key=True)
     vendor_id = sa.Column("vdrid", sa.String(), nullable=False)  # TODO Foreign Key

@@ -1,19 +1,47 @@
 from http import HTTPStatus
 from sqlalchemy import or_
 from traceback import format_exc
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from eproc import error_logger
 from eproc.models.vendors.vendors import Vendor
-from eproc.schemas.vendors.vendors import VendorAutoSchema
+from eproc.schemas.vendors.vendors import (
+    VendorAutoSchema,
+    VendorDetailAutoSchema,
+)
 
 
 class VendorController:
     def __init__(self):
         self.schema = VendorAutoSchema()
         self.many_schema = VendorAutoSchema(many=True)
+        self.detail_schema = VendorDetailAutoSchema()
 
-    def get_list(self, **kwargs) -> Tuple[HTTPStatus, str, List[dict], int]:
+    def get_detail(self, id: int) -> Tuple[HTTPStatus, str, Optional[dict]]:
+
+        vendor: Vendor = (
+            Vendor.query
+            .filter(Vendor.id == id)
+            .filter(Vendor.is_deleted.is_(False))
+            .first()
+        )
+
+        if not vendor:
+            return (
+                HTTPStatus.NOT_FOUND,
+                "Vendor tidak ditemukan.",
+                None
+            )
+
+        vendor_data = self.detail_schema.dump(vendor)
+
+        return (
+            HTTPStatus.OK,
+            "Vendor ditemukan.",
+            vendor_data
+        )
+
+    def get_list(self, **kwargs) -> Tuple[HTTPStatus, str, List[Optional[dict]], int]:
         id_list: List[int] = kwargs.get("id_list")
         search_query: str = kwargs.get("search_query").strip()
         limit: int = kwargs.get("limit")
