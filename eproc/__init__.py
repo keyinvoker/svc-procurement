@@ -26,8 +26,10 @@ def create_app() -> Flask:
         from eproc.blueprints.auth import auth_blueprint
         from eproc.blueprints.healthz import healthz_blueprint
         from eproc.blueprints.vendor import vendor_blueprint
+        from eproc.blueprints.user import user_blueprint
         app.register_blueprint(healthz_blueprint)
         app.register_blueprint(auth_blueprint)
+        app.register_blueprint(user_blueprint)
         app.register_blueprint(vendor_blueprint)
 
         print(f"\nEndpoints:")
