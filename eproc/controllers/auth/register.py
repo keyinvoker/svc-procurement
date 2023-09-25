@@ -4,12 +4,12 @@ from http import HTTPStatus
 from typing import Tuple
 
 from eproc.models.users.users import User
-from eproc.schemas.users.users import UserSchema
+from eproc.schemas.users.users import UserAutoSchema
 
 
 class RegisterController:
     def __init__(self):
-        self.admin_schema = UserSchema()
+        self.admin_schema = UserAutoSchema()
 
     def register(
         self,

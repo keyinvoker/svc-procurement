@@ -10,7 +10,7 @@ class User(BaseModel):
     __tablename__ = "users"
 
     id = sa.Column("usrid", sa.String(), primary_key=True)
-    app_id = sa.Column("appid", sa.Integer(), default=None)
+    app_id = sa.Column("appid", sa.String(), default=None)
     username = sa.Column("uname", sa.String(), default=None)  # TODO: delete later, because literally same as `usrid`
     full_name = sa.Column("ffnam", sa.String(), default=None)
     password = sa.Column("paswd", sa.String(), default=None)
@@ -39,17 +39,17 @@ class User(BaseModel):
     last_login_at = sa.Column("llgdt", sa.DateTime(), default=None)
     llkdt = sa.Column("llkdt", sa.DateTime(), default=None)
     lpcdt = sa.Column("lpcdt", sa.DateTime(), default=None)  # last procurement date?
-    comment = sa.Column("comnt", sa.Integer(), default=None)
-    phone_number = sa.Column("phono", sa.Integer(), default=None)
+    comment = sa.Column("comnt", sa.String(), default=None)
+    phone_number = sa.Column("phono", sa.String(), default=None)
     phonc = sa.Column("phonc", sa.Integer(), default=0)  # TODO: change to boolean
     tface = sa.Column("tface", sa.Integer(), default=0)  # TODO: change to boolean
     locen = sa.Column("locen", sa.Integer(), default=0)  # TODO: change to boolean
     loced = sa.Column("loced", sa.DateTime(), default=None)
     acfct = sa.Column("acfct", sa.Integer(), default=None)
     remme = sa.Column("remme", sa.Integer(), default=0)  # TODO: change to boolean
-    first_approver_id = sa.Column("ldid1", sa.Integer(), default=None)
-    second_approver_id = sa.Column("ldid2", sa.Integer(), default=None)
-    third_approver_id = sa.Column("ldid3", sa.Integer(), default=None)
+    first_approver_id = sa.Column("ldid1", sa.String(), default=None)
+    second_approver_id = sa.Column("ldid2", sa.String(), default=None)
+    third_approver_id = sa.Column("ldid3", sa.String(), default=None)
     flag1 = sa.Column("flag1", sa.String(15), default=None)
     flag2 = sa.Column("flag2", sa.String(15), default=None)
     stats = sa.Column("stats", sa.Integer(), default=None)  # TODO: has to be a Foreign Key to another table that contains the string values
