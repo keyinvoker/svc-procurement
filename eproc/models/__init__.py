@@ -8,7 +8,7 @@
 
 # Users
 from eproc.models.users.users import User
-from eproc.models.users.references import Reference
+from eproc.models.references import Reference
 
 # # Companies
 # from eproc.models.companies.branches import Branch

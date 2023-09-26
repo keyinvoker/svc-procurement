@@ -19,10 +19,13 @@ class VendorController:
 
     def get_detail(self, id: str) -> Tuple[HTTPStatus, str, Optional[dict]]:
 
+        from sqlalchemy.orm import joinedload
+
         vendor: Vendor = (
             Vendor.query
             .filter(Vendor.id == id)
             .filter(Vendor.is_deleted.is_(False))
+            .options(joinedload(Vendor.reference))
             .first()
         )
 

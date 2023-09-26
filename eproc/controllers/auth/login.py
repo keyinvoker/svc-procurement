@@ -11,8 +11,6 @@ class LoginController:
             password.encode("utf-8")
         ).hexdigest()
 
-        print(f"hashed_password.upper() :: {hashed_password.upper()}")
-
         user: User = (
             User.query
             .filter(User.username == username)  # TODO: use `uname` or just `usrid` || make sure `uname` cannot be edited first if want use `usrid`

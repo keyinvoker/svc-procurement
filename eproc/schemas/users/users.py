@@ -2,9 +2,13 @@ from marshmallow import EXCLUDE, Schema, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from eproc.models.users.users import User
+from eproc.schemas.references import ReferenceAutoSchema
 
 
 class UserAutoSchema(SQLAlchemyAutoSchema):
+    first_approve_full_name = fields.String()
+    status = fields.String()
+
     class Meta:
         model = User
         load_instance = True
@@ -33,6 +37,14 @@ class UserGetInputSchema(Schema):
         dump_default=0,
         load_default=0,
     )
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
+class UserDetailGetInputSchema(Schema):
+    id = fields.String(required=True)
 
     class Meta:
         ordered = True
