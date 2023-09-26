@@ -5,17 +5,50 @@ from typing import List, Optional, Tuple
 
 from eproc.models.references import Reference
 from eproc.models.users.users import User
-from eproc.schemas.users.users import UserAutoSchema
+from eproc.schemas.users.users import (
+    UserAutoSchema,
+    UserDetailSchema,
+)
 
 
 class UserController:
     def __init__(self):
         self.schema = UserAutoSchema()
         self.many_schema = UserAutoSchema(many=True)
+        self.detail_schema = UserDetailSchema()
     
     def get_detail(self, id: str) -> Tuple[HTTPStatus, str, Optional[dict]]:
+        FirstApprover = aliased(User)
+        SecondApprover = aliased(User)
+        # ThirdApprover = aliased(User)
+
         user: User = (
             User.query
+            .with_entities(
+                User.id,
+                User.full_name,
+                User.password,
+                User.password_length,
+                User.email,
+                FirstApprover.id.label("first_approver_id"),
+                FirstApprover.full_name.label("first_approver_full_name"),
+                FirstApprover.is_active.label("first_approver_is_active"),
+                SecondApprover.id.label("second_approver_id"),
+                SecondApprover.full_name.label("second_approver_full_name"),
+                SecondApprover.is_active.label("second_approver_is_active"),
+                # ThirdApprover.id.label("third_approver_id"),
+                # ThirdApprover.full_name.label("third_approver_full_name"),
+                # ThirdApprover.is_active.label("third_approver_is_active"),
+                User.is_active,
+                User.is_locked,
+                User.is_anonymous,
+                User.is_admin,
+                User.updated_at,
+                User.updated_by,
+            )
+            .join(FirstApprover, FirstApprover.id == User.first_approver_id)
+            .join(SecondApprover, SecondApprover.id == User.second_approver_id)
+            # .join(ThirdApprover, ThirdApprover.id == User.third_approver_id)
             .filter(User.id == id)
             .filter(User.is_deleted.is_(False))
             .first()
@@ -28,7 +61,7 @@ class UserController:
                 None
             )
 
-        user_data = self.schema.dump(user)
+        user_data = self.detail_schema.dump(user)
 
         return HTTPStatus.OK, "User ditemukan.", user_data
 
@@ -52,7 +85,7 @@ class UserController:
                 User.password,
                 User.password_length,
                 User.email,
-                FirstApprover.full_name.label("first_approve_full_name"),
+                FirstApprover.full_name.label("first_approver_full_name"),
                 User.is_active,
                 User.is_locked,
                 User.is_anonymous,

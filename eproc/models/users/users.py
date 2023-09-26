@@ -59,7 +59,7 @@ class User(BaseModel):
     last_active_date = sa.Column("ladat", sa.DateTime(), default=None)
     last_login_date = sa.Column("llgdt", sa.DateTime(), default=None)
     last_lock_date = sa.Column("llkdt", sa.DateTime(), default=None)
-    last_change_date = sa.Column("lpcdt", sa.DateTime(), default=None)  # last procurement date?
+    last_password_change_date = sa.Column("lpcdt", sa.DateTime(), default=None)
     comment = sa.Column("comnt", sa.String(), default=None)
     phone_number = sa.Column("phono", sa.String(), default=None)
     phonc = sa.Column("phonc", sa.Integer(), default=0)

@@ -6,8 +6,26 @@ from eproc.schemas.references import ReferenceAutoSchema
 
 
 class UserAutoSchema(SQLAlchemyAutoSchema):
-    first_approve_full_name = fields.String()
+    first_approver_full_name = fields.String()
     status = fields.String()
+
+    class Meta:
+        model = User
+        load_instance = True
+        ordered = True
+        unknown = EXCLUDE
+
+
+class UserDetailSchema(SQLAlchemyAutoSchema):
+    first_approver_id = fields.String()
+    first_approver_full_name = fields.String()
+    first_approver_is_active = fields.Boolean()
+    second_approver_id = fields.String()
+    second_approver_full_name = fields.String()
+    second_approver_is_active = fields.Boolean()
+    # third_approver_id = fields.String()
+    # third_approver_full_name = fields.String()
+    # third_approver_is_active = fields.Boolean()
 
     class Meta:
         model = User
