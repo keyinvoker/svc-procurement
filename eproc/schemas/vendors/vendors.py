@@ -27,9 +27,9 @@ class VendorDetailAutoSchema(SQLAlchemyAutoSchema):
 
     class Meta:
         model = Vendor
-        # load_instance = True
-        # ordered = True
-        # unknown = EXCLUDE
+        load_instance = True
+        ordered = True
+        unknown = EXCLUDE
 
 
 class VendorAutoSchema(VendorDetailAutoSchema):
