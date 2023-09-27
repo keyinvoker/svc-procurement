@@ -175,7 +175,7 @@ class Vendor(BaseModel):
     coaat = sa.Column("coaat", sa.String())
     flag1 = sa.Column("flag1", sa.String())
     flag2 = sa.Column("flag2", sa.String())
-    temps = sa.Column("temps", sa.String())
+    temps = sa.Column("temps", sa.String(100))
     orgct = sa.Column("orgct", sa.String())
     qsysm = sa.Column("qsysm", sa.String())
     qsysa = sa.Column("qsysa", sa.String())

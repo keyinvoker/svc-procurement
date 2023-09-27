@@ -24,11 +24,15 @@ def create_app() -> Flask:
         migrate.init_app(app, db)
 
         from eproc.blueprints.auth import auth_blueprint
+        from eproc.blueprints.dashboard import dashboard_blueprint
         from eproc.blueprints.healthz import healthz_blueprint
-        from eproc.blueprints.vendor import vendor_blueprint
+        from eproc.blueprints.procurement_request import procurement_request_blueprint
         from eproc.blueprints.user import user_blueprint
+        from eproc.blueprints.vendor import vendor_blueprint
         app.register_blueprint(healthz_blueprint)
         app.register_blueprint(auth_blueprint)
+        app.register_blueprint(dashboard_blueprint)
+        app.register_blueprint(procurement_request_blueprint)
         app.register_blueprint(user_blueprint)
         app.register_blueprint(vendor_blueprint)
 

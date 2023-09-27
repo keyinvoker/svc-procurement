@@ -21,5 +21,9 @@ from eproc.models.vendors.vendor_assessments import VendorAssessment
 # from eproc.models.vendors.vendor_contact_persons import VendorContactPerson
 # from eproc.models.vendors.items import Item
 
+# RFQs
+from eproc.models.rfqs import RFQ
+from eproc.models.vendor_rfqs import VendorRFQ
+
 # # Logs
 # from eproc.models.logs.audit_trails import AuditTrail
