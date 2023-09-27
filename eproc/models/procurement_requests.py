@@ -11,10 +11,10 @@ class ProcurementRequest(BaseModel):
 
     # TODO benerin table
     id = sa.Column("trnno", sa.String(), primary_key=True)
-    branch_id = sa.Column("brcid", sa.String(), nullable=False)  # TODO: Foreign Key
+    branch_id = sa.Column("brcid", sa.String(), sa.ForeignKey("branches.id"), nullable=False)
     directorate_id = sa.Column("dirid", sa.String(), nullable=False)  # TODO: Foreign Key
-    division_id = sa.Column("divid", sa.String(), nullable=False)  # TODO: Foreign Key
-    department_id = sa.Column("depid", sa.String(), nullable=False)  # TODO: Foreign Key
+    division_id = sa.Column("divid", sa.String(), sa.ForeignKey("divisions.id"), nullable=False)
+    department_id = sa.Column("depid", sa.String(), sa.ForeignKey("departments.id"), nullable=False)
     dapid = sa.Column("dapid", sa.String(), nullable=False)  # TODO: Foreign Key
     flag1 = sa.Column(sa.String(15))
     flag2 = sa.Column(sa.String(15))
@@ -37,7 +37,7 @@ class ProcurementRequest(BaseModel):
     ndsfr = sa.Column("ndsfr", sa.String(20))
     ndsto = sa.Column("ndsto", sa.String(20))
     description = sa.Column("descr", sa.String(500))
-    requested_by = sa.Column("reqby", sa.String(), nullable=False)  # TODO: Foreign Key
+    requester_user_id = sa.Column("reqby", sa.String(), sa.ForeignKey("users.id"), nullable=False)
     entby = sa.Column("entby", sa.String(), nullable=False)  # TODO: Foreign Key
     redto = sa.Column("redto", sa.String(30))
     alcto = sa.Column("alcto", sa.String(30))
@@ -51,6 +51,18 @@ class ProcurementRequest(BaseModel):
     dref6 = sa.Column("dref6", sa.String(100))
     temps = sa.Column("temps", sa.String(100))
 
+    requester = db.relationship(
+        "User", backref=backref(__tablename__, uselist=False)
+    )
+    branch = db.relationship(
+        "Branch", backref=backref(__tablename__, uselist=False)
+    )
+    division = db.relationship(
+        "Division", backref=backref(__tablename__, uselist=False)
+    )
+    department = db.relationship(
+        "Department", backref=backref(__tablename__, uselist=False)
+    )
     reference = db.relationship(
         "Reference", backref=backref(__tablename__, uselist=False)
     )

@@ -2,29 +2,28 @@ from decimal import Decimal
 from marshmallow import EXCLUDE, Schema, fields, post_dump
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from eproc.models.procurement_requests import ProcurementRequest
-from eproc.schemas.companies.branches import BranchAutoSchema
-from eproc.schemas.companies.departments import DepartmentAutoSchema
-from eproc.schemas.companies.divisions import DivisionAutoSchema
+from eproc.models.vendor_rfqs import VendorRFQ
 from eproc.schemas.references import ReferenceAutoSchema
-from eproc.schemas.users.users import UserAutoSchema
 
 
-class ProcurementRequestAutoSchema(SQLAlchemyAutoSchema):
-    requester = fields.Nested(UserAutoSchema)
-    branch = fields.Nested(BranchAutoSchema)
-    department = fields.Nested(DepartmentAutoSchema)
-    division = fields.Nested(DivisionAutoSchema)
+class VendorRFQAutoSchema(SQLAlchemyAutoSchema):
     reference = fields.Nested(ReferenceAutoSchema)
 
+    @post_dump
+    def parse_data(self, data: dict, **kwargs):
+        for key, value in data.items():
+            if isinstance(value, Decimal):
+                data[key] = float(value)
+        return data
+
     class Meta:
-        model = ProcurementRequest
+        model = VendorRFQ
         load_instance = True
         ordered = True
         unknown = EXCLUDE
 
 
-class ProcurementRequestGetInputSchema(Schema):
+class VendorRFQGetInputSchema(Schema):
     id_list = fields.List(
         fields.Integer(),
         dump_default=[],

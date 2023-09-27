@@ -2,29 +2,32 @@ from decimal import Decimal
 from marshmallow import EXCLUDE, Schema, fields, post_dump
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from eproc.models.procurement_requests import ProcurementRequest
-from eproc.schemas.companies.branches import BranchAutoSchema
-from eproc.schemas.companies.departments import DepartmentAutoSchema
-from eproc.schemas.companies.divisions import DivisionAutoSchema
+from eproc.models.price_comparisons import PriceComparison
 from eproc.schemas.references import ReferenceAutoSchema
-from eproc.schemas.users.users import UserAutoSchema
+# from eproc.schemas.rfqs import RFQAutoSchema
 
 
-class ProcurementRequestAutoSchema(SQLAlchemyAutoSchema):
-    requester = fields.Nested(UserAutoSchema)
-    branch = fields.Nested(BranchAutoSchema)
-    department = fields.Nested(DepartmentAutoSchema)
-    division = fields.Nested(DivisionAutoSchema)
+class PriceComparisonAutoSchema(SQLAlchemyAutoSchema):
+    # TODO:
+    rfq_id = fields.Integer()
+    # rfq = fields.Nested(RFQAutoSchema)
     reference = fields.Nested(ReferenceAutoSchema)
 
+    @post_dump
+    def parse_data(self, data: dict, **kwargs):
+        for key, value in data.items():
+            if isinstance(value, Decimal):
+                data[key] = float(value)
+        return data
+
     class Meta:
-        model = ProcurementRequest
+        model = PriceComparison
         load_instance = True
         ordered = True
         unknown = EXCLUDE
 
 
-class ProcurementRequestGetInputSchema(Schema):
+class PriceComparisonGetInputSchema(Schema):
     id_list = fields.List(
         fields.Integer(),
         dump_default=[],

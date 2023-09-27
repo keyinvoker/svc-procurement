@@ -1,4 +1,6 @@
 import sqlalchemy as sa
+from sqlalchemy.orm import backref, column_property
+from sqlalchemy.sql import case
 
 from eproc.models.base_model import BaseModel
 
@@ -6,10 +8,10 @@ from eproc.models.base_model import BaseModel
 class Department(BaseModel):
     __tablename__ = "departments"
 
-    name = sa.Column(sa.String(255), nullable=False)
-    description = sa.Column(sa.Text(), default=None)
-    is_approved = sa.Column(
-        sa.Boolean(),
-        default=False,
-        server_default="false",
-    )
+    id = sa.Column(sa.String(), primary_key=True)
+    description = sa.Column("descr", sa.String(500), nullable=False)
+    nttid = sa.Column("nttid", sa.String(10), nullable=False)
+    # isact = sa.Column("isact", sa.Integer(), default=0)  # TODO: change to boolean (from BIT)
+    # is_active = column_property(
+    #     case((isact == "1", True), else_=False)
+    # )

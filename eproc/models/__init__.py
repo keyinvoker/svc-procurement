@@ -11,9 +11,9 @@ from eproc.models.users.users import User
 from eproc.models.references import Reference
 
 # # Companies
-# from eproc.models.companies.branches import Branch
-# from eproc.models.companies.departments import Department
-# from eproc.models.companies.divisions import Division
+from eproc.models.companies.branches import Branch
+from eproc.models.companies.departments import Department
+from eproc.models.companies.divisions import Division
 
 # # Vendors
 from eproc.models.vendors.vendors import Vendor
@@ -24,6 +24,7 @@ from eproc.models.vendors.vendor_assessments import VendorAssessment
 # RFQs
 from eproc.models.rfqs import RFQ
 from eproc.models.vendor_rfqs import VendorRFQ
+from eproc.models.price_comparisons import PriceComparison
 
 # # Logs
 # from eproc.models.logs.audit_trails import AuditTrail
