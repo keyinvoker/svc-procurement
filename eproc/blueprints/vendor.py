@@ -7,6 +7,7 @@ from eproc.resources.vendor.vendor import (
 )
 
 vendor_blueprint = Blueprint("vendor_blueprint", __name__, url_prefix="/vendor")
+
 vendor_api = Api(vendor_blueprint)
 
 vendor_api.add_resource(VendorResource, "")

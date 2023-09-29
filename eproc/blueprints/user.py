@@ -7,6 +7,7 @@ from eproc.resources.user import (
 )
 
 user_blueprint = Blueprint("user_blueprint", __name__, url_prefix="/user")
+
 user_api = Api(user_blueprint)
 
 user_api.add_resource(UserResource, "")

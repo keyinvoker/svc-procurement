@@ -6,6 +6,7 @@ from eproc.resources.vendor_rfq import (
 )
 
 vendor_rfq_blueprint = Blueprint("vendor_rfq_blueprint", __name__, url_prefix="/vendor-rfq")
+
 vendor_rfq_api = Api(vendor_rfq_blueprint)
 
 vendor_rfq_api.add_resource(VendorRFQResource, "")
