@@ -28,6 +28,8 @@ def create_app() -> Flask:
         from eproc.blueprints.healthz import healthz_blueprint
         from eproc.blueprints.procurement_request import procurement_request_blueprint
         from eproc.blueprints.price_comparison import price_comparison_blueprint
+        from eproc.blueprints.purchase_order import purchase_order_blueprint
+        from eproc.blueprints.procurement_request_progress import procurement_request_progress_blueprint
         from eproc.blueprints.user import user_blueprint
         from eproc.blueprints.vendor import vendor_blueprint
         from eproc.blueprints.vendor_rfq import vendor_rfq_blueprint
@@ -37,6 +39,8 @@ def create_app() -> Flask:
         app.register_blueprint(procurement_request_blueprint)
         app.register_blueprint(vendor_rfq_blueprint)
         app.register_blueprint(price_comparison_blueprint)
+        app.register_blueprint(purchase_order_blueprint)
+        app.register_blueprint(procurement_request_progress_blueprint)
         app.register_blueprint(user_blueprint)
         app.register_blueprint(vendor_blueprint)
 

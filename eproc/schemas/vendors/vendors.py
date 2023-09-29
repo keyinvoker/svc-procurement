@@ -3,14 +3,12 @@ from marshmallow import EXCLUDE, Schema, fields, post_dump
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from eproc.models.vendors.vendors import Vendor
-from eproc.schemas.vendors.vendor_assessments import VendorAssessmentAutoSchema
 from eproc.schemas.references import ReferenceAutoSchema
 
 
 class VendorDetailAutoSchema(SQLAlchemyAutoSchema):
     reference = fields.Nested(ReferenceAutoSchema)
-    # assessment = fields.Nested(VendorAssessmentAutoSchema)
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     @post_dump
     def parse_data(self, data: dict, **kwargs):
         for key, value in data.items():

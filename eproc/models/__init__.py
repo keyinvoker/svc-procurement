@@ -26,5 +26,8 @@ from eproc.models.rfqs import RFQ
 from eproc.models.vendor_rfqs import VendorRFQ
 from eproc.models.price_comparisons import PriceComparison
 
+# Purchase Orders
+from eproc.models.purchase_orders.purchase_orders import PurchaseOrder
+
 # # Logs
 # from eproc.models.logs.audit_trails import AuditTrail
