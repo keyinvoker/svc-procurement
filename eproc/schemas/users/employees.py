@@ -1,0 +1,39 @@
+from decimal import Decimal
+from marshmallow import EXCLUDE, Schema, fields, post_dump
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+
+from eproc.models.users.employees import Employee
+from eproc.schemas.companies.branches import BranchAutoSchema
+from eproc.schemas.companies.departments import DepartmentAutoSchema
+from eproc.schemas.companies.divisions import DivisionAutoSchema
+from eproc.schemas.references import ReferenceAutoSchema
+from eproc.schemas.users.users import UserAutoSchema
+
+
+class EmployeeAutoSchema(SQLAlchemyAutoSchema):
+    # branch = fields.Nested(BranchAutoSchema)
+    # department = fields.Nested(DepartmentAutoSchema)
+    # division = fields.Nested(DivisionAutoSchema)
+    first_approver_full_name = fields.String()
+
+    class Meta:
+        model = Employee
+        load_instance = True
+        ordered = True
+        unknown = EXCLUDE
+
+
+class EmployeeDetailSchema(EmployeeAutoSchema):
+    first_approver_id = fields.String()
+    first_approver_full_name = fields.String()
+    first_approver_is_active = fields.Boolean()
+    second_approver_id = fields.String()
+    second_approver_full_name = fields.String()
+    second_approver_is_active = fields.Boolean()
+    # third_approver_id = fields.String()
+    # third_approver_full_name = fields.String()
+    # third_approver_is_active = fields.Boolean()
+    branch_name = fields.String()
+    directorate_name = fields.String()
+    division_name = fields.String()
+    department_name = fields.String()
