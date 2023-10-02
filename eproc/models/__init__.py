@@ -1,8 +1,8 @@
-# # Master
-# from eproc.models.master.login_parameters import LoginParameter
+# Masters
+from eproc.models.masters.entities import Entity
 
-# # Auth
-# from eproc.models.auth.roles import Role
+# Auth
+from eproc.models.auth.roles import Role
 # from eproc.models.auth.permissions import Permission
 # from eproc.models.auth.roles_permissions import RolePermission
 
@@ -13,6 +13,7 @@ from eproc.models.references import Reference
 # # Companies
 from eproc.models.companies.branches import Branch
 from eproc.models.companies.departments import Department
+from eproc.models.companies.directorates import Directorate
 from eproc.models.companies.divisions import Division
 
 # # Vendors

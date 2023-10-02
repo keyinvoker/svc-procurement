@@ -12,7 +12,7 @@ class ProcurementRequest(BaseModel):
     # TODO benerin table
     id = sa.Column("trnno", sa.String(), primary_key=True)
     branch_id = sa.Column("brcid", sa.String(), sa.ForeignKey("branches.id"), nullable=False)
-    directorate_id = sa.Column("dirid", sa.String(), nullable=False)  # TODO: Foreign Key
+    directorate_id = sa.Column("dirid", sa.String(20), sa.ForeignKey("directorates.id"), nullable=False)
     division_id = sa.Column("divid", sa.String(), sa.ForeignKey("divisions.id"), nullable=False)
     department_id = sa.Column("depid", sa.String(), sa.ForeignKey("departments.id"), nullable=False)
     dapid = sa.Column("dapid", sa.String(), nullable=False)  # TODO: Foreign Key
@@ -56,6 +56,9 @@ class ProcurementRequest(BaseModel):
     )
     branch = db.relationship(
         "Branch", backref=backref(__tablename__, uselist=False)
+    )
+    directorate = db.relationship(
+        "Directorate", backref=backref(__tablename__, uselist=False)
     )
     division = db.relationship(
         "Division", backref=backref(__tablename__, uselist=False)

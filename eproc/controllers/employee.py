@@ -5,6 +5,7 @@ from typing import List, Optional, Tuple
 
 from eproc.models.companies.branches import Branch
 from eproc.models.companies.departments import Department
+from eproc.models.companies.directorates import Directorate
 from eproc.models.companies.divisions import Division
 from eproc.models.users.employees import Employee
 from eproc.schemas.users.employees import (
@@ -33,7 +34,7 @@ class EmployeeController:
                 Employee.branch_id,
                 Branch.description.label("branch_name"),
                 Employee.directorate_id,
-                # Directorate.description.label("directorate_name"),
+                Directorate.description.label("directorate_name"),
                 Employee.division_id,
                 Division.description.label("division_name"),
                 Employee.department_id,
@@ -55,15 +56,13 @@ class EmployeeController:
             .join(SecondApprover, SecondApprover.id == Employee.second_approver_id)
             # .join(ThirdApprover, ThirdApprover.id == Employee.third_approver_id)
             .join(Branch, Branch.id == Employee.branch_id)
-            # .join(Directorate, Directorate.id == Employee.directorate_id)
+            .join(Directorate, Directorate.id == Employee.directorate_id)
             .join(Division, Division.id == Employee.division_id)
             .join(Department, Department.id == Employee.department_id)
             .filter(Employee.id == id)
             .filter(Employee.is_deleted.is_(False))
             .first()
         )
-
-        print(employee.division_name)
         
         if not employee:
             return (
@@ -71,6 +70,7 @@ class EmployeeController:
                 "Employee tidak ditemukan.",
                 None
             )
+        print(f"directorate_name :: {employee.directorate_name}")
 
         employee_data = self.detail_schema.dump(employee)
 
@@ -82,6 +82,7 @@ class EmployeeController:
     ) -> Tuple[HTTPStatus, str, List[Optional[dict]], int]:
 
         id_list: List[str] = kwargs.get("id_list")
+        entity_id: str = kwargs.get("entity_id")
         search_query: str = kwargs.get("search_query").strip()
         limit: int = kwargs.get("limit")
         offset: int = kwargs.get("offset")
@@ -105,6 +106,9 @@ class EmployeeController:
 
         if id_list:
             employee_query = employee_query.filter(Employee.id.in_(id_list))
+        
+        if entity_id:
+            employee_query = employee_query.filter(Employee.entity_id == entity_id)
         
         if search_query:
             employee_query = (

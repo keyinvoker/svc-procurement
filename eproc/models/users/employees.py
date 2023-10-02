@@ -12,10 +12,10 @@ class Employee(BaseModel):
     id = sa.Column(sa.String(), primary_key=True)
     full_name = sa.Column("empnm", sa.String())
     postn = sa.Column("postn", sa.String(20), nullable=False)
-    nttid = sa.Column("nttid", sa.String(10), nullable=False)
+    entity_id = sa.Column("nttid", sa.String(10), nullable=False)
     rgnid = sa.Column("rgnid", sa.String(10))
     branch_id = sa.Column("brcid", sa.String(20), sa.ForeignKey("branches.id"), nullable=False)
-    directorate_id = sa.Column("dirid", sa.String(20), nullable=False)  # TODO: Foreign Key
+    directorate_id = sa.Column("dirid", sa.String(20), sa.ForeignKey("directorates.id"), nullable=False)
     division_id = sa.Column("divid", sa.String(20), sa.ForeignKey("divisions.id"), nullable=False)
     department_id = sa.Column("depid", sa.String(20), sa.ForeignKey("departments.id"), nullable=False)
     coacd = sa.Column("coacd", sa.String(20))
@@ -38,6 +38,9 @@ class Employee(BaseModel):
 
     branch = db.relationship(
         "Branch", backref=backref(__tablename__, uselist=False)
+    )
+    directorate = db.relationship(
+        "Directorate", backref=backref(__tablename__, uselist=False)
     )
     division = db.relationship(
         "Division", backref=backref(__tablename__, uselist=False)

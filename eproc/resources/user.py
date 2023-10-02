@@ -7,6 +7,7 @@ from eproc import error_logger
 from eproc.controllers.employee import EmployeeController
 from eproc.controllers.user import UserController
 from eproc.helpers.commons import split_string_into_list
+from eproc.schemas.users.employees import EmployeeGetInputSchema
 from eproc.schemas.users.users import (
     UserDetailGetInputSchema,
     UserGetInputSchema,
@@ -95,7 +96,7 @@ class EmployeeResource(Resource):
                 request.args.to_dict(),
                 list_param_keys
             )
-            schema = UserGetInputSchema()
+            schema = EmployeeGetInputSchema()
 
             is_valid, response, payload = schema_validate_and_load(
                 schema=schema,

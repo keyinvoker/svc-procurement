@@ -11,4 +11,4 @@ vendor_blueprint = Blueprint("vendor_blueprint", __name__, url_prefix="/vendor")
 vendor_api = Api(vendor_blueprint)
 
 vendor_api.add_resource(VendorResource, "")
-vendor_api.add_resource(VendorDetailResource, "/detail")
+vendor_api.add_resource(VendorDetailResource, "/details")
