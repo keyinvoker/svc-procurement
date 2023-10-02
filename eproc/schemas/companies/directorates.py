@@ -1,19 +1,18 @@
-from decimal import Decimal
-from marshmallow import EXCLUDE, Schema, fields, post_dump
+from marshmallow import EXCLUDE, Schema, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from eproc.models.companies.branches import Branch
+from eproc.models.companies.directorates import Directorate
 
 
-class BranchAutoSchema(SQLAlchemyAutoSchema):
+class DirectorateAutoSchema(SQLAlchemyAutoSchema):
     class Meta:
-        model = Branch
+        model = Directorate
         load_instance = True
         ordered = True
         unknown = EXCLUDE
 
 
-class BranchGetInputSchema(Schema):
+class DirectorateGetInputSchema(Schema):
     id_list = fields.List(
         fields.Integer(),
         dump_default=[],
