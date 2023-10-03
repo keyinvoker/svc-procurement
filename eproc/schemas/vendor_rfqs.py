@@ -4,9 +4,11 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from eproc.models.vendor_rfqs import VendorRFQ
 from eproc.schemas.references import ReferenceAutoSchema
+from eproc.schemas.vendors.vendors import VendorAutoSchema
 
 
 class VendorRFQAutoSchema(SQLAlchemyAutoSchema):
+    vendor = fields.Nested(VendorAutoSchema)
     reference = fields.Nested(ReferenceAutoSchema)
 
     @post_dump

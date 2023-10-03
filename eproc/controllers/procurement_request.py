@@ -23,7 +23,11 @@ class ProcurementRequestController:
         limit: int = kwargs.get("limit")
         offset: int = kwargs.get("offset")
 
-        query = ProcurementRequest.query.filter(ProcurementRequest.is_deleted.is_(False))
+        query = (
+            ProcurementRequest.query
+            .filter(ProcurementRequest.is_deleted.is_(False))
+            .order_by(ProcurementRequest.transaction_date.desc())
+        )
 
         if id_list:
             query = (

@@ -23,7 +23,11 @@ class VendorRFQController:
         limit: int = kwargs.get("limit")
         offset: int = kwargs.get("offset")
 
-        query = VendorRFQ.query.filter(VendorRFQ.is_deleted.is_(False))
+        query = (
+            VendorRFQ.query
+            .filter(VendorRFQ.is_deleted.is_(False))
+            .order_by(VendorRFQ.transaction_date.desc())
+        )
 
         if id_list:
             query = (

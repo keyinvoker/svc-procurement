@@ -1,6 +1,7 @@
 from decimal import Decimal
 from marshmallow import EXCLUDE, Schema, fields, post_dump
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from typing import List
 
 from eproc.models.procurement_requests import ProcurementRequest
 from eproc.schemas.companies.branches import BranchAutoSchema

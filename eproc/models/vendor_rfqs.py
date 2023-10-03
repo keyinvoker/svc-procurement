@@ -14,8 +14,8 @@ class VendorRFQ(BaseModel):
     sqenc = sa.Column("sqenc", sa.Integer(), nullable=False)
     document_number = sa.Column("docno", sa.String(20))
     transaction_date = sa.Column("trndt", sa.DateTime(), nullable=False)
-    period = sa.Column("fisyr", sa.Integer(), nullable=False)
-    fismn = sa.Column("fismn", sa.Integer(), nullable=False)
+    year = sa.Column("fisyr", sa.Integer(), nullable=False)
+    month = sa.Column("fismn", sa.Integer(), nullable=False)
     vendor_id = sa.Column("vdrid", sa.String(), sa.ForeignKey("vendors.id"), nullable=False)
     fcoid = sa.Column(sa.String())  # TODO: Foreign Key
     description = sa.Column("descr", sa.String(500))
