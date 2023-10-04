@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 from datetime import datetime
+from pytz import timezone
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import Session, column_property
 from sqlalchemy.sql import case
@@ -13,35 +14,35 @@ from eproc import app_logger, db, error_logger
 session: Session = db.session
 
 
-class utcnow(FunctionElement):
-    type = DateTime()
+class WIBNow(FunctionElement):
+    type = DateTime(timezone=True)
 
 
-@compiles(utcnow, "postgresql")
-def pg_utcnow(element, compiler, **kwargs):
-    return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
+@compiles(WIBNow, "postgresql")
+def pg_wibnow(element, compiler, **kwargs):
+    return "TIMEZONE('Asia/Jakarta', CURRENT_TIMESTAMP)"
 
 
 class BaseModel(db.Model):
     __abstract__ = True
 
     created_at = sa.Column(
-        sa.DateTime(),
-        default=datetime.utcnow,
-        server_default=utcnow(),
+        sa.DateTime(timezone=True),
+        default=datetime.now(timezone("Asia/Jakarta")),
+        server_default=WIBNow(),
         nullable=False,
     )
     updated_by = sa.Column(sa.String(), default=None)
     updated_at = sa.Column(
-        sa.DateTime(),
-        default=datetime.utcnow,
-        onupdate=utcnow(),
+        sa.DateTime(timezone=True),
+        default=datetime.now(timezone("Asia/Jakarta")),
+        onupdate=WIBNow(),
         nullable=False,
-        server_default=utcnow(),
-        server_onupdate=utcnow(),
+        server_default=WIBNow(),
+        server_onupdate=WIBNow(),
     )
     is_deleted = sa.Column(sa.Boolean(), default=False, server_default="false")
-    deleted_at = sa.Column(sa.DateTime(), default=None)
+    deleted_at = sa.Column(sa.DateTime(timezone=True), default=None)
 
     def save(self) -> "BaseModel":
         try:
@@ -71,7 +72,7 @@ class BaseModel(db.Model):
     def delete(self) -> "BaseModel":
         try:
             self.is_deleted = True
-            self.deleted_at = datetime.utcnow()
+            self.deleted_at = datetime.WIBNow()
 
             session.add(self)
             session.commit()
@@ -99,7 +100,7 @@ class BaseModel(db.Model):
         try:
             for data in objects:
                 data["is_deleted"] = True
-                data["deleted_at"] = datetime.utcnow()
+                data["deleted_at"] = datetime.WIBNow()
                 session.add(data)
 
             session.commit()
