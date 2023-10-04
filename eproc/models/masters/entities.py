@@ -10,6 +10,5 @@ class Entity(BaseModel):
     __tablename__ = "entities"
 
     id = sa.Column(sa.String(), primary_key=True)
-    description = sa.Column("descr", sa.String(100), nullable=False)
-
-    is_active = sa.Column("isact", sa.Boolean())  # TODO: change to boolean (from BIT)
+    description = sa.Column(sa.String(100), nullable=False)
+    is_active = sa.Column(sa.Boolean())
