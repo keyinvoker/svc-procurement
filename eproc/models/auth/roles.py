@@ -12,6 +12,5 @@ class Role(BaseModel):
     __tablename__ = "roles"
 
     id = sa.Column(sa.String(), primary_key=True)
-    description = sa.Column("descr", sa.String(500), nullable=False)
-
-    is_active = sa.Column("isact", sa.Boolean())  # TODO: change to boolean (from BIT)
+    description = sa.Column(sa.String(500), nullable=False)
+    is_active = sa.Column(sa.Boolean())
