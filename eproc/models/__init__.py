@@ -1,5 +1,6 @@
 # Masters
 from eproc.models.masters.entities import Entity
+from eproc.models.masters.regionals import Regional
 
 # Auth
 from eproc.models.auth.roles import Role

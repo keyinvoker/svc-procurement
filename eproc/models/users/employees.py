@@ -10,32 +10,34 @@ class Employee(BaseModel):
     __tablename__ = "employees"
 
     id = sa.Column(sa.String(), primary_key=True)
-    full_name = sa.Column("empnm", sa.String())
-    postn = sa.Column("postn", sa.String(20), nullable=False)
-    entity_id = sa.Column("nttid", sa.String(10), nullable=False)
-    rgnid = sa.Column("rgnid", sa.String(10))
-    branch_id = sa.Column("brcid", sa.String(20), sa.ForeignKey("branches.id"), nullable=False)
-    directorate_id = sa.Column("dirid", sa.String(20), sa.ForeignKey("directorates.id"), nullable=False)
-    division_id = sa.Column("divid", sa.String(20), sa.ForeignKey("divisions.id"), nullable=False)
-    department_id = sa.Column("depid", sa.String(20), sa.ForeignKey("departments.id"), nullable=False)
-    coacd = sa.Column("coacd", sa.String(20))
-    email = sa.Column("email", sa.String(200))
-    phone_number = sa.Column("phono", sa.String(20))
-    identity_number = sa.Column("noktp", sa.String(20))
-    gender = sa.Column("gendr", sa.String(20))
-    join_date = sa.Column("joidt", sa.DateTime())
-    leave_date = sa.Column("outdt", sa.DateTime())
-    first_approver_id = sa.Column("ldid1", sa.String(10))
-    second_approver_id = sa.Column("ldid2", sa.String(10))
-    third_approver_id = sa.Column("ldid3", sa.String(10))
-    group_id = sa.Column("grpid", sa.String(20), nullable=False)
+    entity_id = sa.Column(sa.String(10), sa.ForeignKey("entities.id"), nullable=False)
+    regional_id = sa.Column(sa.String(10), sa.ForeignKey("regionals.id"), nullable=False)
+    branch_id = sa.Column(sa.String(20), sa.ForeignKey("branches.id"), nullable=False)
+    directorate_id = sa.Column(sa.String(20), sa.ForeignKey("directorates.id"), nullable=False)
+    division_id = sa.Column(sa.String(20), sa.ForeignKey("divisions.id"), nullable=False)
+    department_id = sa.Column(sa.String(20), sa.ForeignKey("departments.id"), nullable=False)
+    postn = sa.Column("postn", sa.String(20), nullable=False)  # TODO: Foreign Key (?)
+    coacd = sa.Column("coacd", sa.String(20))  # TODO: Foreign Key
+    full_name = sa.Column(sa.String(50))
+    email = sa.Column(sa.String(200))
+    phone_number = sa.Column(sa.String(20))
+    identity_number = sa.Column(sa.String(20))
+    gender = sa.Column(sa.String(20))
+    join_date = sa.Column(sa.DateTime())
+    leave_date = sa.Column(sa.DateTime())
+    first_approver_id = sa.Column(sa.String(10))
+    second_approver_id = sa.Column(sa.String(10))
+    third_approver_id = sa.Column(sa.String(10))
+    group_id = sa.Column(sa.String(20), nullable=False)
     untid = sa.Column("untid", sa.String(20), nullable=False)
+    is_active = sa.Column(sa.Boolean(), nullable=False)
 
-    isact = sa.Column("isact", sa.Integer(), default=0)  # TODO: change to boolean
-    is_active = column_property(
-        case((isact == 1, True), else_=False)
+    entity = db.relationship(
+        "Entity", backref=backref(__tablename__, uselist=False)
     )
-
+    regional = db.relationship(
+        "Regional", backref=backref(__tablename__, uselist=False)
+    )
     branch = db.relationship(
         "Branch", backref=backref(__tablename__, uselist=False)
     )

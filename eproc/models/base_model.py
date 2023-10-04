@@ -2,8 +2,6 @@ import sqlalchemy as sa
 from datetime import datetime
 from pytz import timezone
 from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.orm import Session, column_property
-from sqlalchemy.sql import case
 from sqlalchemy.sql.expression import FunctionElement
 from sqlalchemy.types import DateTime
 from traceback import format_exc
@@ -23,19 +21,23 @@ def pg_wibnow(element, compiler, **kwargs):
     return "TIMEZONE('Asia/Jakarta', CURRENT_TIMESTAMP)"
 
 
+def wibnow():
+    return datetime.now(timezone("Asia/Jakarta"))
+
+
 class BaseModel(db.Model):
     __abstract__ = True
 
     created_at = sa.Column(
         sa.DateTime(timezone=True),
-        default=datetime.now(timezone("Asia/Jakarta")),
+        default=wibnow(),
         server_default=WIBNow(),
         nullable=False,
     )
     updated_by = sa.Column(sa.String(), default=None)
     updated_at = sa.Column(
         sa.DateTime(timezone=True),
-        default=datetime.now(timezone("Asia/Jakarta")),
+        default=wibnow(),
         onupdate=WIBNow(),
         nullable=False,
         server_default=WIBNow(),

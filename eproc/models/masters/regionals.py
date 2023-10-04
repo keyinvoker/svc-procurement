@@ -5,12 +5,12 @@ from eproc import db
 from eproc.models.base_model import BaseModel
 
 
-class Branch(BaseModel):
-    __tablename__ = "branches"
+class Regional(BaseModel):
+    __tablename__ = "regionals"
 
     id = sa.Column(sa.String(), primary_key=True)
     entity_id = sa.Column(sa.String(10), sa.ForeignKey("entities.id"), nullable=False)
-    description = sa.Column(sa.String(500), nullable=False)
+    description = sa.Column(sa.String(100), nullable=False)
     first_address = sa.Column(sa.String(150))
     second_address = sa.Column(sa.String(150))
     third_address = sa.Column(sa.String(150))

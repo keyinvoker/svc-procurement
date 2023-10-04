@@ -12,7 +12,7 @@ class Department(BaseModel):
     entity_id = sa.Column(sa.String(10), sa.ForeignKey("entities.id"), nullable=False)
     description = sa.Column(sa.String(500), nullable=False)
     updated_by = sa.Column(sa.String(), default="auto from HC", server_default="auto from HC")
-    is_active = sa.Column(sa.Boolean())
+    is_active = sa.Column(sa.Boolean(), nullable=False)
 
     entity = db.relationship(
         "Entity", backref=backref(__tablename__, uselist=False)
