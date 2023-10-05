@@ -2,6 +2,7 @@ import sqlalchemy as sa
 from datetime import datetime
 from pytz import timezone
 from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import FunctionElement
 from sqlalchemy.types import DateTime
 from traceback import format_exc
