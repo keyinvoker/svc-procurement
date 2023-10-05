@@ -14,20 +14,20 @@ class User(BaseModel):
     __tablename__ = "users"
 
     id = sa.Column(sa.String(24), primary_key=True)
-    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"))
-    first_approver_id = sa.Column(sa.String())
-    second_approver_id = sa.Column(sa.String())
-    third_approver_id = sa.Column(sa.String())
+    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False)
+    first_approver_id = sa.Column(sa.String(10))
+    second_approver_id = sa.Column(sa.String(10))
+    third_approver_id = sa.Column(sa.String(10))
     app_id = sa.Column(sa.String(10), nullable=False)
     username = sa.Column(sa.String(24), nullable=False)  # TODO: REDUNDANT :: same value as `usrid`; delete?
     full_name = sa.Column(sa.String(50))
     password = sa.Column(sa.String(32), nullable=False)
     password_length = sa.Column(sa.Integer(), nullable=False)
-    password_salt = sa.Column(sa.String(120))
-    password_hash = sa.Column(sa.String(120))
-    password_question = sa.Column(sa.String(120))
-    password_answer = sa.Column(sa.String(120))
-    security_status = sa.Column(sa.String(10))
+    password_salt = sa.Column(sa.String(120))  # TODO: REDUNDANT: unused
+    password_hash = sa.Column(sa.String(120))  # TODO: DANGEROUS: bukan hash ini?!?!?!; clear text password!!!
+    password_question = sa.Column(sa.String(120))  # TODO: REDUNDANT: unused
+    password_answer = sa.Column(sa.String(120))  # TODO: REDUNDANT: unused
+    security_status = sa.Column(sa.String(10))  # TODO: REDUNDANT: unused
     email = sa.Column(sa.String(200))
 
     is_email_confirmed = sa.Column(sa.Boolean(), nullable=False)
@@ -42,54 +42,6 @@ class User(BaseModel):
     remember_me = sa.Column(sa.Boolean(), nullable=False)
     two_factor_enabled = sa.Column(sa.Boolean(), nullable=False)
     lock_enabled = sa.Column(sa.Boolean(), nullable=False)
-    # emcon = sa.Column("emcon", sa.Integer(), default=0)  # TODO: change to boolean
-    # is_email_confirmed = column_property(case(
-    #     (emcon == 1, True), else_=False
-    # ))
-    # isann = sa.Column("isann", sa.Integer(), default=0)  # TODO: change to boolean
-    # is_anonymous = column_property(case(
-    #     (isann == 1, True), else_=False
-    # ))
-    # isadm = sa.Column("isadm", sa.Integer(), default=0)  # TODO: change to boolean
-    # is_admin = column_property(case(
-    #     (isadm == 1, True), else_=False
-    # ))
-    # isuho = sa.Column("isuho", sa.Integer(), default=1)  # TODO: change to boolean
-    # is_head_office_user = column_property(case(
-    #     (isuho == 1, True), else_=False
-    # ))
-    # isukp = sa.Column("isukp", sa.Integer(), default=0)  # TODO: change to boolean
-    # is_kpw_user = column_property(case(
-    #     (isukp == 1, True), else_=False
-    # ))
-    # isust = sa.Column("isust", sa.Integer(), default=0)  # TODO: change to boolean
-    # is_branch_user = column_property(case(
-    #     (isukp == 1, True), else_=False
-    # ))
-    # isapr = sa.Column("isapr", sa.Integer(), default=0)  # TODO: change to boolean
-    # is_approved = column_property(case(
-    #     (isapr == 1, True), else_=False
-    # ))
-    # islck = sa.Column("islck", sa.Integer(), default=0)  # TODO: change to boolean
-    # is_locked = column_property(case(
-    #     (islck == 1, True), else_=False
-    # ))
-    # remme = sa.Column("remme", sa.Integer(), default=0)  # TODO: change to boolean
-    # remember_me = column_property(
-    #     case((remme == 1, True), else_=False)
-    # )
-    # phonc = sa.Column("phonc", sa.Integer(), default=0)  # TODO: change to boolean
-    # is_phone_number_confirmed = column_property(
-    #     case((phonc == 1, True), else_=False)
-    # )
-    # tface = sa.Column("tface", sa.Integer(), default=0)  # TODO: change to boolean
-    # two_factor_enabled = column_property(
-    #     case((tface == 1, True), else_=False)
-    # )
-    # locen = sa.Column("locen", sa.Integer(), default=0)  # TODO: change to boolean
-    # lock_enabled = column_property(
-    #     case((locen == 1, True), else_=False)
-    # )
 
     captcha = sa.Column(sa.String(6))  # TODO: REDUNDANT
     mobile_pin = sa.Column(sa.String(16))
@@ -128,7 +80,7 @@ class User(BaseModel):
         server_default=WIBNow(),
         nullable=False,
     )
-    acfct = sa.Column(sa.Integer())
+    acfct = sa.Column("acfct", sa.Integer(), nullable=False)
     flag1 = sa.Column(sa.String(15))
     flag2 = sa.Column(sa.String(15))
     temps = sa.Column(sa.String(100))

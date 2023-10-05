@@ -35,7 +35,7 @@ class BaseModel(db.Model):
         server_default=WIBNow(),
         nullable=False,
     )
-    updated_by = sa.Column(sa.String(), default=None)
+    updated_by = sa.Column(sa.String(20), default=None)
     updated_at = sa.Column(
         sa.DateTime(timezone=True),
         default=wibnow(),

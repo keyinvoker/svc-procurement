@@ -3,7 +3,11 @@ from sqlalchemy.orm import backref, column_property
 from sqlalchemy.sql import case
 
 from eproc import db
-from eproc.models.base_model import BaseModel
+from eproc.models.base_model import (
+    BaseModel,
+    WIBNow,
+    wibnow
+)
 
 
 class Employee(BaseModel):
@@ -18,18 +22,23 @@ class Employee(BaseModel):
     department_id = sa.Column(sa.String(20), sa.ForeignKey("departments.id"), nullable=False)
     postn = sa.Column("postn", sa.String(20), nullable=False)  # TODO: Foreign Key (?)
     coacd = sa.Column("coacd", sa.String(20))  # TODO: Foreign Key
-    full_name = sa.Column(sa.String(50))
-    email = sa.Column(sa.String(200))
-    phone_number = sa.Column(sa.String(20))
-    identity_number = sa.Column(sa.String(20))
-    gender = sa.Column(sa.String(20))
-    join_date = sa.Column(sa.DateTime())
-    leave_date = sa.Column(sa.DateTime())
     first_approver_id = sa.Column(sa.String(10))
     second_approver_id = sa.Column(sa.String(10))
     third_approver_id = sa.Column(sa.String(10))
     group_id = sa.Column(sa.String(20), nullable=False)
     untid = sa.Column("untid", sa.String(20), nullable=False)
+    full_name = sa.Column(sa.String(50))
+    email = sa.Column(sa.String(200))
+    phone_number = sa.Column(sa.String(20))
+    identity_number = sa.Column(sa.String(20))
+    gender = sa.Column(sa.String(20))
+    join_date = sa.Column(
+        sa.DateTime(timezone=True),
+        default=wibnow(),
+        server_default=WIBNow(),
+        nullable=False,
+    )
+    leave_date = sa.Column(sa.DateTime(timezone=True))
     is_active = sa.Column(sa.Boolean(), nullable=False)
 
     entity = db.relationship(

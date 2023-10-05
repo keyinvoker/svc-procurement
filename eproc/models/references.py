@@ -10,7 +10,7 @@ class Reference(BaseModel):
     __tablename__ = "references"
 
     id = sa.Column(sa.Integer(), primary_key=True)
-    reference_id = sa.Column("refid", sa.String())  # TODO: Foreign Key to what table?
+    refid = sa.Column("refid", sa.String())  # TODO: Foreign Key to what table?
     cdval = sa.Column("cdval", sa.Numeric())
     cdtxt = sa.Column("cdtxt", sa.String())
     description = sa.Column("descr", sa.String(1000))

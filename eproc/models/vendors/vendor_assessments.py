@@ -1,6 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import backref, column_property
-from sqlalchemy.sql import case
+from sqlalchemy.orm import backref
 
 from eproc import db
 from eproc.models.base_model import BaseModel
@@ -9,12 +8,11 @@ from eproc.models.base_model import BaseModel
 class VendorAssessment(BaseModel):
     __tablename__ = "vendor_assessments"
 
-    id = sa.Column("apvno", sa.Integer(), primary_key=True)
-    vendor_id = sa.Column(sa.String(), sa.ForeignKey("vendors.id"), nullable=False)
-    assessor_user_id = sa.Column(sa.String(), sa.ForeignKey("users.id"), nullable=False)
-    reference_id = sa.Column("stats", sa.Integer(), sa.ForeignKey("references.id"))
-    assessment_notes = sa.Column("apvnt", sa.String(5000))
-    # reviewed_at = sa.Column(sa.DateTime(), nullable=False)  # TODO: pake created_at aja
+    id = sa.Column(sa.BigInteger(), primary_key=True)
+    vendor_id = sa.Column(sa.String(24), sa.ForeignKey("vendors.id"), nullable=False)
+    assessor_user_id = sa.Column(sa.String(20), sa.ForeignKey("users.id"), nullable=False)
+    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False)
+    assessment_notes = sa.Column(sa.String(5000), nullable=False)
 
     vendor = db.relationship(
         "Vendor", backref=backref(__tablename__, uselist=False)
