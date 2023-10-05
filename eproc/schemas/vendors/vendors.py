@@ -45,7 +45,7 @@ class VendorAutoSchema(VendorDetailAutoSchema):
             "jamsostek_file",
             "business_establishment_deed_file",
             "siup_file",
-            "nbnib_file",
+            "nib_file",
             "siujk_file",
             "sbujk_file",
             "iup_file",

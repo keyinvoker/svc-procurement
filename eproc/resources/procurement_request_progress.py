@@ -19,11 +19,11 @@ class ProcurementRequestProgressResource(Resource):
                 (
                     SELECT
                         CASE 
-                            WHEN i.trnno IS NULL THEN 'In Process'
+                            WHEN i.id IS NULL THEN 'In Process'
                             ELSE 'Final'
                         END AS status
                     FROM procurement_requests AS pr
-                    LEFT JOIN inventories AS i ON i.dref1 = pr.docno
+                    LEFT JOIN inventories AS i ON i.dref1 = pr.document_number
                 )
                 GROUP BY status;
             """)

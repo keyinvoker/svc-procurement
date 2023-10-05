@@ -175,7 +175,7 @@ class Vendor(BaseModel):
     orgct = sa.Column("orgct", sa.String(10))
     qsysm = sa.Column("qsysm", sa.String(255))
     qsysa = sa.Column("qsysa", sa.String(255))
-    is_agr = sa.Column("isagr", sa.Boolean(), default=True, server_default="true")
+    is_agr = sa.Column(sa.Boolean(), default=True, server_default="true")
     grpcd = sa.Column("grpcd", sa.String(10))
 
     flag1 = sa.Column(sa.String(15))
