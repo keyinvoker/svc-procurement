@@ -38,9 +38,9 @@ class PurchaseOrder(BaseModel):
     paynt = sa.Column("paynt", sa.String(200), nullable=False)
 
     sqenc = sa.Column("sqenc", sa.Integer(), nullable=False)
-    dref1 = sa.Column("dref1", sa.String(100))
-    dref2 = sa.Column("dref2", sa.String(100))
-    dref3 = sa.Column("dref3", sa.String(100))
+    dref1 = sa.Column(sa.String(100))
+    dref2 = sa.Column(sa.String(100))
+    dref3 = sa.Column(sa.String(100))
     flag1 = sa.Column(sa.String(15))
     flag2 = sa.Column(sa.String(15))
     temps = sa.Column(sa.String(100))

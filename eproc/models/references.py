@@ -16,9 +16,9 @@ class Reference(BaseModel):
     description = sa.Column("descr", sa.String(1000))
     zordr = sa.Column("zordr", sa.Integer())
     rsign = sa.Column("rsign", sa.String(), nullable=True)
-    dref1 = sa.Column("dref1", sa.String())
-    dref2 = sa.Column("dref2", sa.String())
-    dref3 = sa.Column("dref3", sa.String())
+    dref1 = sa.Column(sa.String())
+    dref2 = sa.Column(sa.String())
+    dref3 = sa.Column(sa.String())
 
     isact = sa.Column("isact", sa.Integer(), default=0)  # TODO: change to boolean
     is_active = column_property(
