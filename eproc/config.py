@@ -5,18 +5,21 @@ from logging.config import dictConfig
 from eproc.tools.env import Env
 
 
-def _get_log_filename(log_filename: str):
-    here = os.path.abspath(os.path.dirname(__file__))
-    log_base_dir = os.path.join(here, os.pardir, "procurement/logs")
-    if not os.path.exists(log_base_dir):
-        os.makedirs(log_base_dir)
-    return os.path.join(log_base_dir, f"{log_filename}.log")
-
 load_dotenv(find_dotenv())
 
 env = Env()
-
 APP_NAME = env.string("APP_NAME", "Anagata e-Procurement")
+FLASK_APP = env.string("FLASK_APP", "eproc")
+
+
+def _get_log_filename(log_filename: str) -> str:
+    here = os.path.abspath(os.path.dirname(__file__))
+    log_base_dir = os.path.join(here, os.pardir, f"{FLASK_APP}/logs")
+
+    if not os.path.exists(log_base_dir):
+        os.makedirs(log_base_dir)
+
+    return os.path.join(log_base_dir, f"{log_filename}.log")
 
 
 class Config:
