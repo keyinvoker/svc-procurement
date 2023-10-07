@@ -25,12 +25,16 @@ class EmployeeController:
         SecondApprover = aliased(Employee)
         # ThirdApprover = aliased(Employee)
 
+        from eproc import app_logger
+        app_logger.info(f"Employee:get_detail :: id: {id}")
+
         employee: Employee = (
             Employee.query
             .with_entities(
                 Employee.id,
                 Employee.full_name,
                 Employee.email,
+                Employee.phone_number,
                 Employee.branch_id,
                 Branch.description.label("branch_name"),
                 Employee.directorate_id,
@@ -53,7 +57,7 @@ class EmployeeController:
                 Employee.updated_by,
             )
             .join(FirstApprover, FirstApprover.id == Employee.first_approver_id)
-            .join(SecondApprover, SecondApprover.id == Employee.second_approver_id)
+            # .join(SecondApprover, SecondApprover.id == Employee.second_approver_id)  # TODO: FIX - if second_approver is null, then 404
             # .join(ThirdApprover, ThirdApprover.id == Employee.third_approver_id)
             .join(Branch, Branch.id == Employee.branch_id)
             .join(Directorate, Directorate.id == Employee.directorate_id)

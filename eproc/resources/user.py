@@ -56,6 +56,44 @@ class UserResource(Resource):
             return make_json_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
+        
+    def post(self) -> Response:
+        try:
+            from eproc import app_logger
+            app_logger.info(request.get_json())
+            return make_json_response(
+                http_status=HTTPStatus.OK,
+                message="",
+                data=request.get_json()
+            )
+            input_data = request.get_json()
+            app_logger.info(f"input_data :: {input_data}")
+            # schema = UserPostInputSchema()
+
+            is_valid, response, payload = schema_validate_and_load(
+                schema=schema,
+                payload=input_data,
+            )
+            if not is_valid:
+                return response
+
+            app_logger.info(f"payload :: {payload}")
+
+            status = UserController().login(
+                username=payload["username"],
+                password=payload["password"],
+            )
+
+            # return make_json_response(
+            #     http_status=HTTPStatus.OK,
+            #     message="",
+            #     data=request.get_json()
+            # )
+        except Exception as e:
+            error_logger.error(f"Error on User [POST] :: {e}, {format_exc()}")
+            return make_json_response(
+                HTTPStatus.INTERNAL_SERVER_ERROR
+            )
 
 
 class UserDetailResource(Resource):
