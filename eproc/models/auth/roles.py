@@ -1,9 +1,4 @@
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import BIT
-from sqlalchemy.orm import backref, column_property
-from sqlalchemy.sql import case
-from sqlalchemy.ext.hybrid import hybrid_property
-
 
 from eproc.models.base_model import BaseModel
 

@@ -4,8 +4,7 @@ from eproc.models.masters.regionals import Regional
 
 # Auth
 from eproc.models.auth.roles import Role
-# from eproc.models.auth.permissions import Permission
-# from eproc.models.auth.roles_permissions import RolePermission
+from eproc.models.auth.users_roles import UserRole
 
 # Users
 from eproc.models.users.users import User
