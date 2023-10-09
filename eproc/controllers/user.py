@@ -72,7 +72,7 @@ class UserController:
 
         id_list: List[str] = kwargs.get("id_list")
         search_query: str = kwargs.get("search_query").strip()
-        limit: int = kwargs.get("limit")
+        limit: Optional[int] = kwargs.get("limit")
         offset: int = kwargs.get("offset")
 
         FirstApprover = aliased(User)

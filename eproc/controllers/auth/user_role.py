@@ -5,19 +5,18 @@ from typing import List, Optional, Tuple
 from eproc import error_logger
 from eproc.models.auth.roles import Role
 from eproc.models.auth.users_roles import UserRole
-from eproc.schemas.auth.users_roles import UserRoleSchema
+from eproc.schemas.auth.users_roles import UserRolesSchema
 
 
 class UserRoleController:
     def __init__(self, **kwargs):
         self.model = UserRole
-        self.schema = UserRoleSchema
-        self.many_schema = UserRoleSchema(many=True)
+        self.schema = UserRolesSchema()
 
     def get_list(
         self,
         **kwargs
-    ) -> Tuple[HTTPStatus, str, List[Optional[dict]], int]:
+    ) -> Tuple[HTTPStatus, str, Optional[dict]]:
         user_id: int = kwargs.get("user_id")
 
         query = (
@@ -32,21 +31,21 @@ class UserRoleController:
             .group_by(UserRole.user_id)
         )
 
-        total = query.count()
-
-        results: List[UserRole] = query.all()
-        if not results:
+        result = query.first()
+        if not result:
             return (
                 HTTPStatus.NOT_FOUND,
                 "User Roles tidak ditemukan.",
-                [],
-                total
+                None
             )
-        data_list = self.many_schema.dump(results)
+
+        total = len(result.role_name_list)
+
+        data = self.schema.dump(result)
+        data["total"] = total
 
         return (
             HTTPStatus.OK,
             "User Roles ditemukan.",
-            data_list,
-            total
+            data
         )

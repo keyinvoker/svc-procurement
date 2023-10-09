@@ -1,10 +1,8 @@
 from marshmallow import EXCLUDE, Schema, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from eproc.models.auth.users_roles import UserRole
 
-
-class UserRoleSchema(SQLAlchemyAutoSchema):
+class UserRolesSchema(SQLAlchemyAutoSchema):
     user_id = fields.String()
     role_name_list = fields.List(fields.String())
 

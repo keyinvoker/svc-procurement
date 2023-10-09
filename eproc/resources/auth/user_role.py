@@ -22,13 +22,8 @@ class UserRoleResource(Resource):
                 return response
 
             (
-                http_status, message, data_list, total
+                http_status, message, data
             ) = UserRoleController().get_list(**payload)
-
-            data = dict(
-                data=data_list,
-                total=total
-            )
 
             return make_json_response(
                 http_status=http_status,

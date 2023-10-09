@@ -17,7 +17,7 @@ class ItemController:
         item_id_list: List[int] = kwargs.get("item_id_list")
         category_list: List[str] = kwargs.get("category_list")
         search_query: str = kwargs.get("search_query").strip()
-        limit: int = kwargs.get("limit")
+        limit: Optional[int] = kwargs.get("limit")
         offset: int = kwargs.get("offset")
 
         item_query = Item.query.filter(Item.is_deleted.is_(False))
