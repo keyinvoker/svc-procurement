@@ -11,7 +11,7 @@ class VendorAssessment(BaseModel):
     id = sa.Column(sa.BigInteger(), primary_key=True)
     vendor_id = sa.Column(sa.String(24), sa.ForeignKey("vendors.id"), nullable=False)
     assessor_user_id = sa.Column(sa.String(20), sa.ForeignKey("users.id"), nullable=False)
-    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False)
+    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
     assessment_notes = sa.Column(sa.String(5000), nullable=False)
 
     vendor = db.relationship(

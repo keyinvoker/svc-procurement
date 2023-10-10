@@ -15,7 +15,7 @@ class VendorRFQ(BaseModel):
     id = sa.Column(sa.BigInteger(), primary_key=True)
     vendor_id = sa.Column(sa.String(20), sa.ForeignKey("vendors.id"), nullable=False)
     fcoid = sa.Column(sa.String())  # TODO: Foreign Key
-    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False)
+    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
     document_number = sa.Column(sa.String(20))
     transaction_date = sa.Column(
         sa.DateTime(timezone=True),

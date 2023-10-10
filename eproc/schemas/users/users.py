@@ -24,9 +24,9 @@ class UserDetailSchema(SQLAlchemyAutoSchema):
     second_approver_id = fields.String()
     second_approver_full_name = fields.String()
     second_approver_is_active = fields.Boolean()
-    # third_approver_id = fields.String()
-    # third_approver_full_name = fields.String()
-    # third_approver_is_active = fields.Boolean()
+    third_approver_id = fields.String()
+    third_approver_full_name = fields.String()
+    third_approver_is_active = fields.Boolean()
 
     class Meta:
         model = User
@@ -63,9 +63,9 @@ class UserGetInputSchema(Schema):
 
 
 class UserPostInputSchema(Schema):
-    id = fields.String(required=True)
+    id = fields.String(validate=validate.Length(max=24), required=True)
     full_name = fields.String(required=True)
-    email = fields.String(required=True)
+    email = fields.Email(required=True)
     phone_number = fields.String(required=True)
     first_approver_id = fields.String(required=True)
     role_id_list = fields.List(

@@ -22,7 +22,7 @@ class ProcurementRequest(BaseModel):
     dapid = sa.Column("dapid", sa.String(), nullable=False)  # TODO: Foreign Key
     coacd = sa.Column("coacd", sa.String(20))  # TODO: Foreign Key
     entby = sa.Column("entby", sa.String(), nullable=False)  # TODO: Foreign Key
-    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False)
+    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
     requester_user_id = sa.Column(sa.String(), sa.ForeignKey("users.id"), nullable=False)
     transaction_date = sa.Column(
         sa.DateTime(timezone=True),

@@ -70,6 +70,9 @@ class UserResource(Resource):
             if not is_valid:
                 return response
 
+            from eproc import app_logger
+            app_logger.info(f"User [POST] :: payload: {payload}")
+
             http_status, message = UserController().register_user(**payload)
 
             return make_json_response(

@@ -10,7 +10,7 @@ class Vendor(BaseModel):
     __tablename__ = "vendors"
 
     id = sa.Column(sa.String(20), primary_key=True)
-    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False)
+    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
 
     # region: General Information
     name = sa.Column(sa.String(50), nullable=False)

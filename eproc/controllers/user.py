@@ -7,7 +7,7 @@ from sqlalchemy.orm import aliased
 from traceback import format_exc
 from typing import List, Optional, Tuple
 
-from eproc import error_logger
+from eproc import app_logger, error_logger
 from eproc.models.auth.users_roles import UserRole
 from eproc.models.references import Reference
 from eproc.models.users.employees import Employee
@@ -145,7 +145,10 @@ class UserController:
         )
 
     def register_user(self, **kwargs) -> Tuple[HTTPStatus, str]:
-        user_id = kwargs.get("user_id")
+        user_id = kwargs.get("id")
+        email = kwargs.get("email")
+        phone_number = kwargs.get("phone_number")
+
         user = (
             User.query
             .filter(User.id == user_id)
@@ -167,9 +170,10 @@ class UserController:
             .first()
         )
         if not first_approver:
-            return HTTPStatus.BAD_REQUEST, f"Tidak ditemukan pegawai yang ditunjuk sebagai approver dengan id: {first_approver_id}"
-
-        kwargs["username"] = user_id
+            return (
+                HTTPStatus.BAD_REQUEST,
+                f"Tidak ditemukan pegawai yang ditunjuk sebagai approver dengan id: {first_approver_id}"
+            )
 
         # Define the characters you want to include in the password
         characters = string.ascii_letters + string.digits + "!#$%&@"
@@ -180,11 +184,18 @@ class UserController:
             .hexdigest()
             .upper()
         )
-        kwargs["password"] = hashed_password
-        kwargs["password_length"] = password_length  # TODO: REDUNDANT: just use validation to prevent <12-char. pass
 
         try:
-            user = User(**kwargs).save()
+            data = dict()
+            data["id"] = user_id
+            data["username"] = user_id
+            data["email"] = email
+            data["phone_number"] = phone_number
+            data["password"] = hashed_password
+            data["password_length"] = password_length
+            data["first_approver_id"] = first_approver_id
+            data["is_head_office_user"] = True
+            user = User(**data).save()
         except Exception as e:
             error_logger.error(f"Error on UserController:register_user() while saving user :: user_id: {user_id}, error: {e}, {format_exc()}")
             return (
@@ -192,22 +203,23 @@ class UserController:
                 f"Terjadi kesalahan saat menyimpan user dengan id: {user_id}"
             )
 
-        # TODO: email the user with the password
-        # TODO: how to safely pass the raw password from FE to API?
-        # (+) 1 workaround: generate the 12-character-long password right in the API
-        (kwargs.get("email"))
+        # TODO: email the user with the password and proposed roles and approver with the approval request
+        app_logger.info(f"UserController:register_user() :: creation email to be sent to: {email}")
+        app_logger.info(f"UserController:register_user() :: approval request email to be sent to: {first_approver.email}")
 
-        # TODO: email the first_approver with the approve request
-        (first_approver.email)
-
-        role_id_list = kwargs.get("role_id_list")
-        for role_id in role_id_list:
+        successful_role_id_list: list = kwargs.get("role_id_list").copy()
+        failed_role_id_list = list()
+        for role_id in kwargs.get("role_id_list"):
             try:
                 UserRole(user_id=user_id, role_id=role_id).save()
             except Exception as e:
+                successful_role_id_list.remove(role_id)
+                failed_role_id_list.append(role_id)
                 error_logger.error(f"Error on UserController:register_user() while saving roles :: user_id: {user_id}, role_id: {role_id}, error: {e}, {format_exc()}")
 
         return (
             HTTPStatus.CREATED,
-            f"Sukses menyimpan user dengan id: {user_id}",
+            f"Sukses menyimpan user dengan id: {user_id}. " +
+            f"Role id yang berhasil ditambahkan: {successful_role_id_list}, " +
+            f"yang gagal: {failed_role_id_list}."
         )

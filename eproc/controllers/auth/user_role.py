@@ -39,15 +39,12 @@ class UserRoleController:
                 dict(
                     user_id=user_id,
                     role_name_list=[],
-                    is_registered=False,
                     total=0
                 )
             )
 
-        total = len(result.role_name_list)
         data = self.schema.dump(result)
-        data["is_registered"] = True
-        data["total"] = total
+        data["total"] = len(result.role_name_list)
 
         return (
             HTTPStatus.OK,
