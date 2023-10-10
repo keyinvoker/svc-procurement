@@ -1,8 +1,11 @@
 from http import HTTPStatus
-from sqlalchemy import or_
+from sqlalchemy.sql import case, func, or_
 from sqlalchemy.orm import aliased
 from typing import List, Optional, Tuple
+from traceback import format_exc
 
+from eproc import error_logger
+from eproc.models.auth.users_roles import UserRole
 from eproc.models.companies.branches import Branch
 from eproc.models.companies.departments import Department
 from eproc.models.companies.directorates import Directorate
@@ -21,64 +24,93 @@ class EmployeeController:
         self.detail_schema = EmployeeDetailSchema()
     
     def get_detail(self, id: str) -> Tuple[HTTPStatus, str, Optional[dict]]:
-        FirstApprover = aliased(Employee)
-        SecondApprover = aliased(Employee)
-        # ThirdApprover = aliased(Employee)
+        try:
+            FirstApprover = aliased(Employee)
+            SecondApprover = aliased(Employee)
+            ThirdApprover = aliased(Employee)
 
-        from eproc import app_logger
-        app_logger.info(f"Employee:get_detail :: id: {id}")
-
-        employee: Employee = (
-            Employee.query
-            .with_entities(
-                Employee.id,
-                Employee.full_name,
-                Employee.email,
-                Employee.phone_number,
-                Employee.branch_id,
-                Branch.description.label("branch_name"),
-                Employee.directorate_id,
-                Directorate.description.label("directorate_name"),
-                Employee.division_id,
-                Division.description.label("division_name"),
-                Employee.department_id,
-                Department.description.label("department_name"),
-                FirstApprover.id.label("first_approver_id"),
-                FirstApprover.full_name.label("first_approver_full_name"),
-                FirstApprover.is_active.label("first_approver_is_active"),
-                SecondApprover.id.label("second_approver_id"),
-                SecondApprover.full_name.label("second_approver_full_name"),
-                SecondApprover.is_active.label("second_approver_is_active"),
-                # ThirdApprover.id.label("third_approver_id"),
-                # ThirdApprover.full_name.label("third_approver_full_name"),
-                # ThirdApprover.is_active.label("third_approver_is_active"),
-                Employee.is_active,
-                Employee.updated_at,
-                Employee.updated_by,
+            is_registered = (
+                case(
+                    (func.count(UserRole.role_id) > 0, True),
+                    else_=False
+                ).label("is_registered")
             )
-            .join(FirstApprover, FirstApprover.id == Employee.first_approver_id)
-            # .join(SecondApprover, SecondApprover.id == Employee.second_approver_id)  # TODO: FIX - if second_approver is null, then 404
-            # .join(ThirdApprover, ThirdApprover.id == Employee.third_approver_id)
-            .join(Branch, Branch.id == Employee.branch_id)
-            .join(Directorate, Directorate.id == Employee.directorate_id)
-            .join(Division, Division.id == Employee.division_id)
-            .join(Department, Department.id == Employee.department_id)
-            .filter(Employee.id == id)
-            .filter(Employee.is_deleted.is_(False))
-            .first()
-        )
-        
-        if not employee:
+
+            employee: Employee = (
+                Employee.query
+                .with_entities(
+                    Employee.id,
+                    Employee.full_name,
+                    Employee.email,
+                    Employee.phone_number,
+                    Employee.branch_id,
+                    Branch.description.label("branch_name"),
+                    Employee.directorate_id,
+                    Directorate.description.label("directorate_name"),
+                    Employee.division_id,
+                    Division.description.label("division_name"),
+                    Employee.department_id,
+                    Department.description.label("department_name"),
+                    FirstApprover.id.label("first_approver_id"),
+                    FirstApprover.full_name.label("first_approver_full_name"),
+                    FirstApprover.is_active.label("first_approver_is_active"),
+                    SecondApprover.id.label("second_approver_id"),
+                    SecondApprover.full_name.label("second_approver_full_name"),
+                    SecondApprover.is_active.label("second_approver_is_active"),
+                    ThirdApprover.id.label("third_approver_id"),
+                    ThirdApprover.full_name.label("third_approver_full_name"),
+                    ThirdApprover.is_active.label("third_approver_is_active"),
+                    Employee.is_active,
+                    Employee.updated_at,
+                    Employee.updated_by,
+                    is_registered,
+                )
+                .outerjoin(FirstApprover, FirstApprover.id == Employee.first_approver_id)
+                .outerjoin(SecondApprover, SecondApprover.id == Employee.second_approver_id)  # TODO: FIX - if second_approver is null, then 404
+                .outerjoin(ThirdApprover, ThirdApprover.id == Employee.third_approver_id)
+                .join(Branch, Branch.id == Employee.branch_id)
+                .join(Directorate, Directorate.id == Employee.directorate_id)
+                .join(Division, Division.id == Employee.division_id)
+                .join(Department, Department.id == Employee.department_id)
+                .outerjoin(UserRole, UserRole.user_id == Employee.id)
+                .filter(Employee.id == id)
+                .filter(Employee.is_deleted.is_(False))
+                .group_by(
+                    Employee.id,
+                    Branch.description,
+                    Directorate.description,
+                    Division.description,
+                    Department.description,
+                    FirstApprover.id,
+                    FirstApprover.full_name,
+                    FirstApprover.is_active,
+                    SecondApprover.id,
+                    SecondApprover.full_name,
+                    SecondApprover.is_active,
+                    ThirdApprover.id,
+                    ThirdApprover.full_name,
+                    ThirdApprover.is_active,
+                )
+                .first()
+            )
+            
+            if not employee:
+                return (
+                    HTTPStatus.NOT_FOUND,
+                    "Pegawai tidak ditemukan.",
+                    None
+                )
+
+            employee_data = self.detail_schema.dump(employee)
+
+            return HTTPStatus.OK, "Pegawai ditemukan.", employee_data
+        except Exception as e:
+            error_logger.error(f"Error on EmployeeController:get_detail() :: {e}, {format_exc()}")
             return (
-                HTTPStatus.NOT_FOUND,
-                "Employee tidak ditemukan.",
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                "Terjadi kegagalan saat mengambil data pegawai.",
                 None
             )
-        print(f"directorate_name :: {employee.directorate_name}")
-
-        employee_data = self.detail_schema.dump(employee)
-
-        return HTTPStatus.OK, "Employee ditemukan.", employee_data
 
     def get_list(
         self,
@@ -136,7 +168,7 @@ class EmployeeController:
         if not employee_list:
             return (
                 HTTPStatus.NOT_FOUND,
-                "Employee tidak ditemukan.",
+                "Pegawai tidak ditemukan.",
                 [],
                 total
             )
@@ -144,7 +176,7 @@ class EmployeeController:
 
         return (
             HTTPStatus.OK,
-            "Employee ditemukan.",
+            "Pegawai ditemukan.",
             employee_data_list,
             total
         )

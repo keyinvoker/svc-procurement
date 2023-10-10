@@ -52,16 +52,22 @@ class EmployeeGetInputSchema(Schema):
 
 
 class EmployeeDetailSchema(EmployeeAutoSchema):
+    id = fields.String()
+    branch_name = fields.String()
+    directorate_name = fields.String()
+    division_name = fields.String()
+    department_name = fields.String()
     first_approver_id = fields.String()
     first_approver_full_name = fields.String()
     first_approver_is_active = fields.Boolean()
     second_approver_id = fields.String()
     second_approver_full_name = fields.String()
     second_approver_is_active = fields.Boolean()
-    # third_approver_id = fields.String()
-    # third_approver_full_name = fields.String()
-    # third_approver_is_active = fields.Boolean()
-    branch_name = fields.String()
-    directorate_name = fields.String()
-    division_name = fields.String()
-    department_name = fields.String()
+    third_approver_id = fields.String()
+    third_approver_full_name = fields.String()
+    third_approver_is_active = fields.Boolean()
+    is_registered = fields.Boolean()
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE

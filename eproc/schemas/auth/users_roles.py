@@ -4,6 +4,7 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 class UserRolesSchema(SQLAlchemyAutoSchema):
     user_id = fields.String()
+    is_registered = fields.Boolean()
     role_name_list = fields.List(fields.String())
 
     class Meta:

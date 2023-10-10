@@ -1,6 +1,7 @@
-from marshmallow import EXCLUDE, Schema, fields
+from marshmallow import EXCLUDE, Schema, fields, validate
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
+from eproc.constants import ALL_ROLE_ID_LIST
 from eproc.models.users.users import User
 from eproc.schemas.references import ReferenceAutoSchema
 
@@ -54,6 +55,22 @@ class UserGetInputSchema(Schema):
         allow_none=True,
         dump_default=0,
         load_default=0,
+    )
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
+class UserPostInputSchema(Schema):
+    id = fields.String(required=True)
+    full_name = fields.String(required=True)
+    email = fields.String(required=True)
+    phone_number = fields.String(required=True)
+    first_approver_id = fields.String(required=True)
+    role_id_list = fields.List(
+        fields.String(validate=validate.OneOf(ALL_ROLE_ID_LIST)),
+        required=True
     )
 
     class Meta:

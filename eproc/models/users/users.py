@@ -1,6 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import backref, column_property
-from sqlalchemy.sql import case
+from sqlalchemy.orm import backref
 
 from eproc import db
 from eproc.models.base_model import (
@@ -36,7 +35,7 @@ class User(BaseModel):
     is_head_office_user = sa.Column(sa.Boolean(), nullable=False)
     is_kpw_user = sa.Column(sa.Boolean(), nullable=False)
     is_branch_user = sa.Column(sa.Boolean(), nullable=False)
-    is_approved = sa.Column(sa.Boolean(), nullable=False)
+    is_approved = sa.Column(sa.Boolean(), nullable=False, default=False, server_default="false")
     is_locked = sa.Column(sa.Boolean(), nullable=False)
     is_phone_number_confirmed = sa.Column(sa.Boolean(), nullable=False)
     remember_me = sa.Column(sa.Boolean(), nullable=False)
@@ -85,7 +84,7 @@ class User(BaseModel):
     flag2 = sa.Column(sa.String(15))
     temps = sa.Column(sa.String(100))
 
-    is_active = sa.Column(sa.Boolean(), nullable=False)
+    is_active = sa.Column(sa.Boolean(), nullable=False, default=False, server_default="false")
 
     reference = db.relationship(
         "Reference", backref=backref(__tablename__, uselist=False)

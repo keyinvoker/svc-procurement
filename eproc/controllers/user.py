@@ -1,9 +1,16 @@
+import secrets
+import string
+from hashlib import md5
 from http import HTTPStatus
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
+from traceback import format_exc
 from typing import List, Optional, Tuple
 
+from eproc import error_logger
+from eproc.models.auth.users_roles import UserRole
 from eproc.models.references import Reference
+from eproc.models.users.employees import Employee
 from eproc.models.users.users import User
 from eproc.schemas.users.users import (
     UserAutoSchema,
@@ -20,7 +27,7 @@ class UserController:
     def get_detail(self, id: str) -> Tuple[HTTPStatus, str, Optional[dict]]:
         FirstApprover = aliased(User)
         SecondApprover = aliased(User)
-        # ThirdApprover = aliased(User)
+        ThirdApprover = aliased(User)
 
         user: User = (
             User.query
@@ -36,9 +43,9 @@ class UserController:
                 SecondApprover.id.label("second_approver_id"),
                 SecondApprover.full_name.label("second_approver_full_name"),
                 SecondApprover.is_active.label("second_approver_is_active"),
-                # ThirdApprover.id.label("third_approver_id"),
-                # ThirdApprover.full_name.label("third_approver_full_name"),
-                # ThirdApprover.is_active.label("third_approver_is_active"),
+                ThirdApprover.id.label("third_approver_id"),
+                ThirdApprover.full_name.label("third_approver_full_name"),
+                ThirdApprover.is_active.label("third_approver_is_active"),
                 User.is_active,
                 User.is_locked,
                 User.is_anonymous,
@@ -46,9 +53,9 @@ class UserController:
                 User.updated_at,
                 User.updated_by,
             )
-            .join(FirstApprover, FirstApprover.id == User.first_approver_id)
-            .join(SecondApprover, SecondApprover.id == User.second_approver_id)
-            # .join(ThirdApprover, ThirdApprover.id == User.third_approver_id)
+            .outerjoin(FirstApprover, FirstApprover.id == User.first_approver_id)
+            .outerjoin(SecondApprover, SecondApprover.id == User.second_approver_id)
+            .outerjoin(ThirdApprover, ThirdApprover.id == User.third_approver_id)
             .filter(User.id == id)
             .filter(User.is_deleted.is_(False))
             .first()
@@ -94,7 +101,7 @@ class UserController:
                 User.updated_by,
                 Reference.description.label("status"),
             )
-            .join(FirstApprover, FirstApprover.id == User.first_approver_id)
+            .outerjoin(FirstApprover, FirstApprover.id == User.first_approver_id)
             .join(Reference, Reference.id == User.reference_id)
             .filter(User.is_deleted.is_(False))
         )
@@ -135,4 +142,72 @@ class UserController:
             "User ditemukan.",
             user_data_list,
             total
+        )
+
+    def register_user(self, **kwargs) -> Tuple[HTTPStatus, str]:
+        user_id = kwargs.get("user_id")
+        user = (
+            User.query
+            .filter(User.id == user_id)
+            .filter(User.is_deleted.is_(False))
+            .first()
+        )
+        if user:
+            return (
+                HTTPStatus.CONFLICT,
+                f"Sudah ada user dengan id: {user_id}"
+            )
+
+        # TODO? ini approver harus dari tabel `employee` ?
+        first_approver_id = kwargs.get("first_approver_id")
+        first_approver: Employee = (
+            Employee.query
+            .filter(Employee.id == first_approver_id)
+            .filter(Employee.is_deleted.is_(False))
+            .first()
+        )
+        if not first_approver:
+            return HTTPStatus.BAD_REQUEST, f"Tidak ditemukan pegawai yang ditunjuk sebagai approver dengan id: {first_approver_id}"
+
+        kwargs["username"] = user_id
+
+        # Define the characters you want to include in the password
+        characters = string.ascii_letters + string.digits + "!#$%&@"
+        password_length = 12
+        raw_password = "".join(secrets.choice(characters) for _ in range(password_length))
+        hashed_password = (
+            md5(raw_password.encode("utf-8"))
+            .hexdigest()
+            .upper()
+        )
+        kwargs["password"] = hashed_password
+        kwargs["password_length"] = password_length  # TODO: REDUNDANT: just use validation to prevent <12-char. pass
+
+        try:
+            user = User(**kwargs).save()
+        except Exception as e:
+            error_logger.error(f"Error on UserController:register_user() while saving user :: user_id: {user_id}, error: {e}, {format_exc()}")
+            return (
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                f"Terjadi kesalahan saat menyimpan user dengan id: {user_id}"
+            )
+
+        # TODO: email the user with the password
+        # TODO: how to safely pass the raw password from FE to API?
+        # (+) 1 workaround: generate the 12-character-long password right in the API
+        (kwargs.get("email"))
+
+        # TODO: email the first_approver with the approve request
+        (first_approver.email)
+
+        role_id_list = kwargs.get("role_id_list")
+        for role_id in role_id_list:
+            try:
+                UserRole(user_id=user_id, role_id=role_id).save()
+            except Exception as e:
+                error_logger.error(f"Error on UserController:register_user() while saving roles :: user_id: {user_id}, role_id: {role_id}, error: {e}, {format_exc()}")
+
+        return (
+            HTTPStatus.CREATED,
+            f"Sukses menyimpan user dengan id: {user_id}",
         )

@@ -11,6 +11,7 @@ from eproc.schemas.users.employees import EmployeeGetInputSchema
 from eproc.schemas.users.users import (
     UserDetailGetInputSchema,
     UserGetInputSchema,
+    UserPostInputSchema,
 )
 from eproc.tools.response import make_json_response
 from eproc.tools.validation import schema_validate_and_load
@@ -59,16 +60,8 @@ class UserResource(Resource):
         
     def post(self) -> Response:
         try:
-            from eproc import app_logger
-            app_logger.info(request.get_json())
-            return make_json_response(
-                http_status=HTTPStatus.OK,
-                message="",
-                data=request.get_json()
-            )
             input_data = request.get_json()
-            app_logger.info(f"input_data :: {input_data}")
-            # schema = UserPostInputSchema()
+            schema = UserPostInputSchema()
 
             is_valid, response, payload = schema_validate_and_load(
                 schema=schema,
@@ -77,18 +70,12 @@ class UserResource(Resource):
             if not is_valid:
                 return response
 
-            app_logger.info(f"payload :: {payload}")
+            http_status, message = UserController().register_user(**payload)
 
-            status = UserController().login(
-                username=payload["username"],
-                password=payload["password"],
+            return make_json_response(
+                http_status=http_status,
+                message=message,
             )
-
-            # return make_json_response(
-            #     http_status=HTTPStatus.OK,
-            #     message="",
-            #     data=request.get_json()
-            # )
         except Exception as e:
             error_logger.error(f"Error on User [POST] :: {e}, {format_exc()}")
             return make_json_response(
