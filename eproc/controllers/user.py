@@ -2,12 +2,13 @@ import secrets
 import string
 from hashlib import md5
 from http import HTTPStatus
-from sqlalchemy import or_
+from sqlalchemy import insert, or_
 from sqlalchemy.orm import aliased
 from traceback import format_exc
 from typing import List, Optional, Tuple
 
 from eproc import app_logger, error_logger
+from eproc.models.base_model import session
 from eproc.models.auth.users_roles import UserRole
 from eproc.models.references import Reference
 from eproc.models.users.employees import Employee
@@ -211,8 +212,11 @@ class UserController:
         failed_role_id_list = list()
         for role_id in kwargs.get("role_id_list"):
             try:
-                UserRole(user_id=user_id, role_id=role_id).save()
+                # UserRole(user_id=user_id, role_id=role_id).save()
+                statement = insert(UserRole).values(user_id=user_id, role_id=role_id)
+                session.execute(statement)
             except Exception as e:
+                session.rollback()
                 successful_role_id_list.remove(role_id)
                 failed_role_id_list.append(role_id)
                 error_logger.error(f"Error on UserController:register_user() while saving roles :: user_id: {user_id}, role_id: {role_id}, error: {e}, {format_exc()}")
