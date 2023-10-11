@@ -12,6 +12,7 @@ from eproc.schemas.users.users import (
     UserDetailGetInputSchema,
     UserGetInputSchema,
     UserPostInputSchema,
+    UserResetPasswordInputSchema,
 )
 from eproc.tools.response import make_json_response
 from eproc.tools.validation import schema_validate_and_load
@@ -109,6 +110,31 @@ class UserDetailResource(Resource):
             )
         except Exception as e:
             error_logger.error(f"Error on User Detail [GET] :: {e}, {format_exc()}")
+            return make_json_response(
+                HTTPStatus.INTERNAL_SERVER_ERROR
+            )
+
+
+class UserResetPasswordResource(Resource):
+    def post(self) -> Response:
+        try:
+            input_data = request.get_json()
+            schema = UserResetPasswordInputSchema()
+
+            is_valid, response, payload = schema_validate_and_load(
+                schema=schema,
+                payload=input_data,
+            )
+            if not is_valid:
+                return response
+
+            http_status, message = UserController().reset_password(
+                payload["username"], payload["password"]
+            )
+            return make_json_response(http_status, message)
+
+        except Exception as e:
+            error_logger.error(f"Error on User Reset Password [POST] :: {e}, {format_exc()}")
             return make_json_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )

@@ -228,3 +228,30 @@ class UserController:
             f"Role id yang berhasil ditambahkan: {successful_role_id_list}, " +
             f"yang gagal: {failed_role_id_list}."
         )
+
+    def reset_password(self, username: str, password: str) -> Tuple[HTTPStatus, str]:
+        user: User = (
+            User.query
+            .filter(User.username == username)
+            .filter(User.is_deleted.is_(False))
+            .first()
+        )
+        if not user:
+            return (
+                HTTPStatus.NOT_FOUND,
+                f"Tidak ditemukan username: {username}"
+            )
+
+        hashed_password = (
+            md5(password.encode("utf-8"))
+            .hexdigest()
+            .upper()
+        )
+
+        user.password = hashed_password
+        user.save()
+
+        return (
+            HTTPStatus.OK,
+            "Password berhasil diatur ulang."
+        )

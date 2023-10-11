@@ -84,3 +84,12 @@ class UserDetailGetInputSchema(Schema):
     class Meta:
         ordered = True
         unknown = EXCLUDE
+
+
+class UserResetPasswordInputSchema(Schema):
+    username = fields.String(required=True)
+    password = fields.String(required=True, validate=validate.Length(min=12))
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
