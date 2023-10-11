@@ -105,6 +105,7 @@ class UserController:
             .outerjoin(FirstApprover, FirstApprover.id == User.first_approver_id)
             .join(Reference, Reference.id == User.reference_id)
             .filter(User.is_deleted.is_(False))
+            .order_by(User.id)
         )
 
         if id_list:
