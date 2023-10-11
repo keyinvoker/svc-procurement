@@ -11,6 +11,7 @@ class Vendor(BaseModel):
 
     id = sa.Column(sa.String(20), primary_key=True)
     reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
+    cost_center_id = sa.Column(sa.String(20), sa.ForeignKey("cost_centers.id"))
 
     # region: General Information
     name = sa.Column(sa.String(50), nullable=False)
@@ -170,7 +171,6 @@ class Vendor(BaseModel):
     vabss = sa.Column("vabss", sa.String(30))
     vakms = sa.Column("vakms", sa.String(30))
     fmads = sa.Column("fmads", sa.String(100))
-    coacd = sa.Column("coacd", sa.String(20))
     coaat = sa.Column("coaat", sa.String(20))
     orgct = sa.Column("orgct", sa.String(10))
     qsysm = sa.Column("qsysm", sa.String(255))
@@ -185,4 +185,7 @@ class Vendor(BaseModel):
 
     reference = db.relationship(
         "Reference", backref=backref(__tablename__, uselist=False)
+    )
+    cost_center = db.relationship(
+        "CostCenter", backref=backref(__tablename__, uselist=False)
     )

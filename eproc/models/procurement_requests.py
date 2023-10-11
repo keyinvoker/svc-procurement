@@ -20,7 +20,7 @@ class ProcurementRequest(BaseModel):
     division_id = sa.Column(sa.String(), sa.ForeignKey("divisions.id"), nullable=False)
     department_id = sa.Column(sa.String(), sa.ForeignKey("departments.id"), nullable=False)
     dapid = sa.Column("dapid", sa.String(), nullable=False)  # TODO: Foreign Key
-    coacd = sa.Column("coacd", sa.String(20))  # TODO: Foreign Key
+    cost_center_id = sa.Column(sa.String(20), sa.ForeignKey("cost_centers.id"))
     entby = sa.Column("entby", sa.String(), nullable=False)  # TODO: Foreign Key
     reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
     requester_user_id = sa.Column(sa.String(), sa.ForeignKey("users.id"), nullable=False)
@@ -74,4 +74,7 @@ class ProcurementRequest(BaseModel):
     )
     requester = db.relationship(
         "User", backref=backref(__tablename__, uselist=False)
+    )
+    cost_center = db.relationship(
+        "CostCenter", backref=backref(__tablename__, uselist=False)
     )

@@ -30,5 +30,9 @@ from eproc.models.price_comparisons import PriceComparison
 # Purchase Orders
 from eproc.models.purchase_orders.purchase_orders import PurchaseOrder
 
+# (ungrouped)
+from eproc.models.cost_centers import CostCenter
+from eproc.models.budgets import Budget
+
 # # Logs
 # from eproc.models.logs.audit_trails import AuditTrail

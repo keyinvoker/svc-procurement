@@ -35,7 +35,7 @@ class BaseModel(db.Model):
         server_default=WIBNow(),
         nullable=False,
     )
-    updated_by = sa.Column(sa.String(20), default=None)
+    updated_by = sa.Column(sa.String(20))
     updated_at = sa.Column(
         sa.DateTime(timezone=True),
         default=wibnow(),
@@ -45,7 +45,7 @@ class BaseModel(db.Model):
         server_onupdate=WIBNow(),
     )
     is_deleted = sa.Column(sa.Boolean(), default=False, server_default="false")
-    deleted_at = sa.Column(sa.DateTime(timezone=True), default=None)
+    deleted_at = sa.Column(sa.DateTime(timezone=True))
 
     def save(self) -> "BaseModel":
         try:
