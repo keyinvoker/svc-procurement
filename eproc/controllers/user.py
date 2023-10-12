@@ -79,6 +79,7 @@ class UserController:
     ) -> Tuple[HTTPStatus, str, List[Optional[dict]], int]:
 
         id_list: List[str] = kwargs.get("id_list")
+        status_id: int = kwargs.get("status_id")
         search_query: str = kwargs.get("search_query").strip()
         limit: Optional[int] = kwargs.get("limit")
         offset: int = kwargs.get("offset")
@@ -110,6 +111,9 @@ class UserController:
 
         if id_list:
             user_query = user_query.filter(User.id.in_(id_list))
+        
+        if status_id:
+            user_query = user_query.filter(User.reference_id == status_id)
         
         if search_query:
             user_query = (
@@ -251,7 +255,36 @@ class UserController:
         user.password = hashed_password
         user.save()
 
+        # TODO: send email to user with raw password
+
         return (
             HTTPStatus.OK,
             "Password berhasil diatur ulang."
+        )
+    
+    def unlock(self, username: str):
+        user: User = (
+            User.query
+            .filter(User.username == username)
+            .filter(User.is_deleted.is_(False))
+            .first()
+        )
+        if not user:
+            return (
+                HTTPStatus.NOT_FOUND,
+                f"Tidak ditemukan username: {username}"
+            )
+
+        if user.is_locked == False:
+            return (
+                HTTPStatus.BAD_REQUEST,
+                "User tidak terkunci."
+            )
+
+        user.is_locked = False
+        user.save()
+
+        return (
+            HTTPStatus.OK,
+            "User berhasil di-unlock."
         )

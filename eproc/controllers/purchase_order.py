@@ -23,7 +23,11 @@ class PurchaseOrderController:
         limit: Optional[int] = kwargs.get("limit")
         offset: int = kwargs.get("offset")
 
-        query = PurchaseOrder.query.filter(PurchaseOrder.is_deleted.is_(False))
+        query = (
+            PurchaseOrder.query
+            .filter(PurchaseOrder.is_deleted.is_(False))
+            .order_by(PurchaseOrder.transaction_date.desc())
+        )
 
         if id_list:
             query = (

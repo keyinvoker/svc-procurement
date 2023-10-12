@@ -56,6 +56,7 @@ class UserGetInputSchema(Schema):
         dump_default=0,
         load_default=0,
     )
+    status_id = fields.Integer(allow_none=True)
 
     class Meta:
         ordered = True
@@ -89,6 +90,13 @@ class UserDetailGetInputSchema(Schema):
 class UserResetPasswordInputSchema(Schema):
     username = fields.String(required=True)
     password = fields.String(required=True, validate=validate.Length(min=12))
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+class UserUnlockInputSchema(Schema):
+    username = fields.String(required=True)
 
     class Meta:
         ordered = True

@@ -7,20 +7,17 @@ from eproc.resources.user import (
     UserResource,
     UserDetailResource,
     UserResetPasswordResource,
+    UserUnlockResource,
 )
 
 user_blueprint = Blueprint("user_blueprint", __name__, url_prefix="/user")
-
 user_api = Api(user_blueprint)
-
 user_api.add_resource(UserResource, "")
 user_api.add_resource(UserDetailResource, "/details")
 user_api.add_resource(UserResetPasswordResource, "/reset-password")
-
+user_api.add_resource(UserUnlockResource, "/unlock")
 
 employee_blueprint = Blueprint("employee_blueprint", __name__, url_prefix="/employee")
-
 employee_api = Api(employee_blueprint)
-
 employee_api.add_resource(EmployeeResource, "")
 employee_api.add_resource(EmployeeDetailResource, "/details")

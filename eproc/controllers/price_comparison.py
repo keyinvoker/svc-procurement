@@ -23,7 +23,11 @@ class PriceComparisonController:
         limit: Optional[int] = kwargs.get("limit")
         offset: int = kwargs.get("offset")
 
-        query = PriceComparison.query.filter(PriceComparison.is_deleted.is_(False))
+        query = (
+            PriceComparison.query
+            .filter(PriceComparison.is_deleted.is_(False))
+            .order_by(PriceComparison.transaction_date.desc())
+        )
 
         if id_list:
             query = (
