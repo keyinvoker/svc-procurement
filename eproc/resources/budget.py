@@ -6,7 +6,10 @@ from traceback import format_exc
 from eproc import error_logger
 from eproc.controllers.budget import BudgetController
 from eproc.helpers.commons import split_string_into_list
-from eproc.schemas.budgets import BudgetGetInputSchema
+from eproc.schemas.budgets import (
+    BudgetGetInputSchema,
+    BudgetFileUploadInputSchema,
+)
 from eproc.tools.response import make_json_response
 from eproc.tools.validation import schema_validate_and_load
 
@@ -44,4 +47,27 @@ class BudgetResource(Resource):
             )
         except Exception as e:
             error_logger.error(f"Error on Budget [GET] :: {e}, {format_exc()}")
+            return make_json_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+
+class BudgetFileUploadResource(Resource):
+    def __init__(self):
+        self.controller = BudgetController()
+
+    def post(self):
+        try:
+            is_valid, response, payload = schema_validate_and_load(
+                schema=BudgetFileUploadInputSchema(),
+                payload=request.args.to_dict(),
+            )
+            if not is_valid:
+                return response
+
+            return make_json_response(
+                self.controller.file_upload(
+                    user_id=payload["user_id"],
+                    file=payload["file"],
+                )
+            )
+        except Exception as e:
+            error_logger.error(f"Error on Budget File Upload [POST] :: {e}, {format_exc()}")
             return make_json_response(HTTPStatus.INTERNAL_SERVER_ERROR)

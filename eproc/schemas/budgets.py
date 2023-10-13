@@ -41,3 +41,12 @@ class BudgetGetInputSchema(Schema):
     class Meta:
         ordered = True
         unknown = EXCLUDE
+
+
+class BudgetFileUploadInputSchema(Schema):
+    user_id = fields.String(required=True)
+    file = fields.Raw(type="file", required=True)
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE

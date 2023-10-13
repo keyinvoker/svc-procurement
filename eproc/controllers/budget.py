@@ -62,3 +62,16 @@ class BudgetController:
             data_list,
             total,
         )
+    
+    def file_upload(self, user_id: str, file) -> Tuple[HTTPStatus, str]:
+        try:
+            return (
+                HTTPStatus.OK,
+                "File terupload dengan sukses."
+            )
+        except Exception as e:
+            error_logger.error(f"Error on BudgetController:file_upload() :: file: {file}, error: {e}, {format_exc()}")
+            return (
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                "Terjadi kegagalan saat mengupload File."
+            )
