@@ -1,3 +1,4 @@
+import pandas as pd
 from http import HTTPStatus
 from sqlalchemy import or_
 from traceback import format_exc
@@ -27,14 +28,13 @@ class BudgetController:
             Budget.query
             .filter(Budget.is_deleted.is_(False))
             .order_by(Budget.year.desc())
-            # .order_by(Budget.updated_at.desc())
         )
 
         if cost_center_id:
-            query = query.filter(Budget.id == cost_center_id)
+            query = query.filter(Budget.cost_center_id == cost_center_id)
 
         if year:
-            query = query.filter(Budget.id == year)
+            query = query.filter(Budget.year == year)
 
         total = query.count()
 
@@ -52,8 +52,7 @@ class BudgetController:
                 [],
                 total,
             )
-        for i in result_list:
-            print(i.cost_center_id)
+
         data_list = self.many_schema.dump(result_list)
 
         return (
@@ -62,16 +61,47 @@ class BudgetController:
             data_list,
             total,
         )
-    
-    def file_upload(self, user_id: str, file) -> Tuple[HTTPStatus, str]:
+
+    def file_upload(self, user_id: str, df: pd.DataFrame) -> Tuple[HTTPStatus, str]:
         try:
+
+            for _, row in df.iterrows():
+                cost_center_id = row["cost center"]
+                year = row["year"]
+                amount = row["amount"]
+
+                budget: Budget = (
+                    Budget.query
+                    .filter(
+                        Budget.cost_center_id == cost_center_id,
+                        Budget.year == year,
+                        Budget.is_deleted.is_(False),
+                    )
+                    .first()
+                )
+
+                if budget:
+                    if budget.amount != amount:
+                        budget.amount = amount
+                        budget.upload_count += 1
+                        budget.updated_by = user_id
+                        budget.update()
+                else:
+                    Budget(
+                        cost_center_id=cost_center_id,
+                        year=year,
+                        amount=amount,
+                        upload_count=1,
+                        updated_by=user_id,
+                    ).save()
+
             return (
                 HTTPStatus.OK,
                 "File terupload dengan sukses."
             )
         except Exception as e:
-            error_logger.error(f"Error on BudgetController:file_upload() :: file: {file}, error: {e}, {format_exc()}")
+            error_logger.error(f"Error on BudgetController:file_upload() :: df: {df}, error: {e}, {format_exc()}")
             return (
                 HTTPStatus.INTERNAL_SERVER_ERROR,
-                "Terjadi kegagalan saat mengupload File."
+                "Terjadi kegagalan saat mengupload file."
             )

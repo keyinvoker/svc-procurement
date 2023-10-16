@@ -51,12 +51,18 @@ class BaseModel(db.Model):
         try:
             session.add(self)
             session.commit()
-            app_logger.info(f"Added to { self.__tablename__ } :: ID { self.id }")
+            try:
+                app_logger.info(f"Added to { self.__tablename__ } :: ID { self.id }")
+            except:
+                app_logger.info(f"Added to { self.__tablename__ } :: {self.__dict__}")  # TODO
             return self
 
         except Exception as e:
             session.rollback()
-            error_logger.error(f"Error while adding to { self.__tablename__ } :: ID { self.id }, error: {e}, {format_exc()}")
+            try:
+                error_logger.error(f"Error while adding to { self.__tablename__ } :: ID { self.id }, error: {e}, {format_exc()}")
+            except:
+                error_logger.error(f"Error while adding to { self.__tablename__ } :: x, error: {e}, {format_exc()}")  # TODO
             raise
 
     def bulk_save(self, objects: List[dict]) -> List[dict]:
@@ -79,23 +85,35 @@ class BaseModel(db.Model):
 
             session.add(self)
             session.commit()
-            app_logger.info(f"Deleted from { self.__tablename__ } :: ID { self.id }")
+            try:
+                app_logger.info(f"Deleted from { self.__tablename__ } :: ID { self.id }")
+            except:
+                app_logger.info(f"Deleted from { self.__tablename__ } :: {self.__dict__}")  # TODO
             return self
 
         except Exception as e:
             session.rollback()
-            error_logger.error(f"Error while deleting from { self.__tablename__ } :: ID { self.id }, error: {e}, {format_exc()}")
+            try:
+                error_logger.error(f"Error while deleting from { self.__tablename__ } :: ID { self.id }, error: {e}, {format_exc()}")
+            except:
+                error_logger.error(f"Error while deleting from { self.__tablename__ } :: x, error: {e}, {format_exc()}")  # TODO
             raise
     
     def hard_delete(self) -> "BaseModel":
         try:
             session.delete(self)
             session.commit()
-            app_logger.info(f"Hard-deleted from { self.__tablename__ } :: ID { self.id }")
+            try:
+                app_logger.info(f"Hard-deleted from { self.__tablename__ } :: ID { self.id }")
+            except:
+                app_logger.info(f"Hard-deleted from { self.__tablename__ } :: {self.__dict__}")  # TODO
 
         except Exception as e:
             session.rollback()
-            error_logger.error(f"Error while hard-deleting from { self.__tablename__ } :: ID { self.id }, error: {e}, {format_exc()}")
+            try:
+                error_logger.error(f"Error while hard-deleting from { self.__tablename__ } :: ID { self.id }, error: {e}, {format_exc()}")
+            except:
+                error_logger.error(f"Error while hard-deleting from { self.__tablename__ } :: x, error: {e}, {format_exc()}")  # TODO
             raise
 
     def bulk_delete(self, objects: List[dict]) -> List[dict]:
@@ -123,12 +141,18 @@ class BaseModel(db.Model):
         try:
             session.add(self)
             session.commit()
-            app_logger.info(f"Updated on { self.__tablename__ } :: ID { self.id }")
+            try:
+                app_logger.info(f"Updated on { self.__tablename__ } :: ID { self.id }")
+            except:
+                app_logger.info(f"Updated on { self.__tablename__ } :: {self.__dict__}")  # TODO
             return self
 
         except Exception as e:
             session.rollback()
-            error_logger.error(f"Error while updating on { self.__tablename__ } :: ID { self.id }, error: {e}, {format_exc()}")
+            try:
+                error_logger.error(f"Error while updating on { self.__tablename__ } :: ID { self.id }, error: {e}, {format_exc()}")
+            except:
+                error_logger.error(f"Error while updating on { self.__tablename__ } :: x, error: {e}, {format_exc()}")  # TODO
             raise
 
     def bulk_update(self, objects: List[dict]) -> List[dict]:

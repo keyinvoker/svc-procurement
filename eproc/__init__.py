@@ -51,11 +51,11 @@ def create_app() -> Flask:
         app.register_blueprint(budget_blueprint)
         app.register_blueprint(link_blueprint)
 
-        print(f"\nEndpoints:")
-        for api in app.url_map.iter_rules():
-            if api.endpoint == "static":
-                continue
-            print(f"- {api.rule} <{api.endpoint}>")
+        # print(f"\nEndpoints:")
+        # for api in app.url_map.iter_rules():
+        #     if api.endpoint == "static":
+        #         continue
+        #     print(f"- {api.rule} <{api.endpoint}>")
         print()
 
         return app
