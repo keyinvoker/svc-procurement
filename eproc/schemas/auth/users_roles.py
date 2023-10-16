@@ -12,7 +12,7 @@ class UserRolesSchema(SQLAlchemyAutoSchema):
 
 
 class UserRoleGetInputSchema(Schema):
-    user_id = fields.String(required=True)
+    user_id = fields.String()
 
     class Meta:
         ordered = True

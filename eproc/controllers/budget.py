@@ -44,8 +44,8 @@ class BudgetController:
         if offset > 0:
             query = query.offset(offset)
 
-        result_list: List[Budget] = query.all()
-        if not result_list:
+        results: List[Budget] = query.all()
+        if not results:
             return (
                 HTTPStatus.NOT_FOUND,
                 "Budget tidak ditemukan.",
@@ -53,7 +53,7 @@ class BudgetController:
                 total,
             )
 
-        data_list = self.many_schema.dump(result_list)
+        data_list = self.many_schema.dump(results)
 
         return (
             HTTPStatus.OK,

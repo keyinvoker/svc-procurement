@@ -48,16 +48,16 @@ class DivisionController:
         if offset > 0:
             query = query.offset(offset)
         
-        result_list: List[Division] = query.all()
+        results: List[Division] = query.all()
 
-        if not result_list:
+        if not results:
             return (
                 HTTPStatus.NOT_FOUND,
                 "Division tidak ditemukan.",
                 [],
                 total
             )
-        user_data_list = self.many_schema.dump(result_list)
+        user_data_list = self.many_schema.dump(results)
 
         return (
             HTTPStatus.OK,

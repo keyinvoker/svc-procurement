@@ -12,6 +12,7 @@ class UserRoleController:
     def __init__(self, **kwargs):
         self.model = UserRole
         self.schema = UserRolesSchema()
+        self.many_schema = UserRolesSchema(many=True)
 
     def get_list(
         self,
@@ -26,13 +27,15 @@ class UserRoleController:
                 func.array_agg(Role.description).label("role_name_list"),
             )
             .join(Role, Role.id == UserRole.role_id)
-            .filter(UserRole.user_id == user_id)
             .filter(UserRole.is_deleted.is_(False))
             .group_by(UserRole.user_id)
         )
 
-        result = query.first()
-        if not result:
+        if user_id:
+            query = query.filter(UserRole.user_id == user_id)
+
+        results = query.all()
+        if not results:
             return (
                 HTTPStatus.NOT_FOUND,
                 "User Roles tidak ditemukan.",
@@ -43,8 +46,9 @@ class UserRoleController:
                 )
             )
 
-        data = self.schema.dump(result)
-        data["total"] = len(result.role_name_list)
+        data = self.many_schema.dump(results)
+        # data["total"] = len(results.role_name_list)
+        # data["total"] = len(results)
 
         return (
             HTTPStatus.OK,

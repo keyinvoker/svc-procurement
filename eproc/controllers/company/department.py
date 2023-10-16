@@ -48,16 +48,16 @@ class DepartmentController:
         if offset > 0:
             query = query.offset(offset)
         
-        result_list: List[Department] = query.all()
+        results: List[Department] = query.all()
 
-        if not result_list:
+        if not results:
             return (
                 HTTPStatus.NOT_FOUND,
                 "Department tidak ditemukan.",
                 [],
                 total
             )
-        user_data_list = self.many_schema.dump(result_list)
+        user_data_list = self.many_schema.dump(results)
 
         return (
             HTTPStatus.OK,
