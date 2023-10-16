@@ -17,7 +17,7 @@ class UserRoleController:
     def get_list(
         self,
         **kwargs
-    ) -> Tuple[HTTPStatus, str, Optional[dict]]:
+    ) -> Tuple[HTTPStatus, str, Optional[dict], int]:
         user_id: int = kwargs.get("user_id")
 
         query = (
@@ -34,6 +34,7 @@ class UserRoleController:
         if user_id:
             query = query.filter(UserRole.user_id == user_id)
 
+        total = query.count()
         results = query.all()
         if not results:
             return (
@@ -42,16 +43,15 @@ class UserRoleController:
                 dict(
                     user_id=user_id,
                     role_name_list=[],
-                    total=0
-                )
+                ),
+                total
             )
 
         data = self.many_schema.dump(results)
-        # data["total"] = len(results.role_name_list)
-        # data["total"] = len(results)
 
         return (
             HTTPStatus.OK,
             "User Roles ditemukan.",
-            data
+            data,
+            total
         )

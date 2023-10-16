@@ -22,13 +22,13 @@ class UserRoleResource(Resource):
                 return response
 
             (
-                http_status, message, data
+                http_status, message, data, total
             ) = UserRoleController().get_list(**payload)
 
             return make_json_response(
                 http_status=http_status,
                 message=message,
-                data=data
+                data=dict(data=data, total=total)
             )
         except Exception as e:
             error_logger.error(f"Error on User Roles [GET] :: {e}, {format_exc()}")
