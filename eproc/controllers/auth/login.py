@@ -1,11 +1,13 @@
+import jwt
 from hashlib import md5
+from typing import Optional, Tuple
 
 from eproc import error_logger
 from eproc.models.users.users import User
 
 
 class LoginController:
-    def login(self, username: str, password: str) -> bool:
+    def login(self, username: str, password: str) -> Tuple[bool, Optional[str]]:
 
         hashed_password = md5(
             password.encode("utf-8")
@@ -18,6 +20,16 @@ class LoginController:
         )
         if not user:
             error_logger.error(f"Error on LoginController:login() :: Not found user: {username}")
-            return False
+            return False, None
 
-        return hashed_password.upper() == user.password
+        auth_token = None
+        status = hashed_password.upper() == user.password
+
+        if status:
+            payload = dict(
+                id=user.id,
+                username=user.username,
+            )
+            auth_token = jwt.encode(payload, "secret", algorithm="HS256")
+
+        return status, auth_token

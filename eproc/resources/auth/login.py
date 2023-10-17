@@ -27,7 +27,7 @@ class LoginResource(Resource):
 
             app_logger.info(f"payload :: {payload}")
 
-            status = LoginController().login(
+            status, auth_token = LoginController().login(
                 username=payload["username"],
                 password=payload["password"],
             )
@@ -36,15 +36,11 @@ class LoginResource(Resource):
                     http_status=HTTPStatus.UNAUTHORIZED,
                     message="Login gagal. Pastikan data yang dimasukkan benar."
                 )
-            
-            data = dict(
-                token=""
-            )
 
             return make_json_response(
                 http_status=HTTPStatus.OK,
                 message="Login berhasil.",
-                data=data
+                data=dict(auth_token=auth_token)
             )
         except Exception as e:
             error_logger.error(f"Error on Login [POST] :: {e}, {format_exc()}")
