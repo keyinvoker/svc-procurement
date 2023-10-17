@@ -1,11 +1,12 @@
-from datetime import datetime
 from marshmallow import Schema, fields
+
+from eproc.utils.commons import wibnow
 
 
 class BaseResponseSchema(Schema):
     code = fields.Integer()
     message = fields.String()
-    timestamp = fields.DateTime(default=datetime.utcnow())
+    timestamp = fields.DateTime(default=wibnow())
 
     class Meta:
         ordered = True

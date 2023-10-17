@@ -1,6 +1,5 @@
 import sqlalchemy as sa
 from datetime import datetime
-from pytz import timezone
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import FunctionElement
@@ -9,6 +8,7 @@ from traceback import format_exc
 from typing import List
 
 from eproc import app_logger, db, error_logger
+from eproc.utils.commons import wibnow
 
 session: Session = db.session
 
@@ -20,10 +20,6 @@ class WIBNow(FunctionElement):
 @compiles(WIBNow, "postgresql")
 def pg_wibnow(element, compiler, **kwargs):
     return "TIMEZONE('Asia/Jakarta', CURRENT_TIMESTAMP)"
-
-
-def wibnow():
-    return datetime.now(timezone("Asia/Jakarta"))
 
 
 class BaseModel(db.Model):

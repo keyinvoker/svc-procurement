@@ -3,11 +3,8 @@ from sqlalchemy.orm import backref, column_property
 from sqlalchemy.sql import case
 
 from eproc import db
-from eproc.models.base_model import (
-    BaseModel,
-    WIBNow,
-    wibnow
-)
+from eproc.models.base_model import BaseModel, WIBNow
+from eproc.utils.commons import wibnow
 
 
 class Employee(BaseModel):

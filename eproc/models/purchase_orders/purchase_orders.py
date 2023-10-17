@@ -2,11 +2,8 @@ import sqlalchemy as sa
 from sqlalchemy.orm import backref
 
 from eproc import db
-from eproc.models.base_model import (
-    BaseModel,
-    WIBNow,
-    wibnow
-)
+from eproc.models.base_model import BaseModel, WIBNow
+from eproc.utils.commons import wibnow
 
 
 class PurchaseOrder(BaseModel):
