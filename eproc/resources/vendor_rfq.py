@@ -7,6 +7,7 @@ from eproc import error_logger
 from eproc.controllers.vendor_rfq import VendorRFQController
 from eproc.helpers.commons import split_string_into_list
 from eproc.schemas.vendor_rfqs import VendorRFQGetInputSchema
+from eproc.tools.decorator import validate_token
 from eproc.tools.response import make_json_response
 from eproc.tools.validation import schema_validate_and_load
 
@@ -15,6 +16,7 @@ class VendorRFQResource(Resource):
     def __init__(self):
         self.controller = VendorRFQController()
 
+    @validate_token
     def get(self) -> Response:
         try:
             list_param_keys = [

@@ -24,6 +24,7 @@ class UserRoleController:
             UserRole.query
             .with_entities(
                 UserRole.user_id.label("user_id"),
+                func.array_agg(Role.id).label("role_id_list"),
                 func.array_agg(Role.description).label("role_name_list"),
             )
             .join(Role, Role.id == UserRole.role_id)
