@@ -16,12 +16,6 @@ class VendorRFQResource(Resource):
         self.controller = VendorRFQController()
 
     def get(self) -> Response:
-        if not request.headers.get("Authorization"):
-            error_logger.error(f"Error auth :: no token")
-            return make_json_response(HTTPStatus.UNAUTHORIZED, "Tidak ada token")
-        elif request.headers.get("Authorization") != "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiJ9.SLxXsx0zGexZLlzjaZfy0LLtS39sSKIpU2O99UbP-50":
-            return make_json_response(HTTPStatus.UNAUTHORIZED, "Token salah")
-
         try:
             list_param_keys = [
                 "id_list",

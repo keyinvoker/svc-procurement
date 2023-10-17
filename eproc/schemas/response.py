@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields
 
-from eproc.utils.commons import wibnow
+from eproc.helpers.commons import wibnow
 
 
 class BaseResponseSchema(Schema):

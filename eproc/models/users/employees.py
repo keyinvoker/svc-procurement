@@ -4,7 +4,7 @@ from sqlalchemy.sql import case
 
 from eproc import db
 from eproc.models.base_model import BaseModel, WIBNow
-from eproc.utils.commons import wibnow
+from eproc.helpers.commons import wibnow
 
 
 class Employee(BaseModel):

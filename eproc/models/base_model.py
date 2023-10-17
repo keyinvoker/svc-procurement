@@ -8,7 +8,7 @@ from traceback import format_exc
 from typing import List
 
 from eproc import app_logger, db, error_logger
-from eproc.utils.commons import wibnow
+from eproc.helpers.commons import wibnow
 
 session: Session = db.session
 
