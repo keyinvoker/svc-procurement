@@ -2,7 +2,7 @@ from marshmallow import EXCLUDE, Schema, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 
-class UserRolesSchema(SQLAlchemyAutoSchema):
+class UserRoleSchema(SQLAlchemyAutoSchema):
     user_id = fields.String()
     role_name_list = fields.List(fields.String())
 

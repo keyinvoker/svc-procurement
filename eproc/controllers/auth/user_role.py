@@ -5,14 +5,14 @@ from typing import List, Optional, Tuple
 from eproc import error_logger
 from eproc.models.auth.roles import Role
 from eproc.models.auth.users_roles import UserRole
-from eproc.schemas.auth.users_roles import UserRolesSchema
+from eproc.schemas.auth.users_roles import UserRoleSchema
 
 
 class UserRoleController:
     def __init__(self, **kwargs):
         self.model = UserRole
-        self.schema = UserRolesSchema()
-        self.many_schema = UserRolesSchema(many=True)
+        self.schema = UserRoleSchema()
+        self.many_schema = UserRoleSchema(many=True)
 
     def get_list(
         self,
