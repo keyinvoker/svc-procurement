@@ -3,4 +3,4 @@ from pytz import timezone
 
 
 def wibnow() -> datetime:
-    return datetime.now(timezone("Asia/Jakarta"))
+    return datetime.now(timezone("Asia/Jakarta")).replace(tzinfo=None)
