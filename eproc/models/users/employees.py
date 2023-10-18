@@ -1,6 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import backref, column_property
-from sqlalchemy.sql import case
+from sqlalchemy.orm import backref
 
 from eproc import db
 from eproc.models.base_model import BaseModel, WIBNow

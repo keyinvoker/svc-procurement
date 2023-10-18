@@ -14,8 +14,6 @@ class LoginResource(Resource):
     def post(self) -> Response:
         try:
             input_data = request.get_json()
-            from eproc import app_logger
-            app_logger.info(f"input_data :: {input_data}")
             schema = LoginInputSchema()
 
             is_valid, response, payload = schema_validate_and_load(
@@ -24,8 +22,6 @@ class LoginResource(Resource):
             )
             if not is_valid:
                 return response
-
-            app_logger.info(f"payload :: {payload}")
 
             status, auth_token = LoginController().login(
                 username=payload["username"],

@@ -19,7 +19,7 @@ class LoginController:
 
             user: User = (
                 User.query
-                .filter(User.username == username)  # TODO: use `uname` or just `usrid` || make sure `uname` cannot be edited first if want use `usrid`
+                .filter(User.username == username)
                 .first()
             )
             if not user:
@@ -35,7 +35,7 @@ class LoginController:
                 auth_token = jwt.encode(
                     payload={
                         "username": user.username,
-                        "expires_at": expires_at
+                        "expires_at": str(expires_at)
                     },
                     key="secret",
                     algorithm="HS256"

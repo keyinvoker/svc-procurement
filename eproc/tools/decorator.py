@@ -3,7 +3,10 @@ from functools import wraps
 from http import HTTPStatus
 from typing import Callable, Optional, Union
 
-from eproc.helpers.auth import get_user_roles
+from eproc.helpers.auth import (
+    get_role_menus,
+    get_user_roles,
+)
 from eproc.helpers.commons import wibnow
 from eproc.models.auth.user_tokens import UserToken
 from eproc.tools.response import make_json_response
@@ -33,7 +36,6 @@ def validate_token(
             UserToken.query
             .filter(
                 UserToken.auth_token == split_token[1],
-                UserToken.is_active.is_(True),
                 UserToken.is_deleted.is_(False),
             )
             .first()
@@ -44,7 +46,12 @@ def validate_token(
                 "Token salah."
             )
 
-        if wibnow() > user_token.expires_at:
+        if user_token.is_active is False:
+            return make_json_response(
+                HTTPStatus.UNAUTHORIZED,
+                "Token sudah kedaluwarsa."
+            )
+        elif wibnow() > user_token.expires_at:
             user_token.is_active = False
             user_token.update()
 
@@ -53,7 +60,10 @@ def validate_token(
                 "Token sudah kedaluwarsa."
             )
 
+        g.user_id = user_token.user_id
+        g.auth_token = user_token.auth_token
         g.roles = get_user_roles(user_token.user_id)
+        g.menus = get_role_menus(g.roles)
 
         return func(*args, **kwargs)
 

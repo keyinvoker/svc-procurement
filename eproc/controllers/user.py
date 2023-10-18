@@ -8,8 +8,12 @@ from traceback import format_exc
 from typing import List, Optional, Tuple
 
 from eproc import app_logger, error_logger
-from eproc.models.base_model import session
 from eproc.models.auth.users_roles import UserRole
+from eproc.models.base_model import session
+from eproc.models.companies.branches import Branch
+from eproc.models.companies.departments import Department
+from eproc.models.companies.directorates import Directorate
+from eproc.models.companies.divisions import Division
 from eproc.models.references import Reference
 from eproc.models.users.employees import Employee
 from eproc.models.users.users import User
@@ -38,6 +42,14 @@ class UserController:
                 User.password,
                 User.password_length,
                 User.email,
+                Employee.branch_id,
+                Branch.description.label("branch_name"),
+                Employee.directorate_id,
+                Directorate.description.label("directorate_name"),
+                Employee.division_id,
+                Division.description.label("division_name"),
+                Employee.department_id,
+                Department.description.label("department_name"),
                 FirstApprover.id.label("first_approver_id"),
                 FirstApprover.full_name.label("first_approver_full_name"),
                 FirstApprover.is_active.label("first_approver_is_active"),
@@ -54,9 +66,14 @@ class UserController:
                 User.updated_at,
                 User.updated_by,
             )
+            .outerjoin(Employee, Employee.id == User.id)
             .outerjoin(FirstApprover, FirstApprover.id == User.first_approver_id)
             .outerjoin(SecondApprover, SecondApprover.id == User.second_approver_id)
             .outerjoin(ThirdApprover, ThirdApprover.id == User.third_approver_id)
+            .outerjoin(Branch, Branch.id == Employee.branch_id)
+            .outerjoin(Directorate, Directorate.id == Employee.directorate_id)
+            .outerjoin(Division, Division.id == Employee.division_id)
+            .outerjoin(Department, Department.id == Employee.department_id)
             .filter(User.id == id)
             .filter(User.is_deleted.is_(False))
             .first()
@@ -65,13 +82,13 @@ class UserController:
         if not user:
             return (
                 HTTPStatus.NOT_FOUND,
-                "User tidak ditemukan.",
+                "Detail user tidak ditemukan.",
                 None
             )
 
         user_data = self.detail_schema.dump(user)
 
-        return HTTPStatus.OK, "User ditemukan.", user_data
+        return HTTPStatus.OK, "Detail user ditemukan.", user_data
 
     def get_list(
         self,

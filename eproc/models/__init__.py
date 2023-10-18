@@ -7,6 +7,7 @@ from eproc.models.auth.roles import Role
 from eproc.models.auth.users_roles import UserRole
 from eproc.models.auth.menus import Menu
 from eproc.models.auth.user_tokens import UserToken
+from eproc.models.auth.roles_menus import RoleMenu
 
 # Users
 from eproc.models.users.users import User

@@ -18,6 +18,10 @@ class UserAutoSchema(SQLAlchemyAutoSchema):
 
 
 class UserDetailSchema(SQLAlchemyAutoSchema):
+    branch_name = fields.String()
+    directorate_name = fields.String()
+    division_name = fields.String()
+    department_name = fields.String()
     first_approver_id = fields.String()
     first_approver_full_name = fields.String()
     first_approver_is_active = fields.Boolean()

@@ -51,8 +51,15 @@ class EmployeeGetInputSchema(Schema):
         unknown = EXCLUDE
 
 
+class EmployeeDetailGetInputSchema(Schema):
+    id = fields.String(required=True)
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
 class EmployeeDetailSchema(EmployeeAutoSchema):
-    id = fields.String()
     branch_name = fields.String()
     directorate_name = fields.String()
     division_name = fields.String()
