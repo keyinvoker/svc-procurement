@@ -8,6 +8,7 @@ from traceback import format_exc
 from typing import List, Optional, Tuple
 
 from eproc import app_logger, error_logger
+from eproc.models.auth.menus import Menu
 from eproc.models.auth.users_roles import UserRole
 from eproc.models.base_model import session
 from eproc.models.companies.branches import Branch
@@ -65,6 +66,24 @@ class UserController:
                 User.is_admin,
                 User.updated_at,
                 User.updated_by,
+
+                User.password_length,
+                User.password_salt,
+                User.password_hash,
+                User.password_question,
+                User.password_answer,
+                User.security_status,
+                User.mobile_pin,
+                User.mobile_alias,
+                User.is_email_confirmed,
+                User.is_phone_number_confirmed,
+                User.lock_enabled,
+                User.two_factor_enabled,
+                User.remember_me,
+
+                User.last_active_date,
+                User.last_lock_date,
+                User.last_login_date,
             )
             .outerjoin(Employee, Employee.id == User.id)
             .outerjoin(FirstApprover, FirstApprover.id == User.first_approver_id)

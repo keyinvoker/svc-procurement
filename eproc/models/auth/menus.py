@@ -10,7 +10,7 @@ class Menu(BaseModel):
     app_id = sa.Column(sa.String(10), nullable=False)
     module_id = sa.Column(sa.String(10), nullable=False)
     menu_name = sa.Column(sa.String(100))
-    mnutx = sa.Column("mnutx", sa.String(100))
+    menu_tag = sa.Column(sa.String(100))
     level = sa.Column(sa.Integer(), nullable=False)
     prnid = sa.Column("prnid", sa.String(10))
     clasz = sa.Column("clasz", sa.String(20))
