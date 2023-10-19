@@ -4,17 +4,22 @@ from hashlib import md5
 from http import HTTPStatus
 from sqlalchemy import insert, or_
 from sqlalchemy.orm import aliased
+from sqlalchemy.sql import func
 from traceback import format_exc
 from typing import List, Optional, Tuple
 
 from eproc import app_logger, error_logger
+from eproc.helpers.auth import get_user_role_info
 from eproc.models.auth.menus import Menu
+from eproc.models.auth.roles import Role
+from eproc.models.auth.roles_menus import RoleMenu
 from eproc.models.auth.users_roles import UserRole
 from eproc.models.base_model import session
 from eproc.models.companies.branches import Branch
 from eproc.models.companies.departments import Department
 from eproc.models.companies.directorates import Directorate
 from eproc.models.companies.divisions import Division
+from eproc.models.companies.groups import Group
 from eproc.models.references import Reference
 from eproc.models.users.employees import Employee
 from eproc.models.users.users import User
@@ -39,10 +44,13 @@ class UserController:
             User.query
             .with_entities(
                 User.id,
+                User.username,
                 User.full_name,
                 User.password,
                 User.password_length,
+                User.last_password_change_date,
                 User.email,
+                User.phone_number,
                 Employee.branch_id,
                 Branch.description.label("branch_name"),
                 Employee.directorate_id,
@@ -51,6 +59,8 @@ class UserController:
                 Division.description.label("division_name"),
                 Employee.department_id,
                 Department.description.label("department_name"),
+                Employee.group_id,
+                Group.description.label("group_name"),
                 FirstApprover.id.label("first_approver_id"),
                 FirstApprover.full_name.label("first_approver_full_name"),
                 FirstApprover.is_active.label("first_approver_is_active"),
@@ -69,7 +79,7 @@ class UserController:
 
                 User.password_length,
                 User.password_salt,
-                User.password_hash,
+                User.clear_text_password,
                 User.password_question,
                 User.password_answer,
                 User.security_status,
@@ -84,6 +94,10 @@ class UserController:
                 User.last_active_date,
                 User.last_lock_date,
                 User.last_login_date,
+
+                # Module.menu_tag.label("module_tag"),
+                # Menu.menu_tag.label("menu_tag"),
+                # Feature.menu_tag.label("feature_tag"),
             )
             .outerjoin(Employee, Employee.id == User.id)
             .outerjoin(FirstApprover, FirstApprover.id == User.first_approver_id)
@@ -93,8 +107,22 @@ class UserController:
             .outerjoin(Directorate, Directorate.id == Employee.directorate_id)
             .outerjoin(Division, Division.id == Employee.division_id)
             .outerjoin(Department, Department.id == Employee.department_id)
+            .outerjoin(Group, Group.id == Employee.group_id)
+            .outerjoin(UserRole, UserRole.user_id == User.id)
+            .outerjoin(Role, Role.id == UserRole.role_id)
+            .outerjoin(RoleMenu, RoleMenu.role_id == Role.id)
+            # .outerjoin(Module, Module.id == RoleMenu.menu_id)
+            # .outerjoin(Menu, Menu.parent_id == Module.id)
+            # .outerjoin(Feature, Feature.parent_id == Menu.id)
             .filter(User.id == id)
+            # .filter(Module.level == 1)
+            # .filter(Menu.level == 2)
+            # .filter(Feature.level == 3)
             .filter(User.is_deleted.is_(False))
+            # .filter(Module.is_deleted.is_(False))
+            # .filter(Menu.is_deleted.is_(False))
+            # .filter(Feature.is_deleted.is_(False))
+            .filter(UserRole.is_deleted.is_(False))
             .first()
         )
         
@@ -106,6 +134,9 @@ class UserController:
             )
 
         user_data = self.detail_schema.dump(user)
+
+        _ = get_user_role_info(id)
+        
 
         return HTTPStatus.OK, "Detail user ditemukan.", user_data
 

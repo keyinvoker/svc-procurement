@@ -22,6 +22,7 @@ class UserDetailSchema(SQLAlchemyAutoSchema):
     directorate_name = fields.String()
     division_name = fields.String()
     department_name = fields.String()
+    group_name = fields.String()
     first_approver_id = fields.String()
     first_approver_full_name = fields.String()
     first_approver_is_active = fields.Boolean()
@@ -31,6 +32,9 @@ class UserDetailSchema(SQLAlchemyAutoSchema):
     third_approver_id = fields.String()
     third_approver_full_name = fields.String()
     third_approver_is_active = fields.Boolean()
+    module_tag = fields.String()
+    menu_tag = fields.String()
+    feature_tag = fields.String()
 
     class Meta:
         model = User

@@ -41,6 +41,10 @@ class LoginController:
                     algorithm="HS256"
                 )
 
+                user.last_login_date = wibnow()
+                user.last_active_date = wibnow()
+                user.update()
+
                 UserToken(
                     user_id=user.id,
                     auth_token=auth_token,

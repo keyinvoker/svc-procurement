@@ -60,9 +60,16 @@ def validate_token(
                 "Token sudah kedaluwarsa."
             )
 
+        roles = get_user_roles(user_token.user_id)
+        if not roles:
+            return make_json_response(
+                HTTPStatus.UNAUTHORIZED,
+                "User tidak memiliki role."
+            )
+
         g.user_id = user_token.user_id
         g.auth_token = user_token.auth_token
-        g.roles = get_user_roles(user_token.user_id)
+        g.roles = roles
         g.menus = get_role_menus(g.roles)
 
         return func(*args, **kwargs)

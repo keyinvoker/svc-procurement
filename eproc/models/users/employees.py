@@ -16,12 +16,12 @@ class Employee(BaseModel):
     directorate_id = sa.Column(sa.String(20), sa.ForeignKey("directorates.id"), nullable=False)
     division_id = sa.Column(sa.String(20), sa.ForeignKey("divisions.id"), nullable=False)
     department_id = sa.Column(sa.String(20), sa.ForeignKey("departments.id"), nullable=False)
+    group_id = sa.Column(sa.String(20), sa.ForeignKey("groups.id"), nullable=False)
     postn = sa.Column("postn", sa.String(20), nullable=False)  # TODO: Foreign Key (?)
     cost_center_id = sa.Column(sa.String(20), sa.ForeignKey("cost_centers.id"))
     first_approver_id = sa.Column(sa.String(10))
     second_approver_id = sa.Column(sa.String(10))
     third_approver_id = sa.Column(sa.String(10))
-    group_id = sa.Column(sa.String(20), nullable=False)
     untid = sa.Column("untid", sa.String(20), nullable=False)
     full_name = sa.Column(sa.String(50))
     email = sa.Column(sa.String(200))
@@ -54,6 +54,9 @@ class Employee(BaseModel):
     )
     department = db.relationship(
         "Department", backref=backref(__tablename__, uselist=False)
+    )
+    group = db.relationship(
+        "Group", backref=backref(__tablename__, uselist=False)
     )
     cost_center = db.relationship(
         "CostCenter", backref=backref(__tablename__, uselist=False)

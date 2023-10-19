@@ -20,7 +20,7 @@ class User(BaseModel):
     password = sa.Column(sa.String(32), nullable=False)
     password_length = sa.Column(sa.Integer(), nullable=False)
     password_salt = sa.Column(sa.String(120))  # TODO: REDUNDANT: unused
-    password_hash = sa.Column(sa.String(120))  # TODO: DANGEROUS: bukan hash ini?!?!?!; clear text password!!!
+    clear_text_password = sa.Column(sa.String(120))  # TODO: DANGEROUS: bukan hash ini?!?!?!; clear text password!!!
     password_question = sa.Column(sa.String(120))  # TODO: REDUNDANT: unused
     password_answer = sa.Column(sa.String(120))  # TODO: REDUNDANT: unused
     security_status = sa.Column(sa.String(10))  # TODO: REDUNDANT: unused
@@ -48,7 +48,7 @@ class User(BaseModel):
         default=wibnow(),
         server_default=WIBNow(),
         nullable=False,
-    )
+    )  # TODO: REDUNDANT: both last_login_date and last_active_date show the last time a user is logged in, no?
     last_login_date = sa.Column(
         sa.DateTime(timezone=True),
         default=wibnow(),

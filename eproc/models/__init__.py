@@ -18,6 +18,7 @@ from eproc.models.companies.branches import Branch
 from eproc.models.companies.departments import Department
 from eproc.models.companies.directorates import Directorate
 from eproc.models.companies.divisions import Division
+from eproc.models.companies.groups import Group
 
 # # Vendors
 from eproc.models.vendors.vendors import Vendor
