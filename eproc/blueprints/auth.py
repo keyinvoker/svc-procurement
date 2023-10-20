@@ -3,6 +3,7 @@ from flask_restful import Api
 
 from eproc.resources.auth.role import RoleResource
 from eproc.resources.auth.user_role import UserRoleResource
+from eproc.resources.auth.user_role_menu import UserRoleMenuResource
 from eproc.resources.auth.register import RegisterResource
 from eproc.resources.auth.login import LoginResource
 from eproc.resources.auth.login import LoginResource
@@ -17,3 +18,4 @@ auth_api.add_resource(LoginResource, "/login")
 auth_api.add_resource(RoleResource, "/role")
 auth_api.add_resource(UserRoleResource, "/user-role")
 auth_api.add_resource(MenuResource, "/menu")
+auth_api.add_resource(UserRoleMenuResource, "/user-role-info")

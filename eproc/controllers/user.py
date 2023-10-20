@@ -8,6 +8,7 @@ from sqlalchemy.sql import func
 from traceback import format_exc
 from typing import List, Optional, Tuple
 
+from eproc import db
 from eproc import app_logger, error_logger
 from eproc.helpers.auth import get_user_role_info
 from eproc.models.auth.menus import Menu
@@ -35,7 +36,7 @@ class UserController:
         self.many_schema = UserAutoSchema(many=True)
         self.detail_schema = UserDetailSchema()
     
-    def get_detail(self, id: str) -> Tuple[HTTPStatus, str, Optional[dict]]:
+    def get_detail(self, user_id: str) -> Tuple[HTTPStatus, str, Optional[dict]]:
         FirstApprover = aliased(User)
         SecondApprover = aliased(User)
         ThirdApprover = aliased(User)
@@ -94,10 +95,6 @@ class UserController:
                 User.last_active_date,
                 User.last_lock_date,
                 User.last_login_date,
-
-                # Module.menu_tag.label("module_tag"),
-                # Menu.menu_tag.label("menu_tag"),
-                # Feature.menu_tag.label("feature_tag"),
             )
             .outerjoin(Employee, Employee.id == User.id)
             .outerjoin(FirstApprover, FirstApprover.id == User.first_approver_id)
@@ -108,24 +105,11 @@ class UserController:
             .outerjoin(Division, Division.id == Employee.division_id)
             .outerjoin(Department, Department.id == Employee.department_id)
             .outerjoin(Group, Group.id == Employee.group_id)
-            .outerjoin(UserRole, UserRole.user_id == User.id)
-            .outerjoin(Role, Role.id == UserRole.role_id)
-            .outerjoin(RoleMenu, RoleMenu.role_id == Role.id)
-            # .outerjoin(Module, Module.id == RoleMenu.menu_id)
-            # .outerjoin(Menu, Menu.parent_id == Module.id)
-            # .outerjoin(Feature, Feature.parent_id == Menu.id)
-            .filter(User.id == id)
-            # .filter(Module.level == 1)
-            # .filter(Menu.level == 2)
-            # .filter(Feature.level == 3)
+            .filter(User.id == user_id)
             .filter(User.is_deleted.is_(False))
-            # .filter(Module.is_deleted.is_(False))
-            # .filter(Menu.is_deleted.is_(False))
-            # .filter(Feature.is_deleted.is_(False))
-            .filter(UserRole.is_deleted.is_(False))
             .first()
         )
-        
+
         if not user:
             return (
                 HTTPStatus.NOT_FOUND,
@@ -133,10 +117,10 @@ class UserController:
                 None
             )
 
-        user_data = self.detail_schema.dump(user)
+        user_data: dict = self.detail_schema.dump(user)
 
-        _ = get_user_role_info(id)
-        
+        # role_info = get_user_role_info(user_id)
+        # user_data.update(role_info=role_info)
 
         return HTTPStatus.OK, "Detail user ditemukan.", user_data
 
