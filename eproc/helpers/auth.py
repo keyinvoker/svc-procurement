@@ -110,7 +110,7 @@ def get_user_role_info(user_id: str) -> Optional[dict]:
             .all()
         )
 
-        results = list()  # TODO: Show for different roles.
+        results = list()
         result = {
             "role_id": "",
             "role_description": "",
@@ -121,7 +121,7 @@ def get_user_role_info(user_id: str) -> Optional[dict]:
         current_module = None
         current_menu = None
 
-        for info in role_info:
+        for index, info in enumerate(role_info):
             (
                 user_id,
                 role_id,
@@ -136,13 +136,24 @@ def get_user_role_info(user_id: str) -> Optional[dict]:
                 feature_description_list
             ) = info
 
+            if (
+                (current_role is not None and current_role != role_id)
+                or index==len(info)
+            ):
+                results.append(result)
+
+                result = {
+                    "role_id": "",
+                    "role_description": "",
+                    "module_list": list(),
+                }
+
             if current_role is None or current_role != role_id:
                 current_role = role_id
                 result["role_id"] = role_id
                 result["role_description"] = role_description
 
             if current_module is None or current_module["module_id"] != module_id:
-                print(f"triggered :: current: {current_module if not current_module else current_module.get('module_id')} --- {module_id} :id")
                 current_module = {
                     "module_id": module_id,
                     "module_description": module_description,
@@ -172,9 +183,8 @@ def get_user_role_info(user_id: str) -> Optional[dict]:
 
                     current_menu["feature_list"] = features
 
-        return result
+        return results
 
     except Exception as e:
         db.session.rollback()
         error_logger.error(f"Error on helpers.auth:get_user_info :: {e}, {format_exc()}")
-        return {}
