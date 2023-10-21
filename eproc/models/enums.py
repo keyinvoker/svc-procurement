@@ -1,9 +1,14 @@
 from enum import Enum
 
 
-# TODO: is this set or dynamic? if dynamic, make master table
-class ItemCategory(Enum):
-    MECHANICAL = "mechanical"
-    ELECTRICAL = "electrical"
-    CIVIL = "civil"
-    PIPE = "pipe"
+class SystemConfigOption(Enum):
+    APPROVAL_LIMIT_PR_PROJECT = "PR Project Approval Limit"
+    APPROVAL_LIMIT_PRICE_COMPARISON = "Comparison Approval Limit"
+    APPROVAL_LIMIT_PURCHASE_ORDER = "PO Approval Limit"
+    APPROVAL_LIMIT_GOODS_RECEIVED = "Goods Received Limit"
+    PURCHASE_ORDER = "Required Date PO"
+    SYSTEM_LOCK = "Time"
+    PASSWORD = "Password"
+    ACCESS_TIME = "Access Time"
+    UPLOAD = "Upload"
+    TAX = "PPH"

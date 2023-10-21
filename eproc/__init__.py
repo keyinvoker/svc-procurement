@@ -33,6 +33,7 @@ def create_app() -> Flask:
         from eproc.blueprints.price_comparison import price_comparison_blueprint
         from eproc.blueprints.purchase_order import purchase_order_blueprint
         from eproc.blueprints.procurement_request_progress import procurement_request_progress_blueprint
+        from eproc.blueprints.system_config import system_config_blueprint
         from eproc.blueprints.user.employee import employee_blueprint
         from eproc.blueprints.user.user import user_blueprint
         from eproc.blueprints.vendor import vendor_blueprint
@@ -51,6 +52,7 @@ def create_app() -> Flask:
         app.register_blueprint(vendor_blueprint)
         app.register_blueprint(budget_blueprint)
         app.register_blueprint(link_blueprint)
+        app.register_blueprint(system_config_blueprint)
 
         # print(f"\nEndpoints:")
         # for api in app.url_map.iter_rules():
