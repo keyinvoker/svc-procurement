@@ -9,17 +9,18 @@ from eproc.helpers.commons import wibnow
 class ProcurementRequest(BaseModel):
     __tablename__ = "procurement_requests"
 
-    # TODO benerin table
     id = sa.Column(sa.BigInteger(), primary_key=True)
+    item_class_id = sa.Column(sa.String(10), sa.ForeignKey("item_classes.id"), nullable=False)
+    item_group_id = sa.Column(sa.String(10), sa.ForeignKey("item_groups.id"), nullable=False)
     branch_id = sa.Column(sa.String(), sa.ForeignKey("branches.id"), nullable=False)
     directorate_id = sa.Column(sa.String(20), sa.ForeignKey("directorates.id"), nullable=False)
     division_id = sa.Column(sa.String(), sa.ForeignKey("divisions.id"), nullable=False)
     department_id = sa.Column(sa.String(), sa.ForeignKey("departments.id"), nullable=False)
     dapid = sa.Column("dapid", sa.String(), nullable=False)  # TODO: Foreign Key
     cost_center_id = sa.Column(sa.String(20), sa.ForeignKey("cost_centers.id"))
-    entby = sa.Column("entby", sa.String(), nullable=False)  # TODO: Foreign Key
     reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
-    requester_user_id = sa.Column(sa.String(), sa.ForeignKey("users.id"), nullable=False)
+    preparer_id = sa.Column(sa.String(30), sa.ForeignKey("users.id"), nullable=False)
+    requester_id = sa.Column(sa.String(), sa.ForeignKey("employees.id"), nullable=False)
     transaction_date = sa.Column(
         sa.DateTime(timezone=True),
         default=wibnow(),
@@ -34,8 +35,6 @@ class ProcurementRequest(BaseModel):
     app_source = sa.Column(sa.String(20))
     is_ugn = sa.Column(sa.Boolean(), nullable=False)
 
-    catcd = sa.Column("catcd", sa.String(10))
-    grpcd = sa.Column("grpcd", sa.String(10))
     allcn = sa.Column("allcn", sa.String(50))
     ndsfr = sa.Column("ndsfr", sa.String(20))
     ndsto = sa.Column("ndsto", sa.String(20))
@@ -53,6 +52,12 @@ class ProcurementRequest(BaseModel):
     flag2 = sa.Column(sa.String(15))
     temps = sa.Column(sa.String(100))
 
+    item_class = db.relationship(
+        "ItemClass", backref=backref(__tablename__, uselist=False)
+    )
+    item_group = db.relationship(
+        "ItemGroup", backref=backref(__tablename__, uselist=False)
+    )
     branch = db.relationship(
         "Branch", backref=backref(__tablename__, uselist=False)
     )
@@ -68,8 +73,11 @@ class ProcurementRequest(BaseModel):
     reference = db.relationship(
         "Reference", backref=backref(__tablename__, uselist=False)
     )
-    requester = db.relationship(
+    preparer = db.relationship(
         "User", backref=backref(__tablename__, uselist=False)
+    )
+    requester = db.relationship(
+        "Employee", backref=backref(__tablename__, uselist=False)
     )
     cost_center = db.relationship(
         "CostCenter", backref=backref(__tablename__, uselist=False)

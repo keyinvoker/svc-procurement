@@ -26,6 +26,11 @@ from eproc.models.vendors.vendor_assessments import VendorAssessment
 # from eproc.models.vendors.vendor_contact_persons import VendorContactPerson
 # from eproc.models.vendors.items import Item
 
+# Items
+from eproc.models.items.items import Item
+from eproc.models.items.item_classes import ItemClass
+from eproc.models.items.item_groups import ItemGroup
+
 # RFQs
 from eproc.models.rfqs import RFQ
 from eproc.models.vendor_rfqs import VendorRFQ
