@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from sqlalchemy import or_
+from sqlalchemy.orm import aliased
 from sqlalchemy.sql import func
 from traceback import format_exc
 from typing import List, Optional, Tuple
@@ -38,10 +39,17 @@ class ProcurementRequestController:
                 ProcurementRequestAssessment.assessment_notes
             ).label("assessment_notes")
 
+            Assessor = aliased(User)
+            assessors = func.array_agg(Assessor.full_name).label("assessors")
+
             result = (
                 ProcurementRequest.query
                 .with_entities(
                     ProcurementRequest.id,
+                    ProcurementRequest.document_number,
+                    ProcurementRequest.year,
+                    ProcurementRequest.month,
+                    ProcurementRequest.description,
 
                     ProcurementRequest.item_class_id,
                     ItemClass.description.label("item_class_name"),
@@ -71,6 +79,7 @@ class ProcurementRequestController:
                     CostCenter.description.label("cost_center_description"),
 
                     assessment_notes,
+                    assessors,
                 )
                 .join(ItemClass, ItemClass.id == ProcurementRequest.item_class_id)
                 .join(ItemGroup, ItemGroup.id == ProcurementRequest.item_group_id)
@@ -86,6 +95,7 @@ class ProcurementRequestController:
                     ProcurementRequestAssessment,
                     ProcurementRequestAssessment.procurement_request_id == ProcurementRequest.id
                 )
+                .join(Assessor, Assessor.id == ProcurementRequestAssessment.assessor_user_id)
                 .filter(ProcurementRequest.id == id)
                 .filter(ProcurementRequest.is_deleted.is_(False))
                 .group_by(
