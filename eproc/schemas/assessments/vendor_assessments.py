@@ -1,7 +1,7 @@
 from marshmallow import EXCLUDE, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from eproc.models.vendors.vendor_assessments import VendorAssessment
+from eproc.models.assessments.vendor_assessments import VendorAssessment
 from eproc.schemas.references import ReferenceAutoSchema
 from eproc.schemas.users.users import UserAutoSchema
 from eproc.schemas.vendors.vendors import VendorAutoSchema

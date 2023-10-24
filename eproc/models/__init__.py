@@ -10,6 +10,7 @@ from eproc.models.auth.user_tokens import UserToken
 from eproc.models.auth.roles_menus import RoleMenu
 
 # Users
+from eproc.models.users.employees import Employee
 from eproc.models.users.users import User
 from eproc.models.references import Reference
 
@@ -22,9 +23,6 @@ from eproc.models.companies.groups import Group
 
 # # Vendors
 from eproc.models.vendors.vendors import Vendor
-from eproc.models.vendors.vendor_assessments import VendorAssessment
-# from eproc.models.vendors.vendor_contact_persons import VendorContactPerson
-# from eproc.models.vendors.items import Item
 
 # Items
 from eproc.models.items.items import Item
@@ -36,8 +34,15 @@ from eproc.models.rfqs import RFQ
 from eproc.models.vendor_rfqs import VendorRFQ
 from eproc.models.price_comparisons import PriceComparison
 
+# Procurement Request
+from eproc.models.procurement_requests import ProcurementRequest
+
 # Purchase Orders
 from eproc.models.purchase_orders.purchase_orders import PurchaseOrder
+
+# Assessments
+from eproc.models.assessments.vendor_assessments import VendorAssessment
+from eproc.models.assessments.procurement_request_assessments import ProcurementRequestAssessment
 
 # (ungrouped)
 from eproc.models.cost_centers import CostCenter

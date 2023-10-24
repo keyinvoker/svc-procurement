@@ -15,7 +15,7 @@ class VendorDetailAutoSchema(SQLAlchemyAutoSchema):
             if isinstance(value, Decimal):
                 data[key] = float(value)
 
-        from eproc.models.vendors.vendor_assessments import VendorAssessment
+        from eproc.models.assessments.vendor_assessments import VendorAssessment
         vendor_review = VendorAssessment.query.filter(VendorAssessment.vendor_id == data["id"]).first()
         data["assessment_notes"] = None
         if vendor_review:
