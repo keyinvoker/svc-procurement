@@ -4,6 +4,7 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from eproc.models.items.items import Item
 from eproc.models.items.item_categories import ItemCategory
+from eproc.models.items.item_classes import ItemClass
 
 
 class ItemAutoSchema(SQLAlchemyAutoSchema):
@@ -39,6 +40,14 @@ class ItemGetInputSchema(Schema):
     )
 
     class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
+class ItemClassAutoSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = ItemClass
+        load_instance = True
         ordered = True
         unknown = EXCLUDE
 

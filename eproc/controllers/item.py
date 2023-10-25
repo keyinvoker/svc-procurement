@@ -6,9 +6,11 @@ from typing import List, Optional, Tuple
 from eproc import error_logger
 from eproc.models.items.items import Item
 from eproc.models.items.item_categories import ItemCategory
+from eproc.models.items.item_classes import ItemClass
 from eproc.schemas.items.items import (
     ItemAutoSchema,
     ItemCategoryAutoSchema,
+    ItemClassAutoSchema,
 )
 
 
@@ -71,6 +73,22 @@ class ItemController:
             "Barang ditemukan.",
             data_list,
             total,
+        )
+
+    def get_classes(
+        self
+    ) -> Tuple[HTTPStatus, str, Optional[List[dict]]]:
+        return (
+            HTTPStatus.OK,
+            "Kelas Barang ditemukan.",
+            ItemClassAutoSchema(many=True).dump(
+                ItemClass.query
+                .filter(
+                    ItemClass.is_active.is_(True),
+                    ItemClass.is_deleted.is_(False),
+                )
+                .all()
+            )
         )
     
     def get_categories(
