@@ -9,7 +9,7 @@ class Item(BaseModel):
     __tablename__ = "items"
 
     id = sa.Column(sa.String(10), primary_key=True)
-    item_group_id = sa.Column(sa.String(10), sa.ForeignKey("item_groups.id"), nullable=False)
+    item_category_id = sa.Column(sa.String(10), sa.ForeignKey("item_categories.id"), nullable=False)
     cost_center_id = sa.Column(sa.String(20), sa.ForeignKey("cost_centers.id"))
     description = sa.Column(sa.String(100), nullable=False)
     unit_of_measurement = sa.Column(sa.String(20), nullable=False)
@@ -19,8 +19,8 @@ class Item(BaseModel):
     tags = sa.Column(sa.String(20))
     is_active = sa.Column(sa.Boolean(), nullable=False, default=True, server_default="true")
 
-    item_group = db.relationship(
-        "ItemGroup", backref=backref(__tablename__, uselist=False)
+    item_category = db.relationship(
+        "ItemCategory", backref=backref(__tablename__, uselist=False)
     )
     cost_center = db.relationship(
         "CostCenter", backref=backref(__tablename__, uselist=False)

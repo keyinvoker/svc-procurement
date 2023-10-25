@@ -5,8 +5,8 @@ from eproc import db
 from eproc.models.base_model import BaseModel
 
 
-class ItemGroup(BaseModel):
-    __tablename__ = "item_groups"
+class ItemCategory(BaseModel):
+    __tablename__ = "item_categories"
 
     id = sa.Column(sa.String(10), primary_key=True)
     item_class_id = sa.Column(sa.String(10), sa.ForeignKey("item_classes.id"), nullable=False)

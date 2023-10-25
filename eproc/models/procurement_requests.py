@@ -11,7 +11,7 @@ class ProcurementRequest(BaseModel):
 
     id = sa.Column(sa.BigInteger(), primary_key=True)
     item_class_id = sa.Column(sa.String(10), sa.ForeignKey("item_classes.id"), nullable=False)
-    item_group_id = sa.Column(sa.String(10), sa.ForeignKey("item_groups.id"), nullable=False)
+    item_category_id = sa.Column(sa.String(10), sa.ForeignKey("item_categories.id"), nullable=False)
     branch_id = sa.Column(sa.String(), sa.ForeignKey("branches.id"), nullable=False)
     directorate_id = sa.Column(sa.String(20), sa.ForeignKey("directorates.id"), nullable=False)
     division_id = sa.Column(sa.String(), sa.ForeignKey("divisions.id"), nullable=False)
@@ -55,8 +55,8 @@ class ProcurementRequest(BaseModel):
     item_class = db.relationship(
         "ItemClass", backref=backref(__tablename__, uselist=False)
     )
-    item_group = db.relationship(
-        "ItemGroup", backref=backref(__tablename__, uselist=False)
+    item_category = db.relationship(
+        "ItemCategory", backref=backref(__tablename__, uselist=False)
     )
     branch = db.relationship(
         "Branch", backref=backref(__tablename__, uselist=False)

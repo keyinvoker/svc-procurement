@@ -13,7 +13,7 @@ from eproc.models.companies.divisions import Division
 from eproc.models.companies.departments import Department
 from eproc.models.cost_centers import CostCenter
 from eproc.models.items.item_classes import ItemClass
-from eproc.models.items.item_groups import ItemGroup
+from eproc.models.items.item_categories import ItemCategory
 from eproc.models.items.procurement_request_items import ProcurementRequestItem
 from eproc.models.procurement_requests import ProcurementRequest
 from eproc.models.references import Reference
@@ -50,12 +50,13 @@ class ProcurementRequestController:
                     ProcurementRequest.year,
                     ProcurementRequest.month,
                     ProcurementRequest.description,
+                    ProcurementRequest.transaction_date,
 
                     ProcurementRequest.item_class_id,
                     ItemClass.description.label("item_class_name"),
 
-                    ProcurementRequest.item_group_id,
-                    ItemGroup.description.label("item_group_name"),
+                    ProcurementRequest.item_category_id,
+                    ItemCategory.description.label("item_group_name"),
 
                     ProcurementRequest.branch_id,
                     Branch.description.label("branch_name"),
@@ -82,7 +83,7 @@ class ProcurementRequestController:
                     assessors,
                 )
                 .join(ItemClass, ItemClass.id == ProcurementRequest.item_class_id)
-                .join(ItemGroup, ItemGroup.id == ProcurementRequest.item_group_id)
+                .join(ItemCategory, ItemCategory.id == ProcurementRequest.item_category_id)
                 .join(Branch, Branch.id == ProcurementRequest.branch_id)
                 .join(Directorate, Directorate.id == ProcurementRequest.directorate_id)
                 .join(Division, Division.id == ProcurementRequest.division_id)
@@ -101,7 +102,7 @@ class ProcurementRequestController:
                 .group_by(
                     ProcurementRequest.id,
                     ItemClass.id,
-                    ItemGroup.id,
+                    ItemCategory.id,
                     Branch.id,
                     Directorate.id,
                     Division.id,
@@ -110,8 +111,12 @@ class ProcurementRequestController:
                     User.id,
                     Employee.id,
                     CostCenter.id,
+                    # ProcurementRequestAssessment.created_at,
                 )
-                .order_by(ProcurementRequest.id)
+                .order_by(
+                    ProcurementRequest.id,
+                    # ProcurementRequestAssessment.created_at.desc()
+                )
                 .first()
             )
 

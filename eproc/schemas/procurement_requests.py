@@ -11,7 +11,7 @@ from eproc.schemas.references import ReferenceAutoSchema
 from eproc.schemas.users.employees import EmployeeAutoSchema
 from eproc.schemas.users.users import UserAutoSchema
 from eproc.schemas.items.item_classes import ItemClassAutoSchema
-from eproc.schemas.items.item_groups import ItemGroupAutoSchema
+from eproc.schemas.items.item_categories import ItemGroupAutoSchema
 
 
 class ProcurementRequestAutoSchema(SQLAlchemyAutoSchema):

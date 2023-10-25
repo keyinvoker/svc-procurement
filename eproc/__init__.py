@@ -28,6 +28,7 @@ def create_app() -> Flask:
         from eproc.blueprints.company import company_blueprint
         from eproc.blueprints.dashboard import dashboard_blueprint
         from eproc.blueprints.healthz import healthz_blueprint
+        from eproc.blueprints.item import item_blueprint
         from eproc.blueprints.link import link_blueprint
         from eproc.blueprints.procurement_request import procurement_request_blueprint
         from eproc.blueprints.price_comparison import price_comparison_blueprint
@@ -51,6 +52,7 @@ def create_app() -> Flask:
         app.register_blueprint(employee_blueprint)
         app.register_blueprint(vendor_blueprint)
         app.register_blueprint(budget_blueprint)
+        app.register_blueprint(item_blueprint)
         app.register_blueprint(link_blueprint)
         app.register_blueprint(system_config_blueprint)
 

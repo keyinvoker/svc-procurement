@@ -27,7 +27,7 @@ from eproc.models.vendors.vendors import Vendor
 # Items
 from eproc.models.items.items import Item
 from eproc.models.items.item_classes import ItemClass
-from eproc.models.items.item_groups import ItemGroup
+from eproc.models.items.item_categories import ItemCategory
 
 # RFQs
 from eproc.models.rfqs import RFQ
