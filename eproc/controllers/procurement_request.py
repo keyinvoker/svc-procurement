@@ -31,7 +31,7 @@ class ProcurementRequestController:
         self.schema = ProcurementRequestAutoSchema()
         self.many_schema = ProcurementRequestAutoSchema(many=True)
         self.detail_schema = ProcurementRequestDetailSchema()
-    
+
     def get_detail(self, id: int) -> Tuple[HTTPStatus, str, Optional[dict]]:
         try:
 
@@ -154,7 +154,32 @@ class ProcurementRequestController:
 
         query = (
             ProcurementRequest.query
+            .with_entities(
+                ProcurementRequest.id,
+                ProcurementRequest.document_number,
+
+                ProcurementRequest.branch_id,
+                Branch.description.label("branch_name"),
+                ProcurementRequest.directorate_id,
+                Directorate.description.label("directorate_name"),
+                ProcurementRequest.division_id,
+                Division.description.label("division_name"),
+                ProcurementRequest.department_id,
+                Department.description.label("department_name"),
+
+                ProcurementRequest.reference_id,
+                Reference.description.label("reference_description"),
+
+                ProcurementRequest.requester_id,
+                Employee.full_name.label("requester_full_name"),
+            )
             .filter(ProcurementRequest.is_deleted.is_(False))
+            .join(Branch, Branch.id == ProcurementRequest.branch_id)
+            .join(Directorate, Directorate.id == ProcurementRequest.directorate_id)
+            .join(Division, Division.id == ProcurementRequest.division_id)
+            .join(Department, Department.id == ProcurementRequest.department_id)
+            .join(Reference, Reference.id == ProcurementRequest.reference_id)
+            .join(Employee, Employee.id == ProcurementRequest.requester_id)
             .order_by(ProcurementRequest.transaction_date.desc())
         )
 
