@@ -1,4 +1,4 @@
-from marshmallow import EXCLUDE, Schema, fields
+from marshmallow import EXCLUDE, Schema, fields, validate
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from eproc.models.procurement_requests import ProcurementRequest
@@ -75,3 +75,22 @@ class ProcurementRequestDetailGetInputSchema(Schema):
     class Meta:
         ordered = True
         uniknown = EXCLUDE
+
+
+class ProcurementRequestPostInputSchema(Schema):
+    branch_id = fields.String(required=True)
+    directorate_id = fields.String(required=True)
+    division_id = fields.String(required=True)
+    department_id = fields.String(required=True)
+    preparer_id = fields.String(required=True)
+    requester_id = fields.String(required=True)
+    year = fields.Integer(required=True)
+    month = fields.Integer(required=True)
+    item_class_id = fields.String(required=True)
+    item_category_id = fields.String(required=True)
+    item_list = fields.List(fields.Dict(), required=True)
+    description = fields.String(validate=validate.Length(max=120))
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE

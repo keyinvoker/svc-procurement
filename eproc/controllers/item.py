@@ -43,7 +43,7 @@ class ItemController:
 
         if id_list:
             query = query.filter(Item.id.in_(id_list))
-        
+        print("\ntriggered\n")
         if item_category_id:
             query = query.filter(
                 Item.item_category_id == item_category_id

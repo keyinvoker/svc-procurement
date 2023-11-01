@@ -9,6 +9,7 @@ from eproc.helpers.commons import split_string_into_list
 from eproc.schemas.procurement_requests import (
     ProcurementRequestGetInputSchema,
     ProcurementRequestDetailGetInputSchema,
+    ProcurementRequestPostInputSchema,
 )
 from eproc.tools.response import make_json_response
 from eproc.tools.validation import schema_validate_and_load
@@ -55,6 +56,36 @@ class ProcurementRequestResource(Resource):
         except Exception as e:
             error_logger.error(f"Error on Procurement Request [GET] :: {e}, {format_exc()}")
             return make_json_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+        
+    def post(self):
+        try:
+            return HTTPStatus.OK, "", request.get_json()
+            input_data = request.get_json()
+
+            schema = ProcurementRequestPostInputSchema()
+
+            is_valid, response, payload = schema_validate_and_load(
+                schema=schema,
+                payload=input_data,
+            )
+            if not is_valid:
+                return response
+
+            from eproc import app_logger
+            app_logger.info(f"Procurement Request [POST] :: payload: {payload}")
+
+            http_status, message = self.controller.create(**payload)
+
+            return make_json_response(
+                http_status=http_status,
+                message=message,
+                data=payload
+            )
+        except Exception as e:
+            error_logger.error(f"Error on Procurement Request [POST] :: {e}, {format_exc()}")
+            return make_json_response(
+                HTTPStatus.INTERNAL_SERVER_ERROR
+            )
 
 
 class ProcurementRequestDetailResource(Resource):

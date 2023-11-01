@@ -251,3 +251,39 @@ class ProcurementRequestController:
             data,
             total
         )
+    
+    def create(self, **kwargs):
+
+        branch_id = kwargs.get("branch_id")
+        directorate_id = kwargs.get("directorate_id")
+        division_id = kwargs.get("division_id")
+        department_id = kwargs.get("department_id")
+        preparer_id = kwargs.get("preparer_id")
+        requester_id = kwargs.get("requester_id")
+        year = kwargs.get("year")
+        month = kwargs.get("month")
+        item_class_id = kwargs.get("item_class_id")
+        item_category_id = kwargs.get("item_category_id")
+        item_list = kwargs.get("item_list")
+        description = kwargs.get("description")
+
+        ProcurementRequest(
+            branch_id=branch_id,
+            directorate_id=directorate_id,
+            division_id=division_id,
+            department_id=department_id,
+            preparer_id=preparer_id,
+            requester_id=requester_id,
+            year=year,
+            month=month,
+            item_class_id=item_class_id,
+            item_category_id=item_category_id,
+            description=description,
+        )
+
+        for item in item_list:
+            ProcurementRequestItem(
+                
+            )
+
+        return HTTPStatus.OK, ""

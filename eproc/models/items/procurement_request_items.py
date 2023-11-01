@@ -19,14 +19,15 @@ class ProcurementRequestItem(BaseModel):
     # TODO: field names
     aprqt = sa.Column("aprqt", sa.Numeric(18, 2), nullable=False)
     esprc = sa.Column("esprc", sa.Numeric(22, 2), nullable=False, default=0, server_default="0")
-    reqit = sa.Column("reqit", sa.Integer(), nullable=False)
+    required_days_interval = sa.Column(sa.Integer(), nullable=False)
     requested_at = sa.Column(
         sa.DateTime(timezone=True),
         default=wibnow(),
         server_default=WIBNow(),
         nullable=False,
     )
-    item_description = sa.Column(sa.String(500))
+    notes = sa.Column(sa.String(500))
+
     ktuck = sa.Column("ktuck", sa.Integer())
     gmkck = sa.Column("gmkck", sa.Integer())
     uhock = sa.Column("uhock", sa.Integer())
