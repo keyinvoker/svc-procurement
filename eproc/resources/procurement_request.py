@@ -59,7 +59,6 @@ class ProcurementRequestResource(Resource):
         
     def post(self):
         try:
-            return HTTPStatus.OK, "", request.get_json()
             input_data = request.get_json()
 
             schema = ProcurementRequestPostInputSchema()
@@ -71,15 +70,12 @@ class ProcurementRequestResource(Resource):
             if not is_valid:
                 return response
 
-            from eproc import app_logger
-            app_logger.info(f"Procurement Request [POST] :: payload: {payload}")
-
-            http_status, message = self.controller.create(**payload)
+            http_status, message, data = self.controller.create(**payload)
 
             return make_json_response(
                 http_status=http_status,
                 message=message,
-                data=payload
+                data=data,
             )
         except Exception as e:
             error_logger.error(f"Error on Procurement Request [POST] :: {e}, {format_exc()}")

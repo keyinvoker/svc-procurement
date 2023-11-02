@@ -252,7 +252,10 @@ class ProcurementRequestController:
             total
         )
     
-    def create(self, **kwargs):
+    def create(self, **kwargs) -> Tuple[HTTPStatus, str, Optional[dict]]:
+
+        message = "Berhasil menambahkan PR"
+        data = None
 
         branch_id = kwargs.get("branch_id")
         directorate_id = kwargs.get("directorate_id")
@@ -262,28 +265,86 @@ class ProcurementRequestController:
         requester_id = kwargs.get("requester_id")
         year = kwargs.get("year")
         month = kwargs.get("month")
+        description = kwargs.get("description")
         item_class_id = kwargs.get("item_class_id")
         item_category_id = kwargs.get("item_category_id")
-        item_list = kwargs.get("item_list")
-        description = kwargs.get("description")
+        item_list: List[dict] = kwargs.get("item_list")
 
-        ProcurementRequest(
-            branch_id=branch_id,
-            directorate_id=directorate_id,
-            division_id=division_id,
-            department_id=department_id,
-            preparer_id=preparer_id,
-            requester_id=requester_id,
-            year=year,
-            month=month,
-            item_class_id=item_class_id,
-            item_category_id=item_category_id,
-            description=description,
+        print("1")
+
+        cost_center_id = ItemCategory.query.with_entities(ItemCategory.cost_center_id).filter(ItemCategory.id == item_category_id).first().cost_center_id
+        print("2")
+
+        latest_sequence_number = func.coalesce(
+            func.max(ProcurementRequest.sequence_number), 0
+        ).label("latest_sequence_number")
+
+        sequence = (
+            ProcurementRequest.query
+            .with_entities(latest_sequence_number)
+            .filter(
+                ProcurementRequest.year == year,
+                ProcurementRequest.month == month,
+            )
+            .first()
+        )
+        print("3: TODO: kenapa stuck di sini a?!")
+        return HTTPStatus.OK, "", dict(debug=sequence)
+        next_sequence_number = sequence.latest_sequence_number + 1
+        print("4")
+
+        procurement_request: ProcurementRequest = (
+            ProcurementRequest(
+                branch_id=branch_id,
+                directorate_id=directorate_id,
+                division_id=division_id,
+                department_id=department_id,
+                cost_center_id=cost_center_id,
+                preparer_id=preparer_id,
+                requester_id=requester_id,
+                year=year,
+                month=month,
+                description=description,
+                item_class_id=item_class_id,
+                item_category_id=item_category_id,
+                sequence_number=next_sequence_number,
+                transaction_type="REG",
+            )
         )
 
-        for item in item_list:
-            ProcurementRequestItem(
-                
-            )
+        procurement_request.save()
+        print("5")
 
-        return HTTPStatus.OK, ""
+        failed_item_ids: List[Optional[str]] = list()
+        failed_item_data: List[Optional[dict]] = list()
+        for item in item_list:
+            print("6")
+            try:
+                item_id = item.get("item_id")
+                unit_of_measurement = item.get("unit_of_measurement")
+                quantity = item.get("quantity")
+                required_date = item.get("required_date")
+                notes = item.get("notes")
+
+                ProcurementRequestItem(
+                    procurement_request_id=procurement_request.id,
+                    item_id=item_id,
+                    unit_of_measurement=unit_of_measurement,
+                    quantity=quantity,
+                    required_date=required_date,
+                    notes=notes,
+                ).save()
+
+            except Exception:
+                failed_item_ids.append(item_id)
+                failed_item_data.append(item)
+                continue
+        
+        if failed_item_ids:
+            message += f", gagal menambahkan barang dengan ID: {failed_item_ids}"
+            data = dict(failed_item_data=failed_item_data)
+        else:
+            message += " dan semua barang."
+
+        print("7")
+        return HTTPStatus.OK, message, data

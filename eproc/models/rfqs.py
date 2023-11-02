@@ -27,7 +27,7 @@ class RFQ(BaseModel):
     description = sa.Column(sa.String(500), nullable=False)
     app_source = sa.Column(sa.String(20), nullable=False)
 
-    sqenc = sa.Column("sqenc", sa.Integer(), nullable=False)
+    sequence_number = sa.Column(sa.Integer(), nullable=False)
     dref1 = sa.Column(sa.String(100))
     dref2 = sa.Column(sa.String(100))
     dref3 = sa.Column(sa.String(100))

@@ -34,7 +34,7 @@ class PurchaseOrder(BaseModel):
     paypd = sa.Column("paypd", sa.String(20), nullable=False)
     paynt = sa.Column("paynt", sa.String(200), nullable=False)
 
-    sqenc = sa.Column("sqenc", sa.Integer(), nullable=False)
+    sequence_number = sa.Column(sa.Integer(), nullable=False)
     dref1 = sa.Column(sa.String(100))
     dref2 = sa.Column(sa.String(100))
     dref3 = sa.Column(sa.String(100))

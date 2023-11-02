@@ -29,7 +29,7 @@ class PriceComparison(BaseModel):
     recom = sa.Column("recom", sa.String(1000))
     plfon = sa.Column("plfon", sa.Integer())
 
-    sqenc = sa.Column("sqenc", sa.Integer(), nullable=False)
+    sequence_number = sa.Column(sa.Integer(), nullable=False)
     flag1 = sa.Column(sa.String(15))
     flag2 = sa.Column(sa.String(15))
     dref1 = sa.Column(sa.String(100))

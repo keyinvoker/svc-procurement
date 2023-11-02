@@ -8,6 +8,8 @@ from eproc.models.items.item_classes import ItemClass
 
 
 class ItemAutoSchema(SQLAlchemyAutoSchema):
+    required_days_interval = fields.Integer()
+
     @post_dump
     def parse_data(self, data: dict, **kwargs):
         for key, value in data.items():

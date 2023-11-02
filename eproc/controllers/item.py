@@ -7,6 +7,7 @@ from eproc import error_logger
 from eproc.models.items.items import Item
 from eproc.models.items.item_categories import ItemCategory
 from eproc.models.items.item_classes import ItemClass
+from eproc.models.items.procurement_request_items import ProcurementRequestItem
 from eproc.schemas.items.items import (
     ItemAutoSchema,
     ItemCategoryAutoSchema,
@@ -34,6 +35,23 @@ class ItemController:
 
         query = (
             Item.query
+            .with_entities(
+                Item.id,
+                Item.description,
+                Item.unit_of_measurement,
+                Item.minimum_quantity,
+                Item.slavl,
+                Item.tags,
+                Item.is_active,
+                Item.created_at,
+                Item.updated_at,
+                Item.updated_by,
+                ProcurementRequestItem.required_days_interval
+            )
+            .outerjoin(
+                ProcurementRequestItem,
+                ProcurementRequestItem.item_id == Item.id
+            )
             .filter(
                 Item.is_active.is_(True),
                 Item.is_deleted.is_(False),
@@ -108,7 +126,8 @@ class ItemController:
         if not results:
             return (
                 HTTPStatus.NOT_FOUND,
-                f"Tidak ditemukan Kategori Barang dengan id Kelas Barang: {item_class_id}."
+                f"Tidak ditemukan Kategori Barang dengan id Kelas Barang: {item_class_id}.",
+                None
             )
         
         data = self.category_many_schema.dump(results)

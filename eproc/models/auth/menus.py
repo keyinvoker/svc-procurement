@@ -24,5 +24,5 @@ class Menu(BaseModel):
     appfl = sa.Column("appfl", sa.String(100))
     rejfl = sa.Column("rejfl", sa.String(100))
     appif = sa.Column("appif", sa.Boolean(), nullable=False)
-    sqenc = sa.Column("sqenc", sa.Integer(), nullable=False)
+    sequence_number = sa.Column(sa.Integer(), nullable=False)
     is_active = sa.Column(sa.Boolean(), nullable=False, default=True, server_default="true")
