@@ -22,7 +22,7 @@ from eproc.models.companies.directorates import Directorate
 from eproc.models.companies.divisions import Division
 from eproc.models.companies.groups import Group
 
-# # Vendors
+# Vendors
 from eproc.models.vendors.vendors import Vendor
 
 # Items
@@ -41,9 +41,13 @@ from eproc.models.procurement_requests import ProcurementRequest
 # Purchase Orders
 from eproc.models.purchase_orders.purchase_orders import PurchaseOrder
 
+# Invoices
+from eproc.models.invoices import Invoice
+
 # Assessments
 from eproc.models.assessments.vendor_assessments import VendorAssessment
 from eproc.models.assessments.procurement_request_assessments import ProcurementRequestAssessment
+from eproc.models.assessments.invoice_assessments import InvoiceAssessment
 
 # (ungrouped)
 from eproc.models.cost_centers import CostCenter

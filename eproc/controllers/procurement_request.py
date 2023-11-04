@@ -1,3 +1,4 @@
+from datetime import datetime
 from http import HTTPStatus
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
@@ -6,7 +7,10 @@ from traceback import format_exc
 from typing import List, Optional, Tuple
 
 from eproc import error_logger
-from eproc.models.assessments.procurement_request_assessments import ProcurementRequestAssessment
+from eproc.helpers.procurement_request import get_next_sequence_number
+from eproc.models.assessments.procurement_request_assessments import (
+    ProcurementRequestAssessment
+)
 from eproc.models.companies.branches import Branch
 from eproc.models.companies.directorates import Directorate
 from eproc.models.companies.divisions import Division
@@ -19,7 +23,9 @@ from eproc.models.procurement_requests import ProcurementRequest
 from eproc.models.references import Reference
 from eproc.models.users.employees import Employee
 from eproc.models.users.users import User
-from eproc.schemas.items.procurement_request_items import ProcurementRequestItemAutoSchema
+from eproc.schemas.items.procurement_request_items import (
+    ProcurementRequestItemAutoSchema
+)
 from eproc.schemas.procurement_requests import (
     ProcurementRequestAutoSchema,
     ProcurementRequestDetailSchema,
@@ -270,28 +276,11 @@ class ProcurementRequestController:
         item_category_id = kwargs.get("item_category_id")
         item_list: List[dict] = kwargs.get("item_list")
 
-        print("1")
 
         cost_center_id = ItemCategory.query.with_entities(ItemCategory.cost_center_id).filter(ItemCategory.id == item_category_id).first().cost_center_id
-        print("2")
 
-        latest_sequence_number = func.coalesce(
-            func.max(ProcurementRequest.sequence_number), 0
-        ).label("latest_sequence_number")
-
-        sequence = (
-            ProcurementRequest.query
-            .with_entities(latest_sequence_number)
-            .filter(
-                ProcurementRequest.year == year,
-                ProcurementRequest.month == month,
-            )
-            .first()
-        )
-        print("3: TODO: kenapa stuck di sini a?!")
-        return HTTPStatus.OK, "", dict(debug=sequence)
-        next_sequence_number = sequence.latest_sequence_number + 1
-        print("4")
+        next_sequence_number = get_next_sequence_number(year, month)
+        print(f"next_sequence_number = {next_sequence_number}")
 
         procurement_request: ProcurementRequest = (
             ProcurementRequest(
@@ -302,6 +291,7 @@ class ProcurementRequestController:
                 cost_center_id=cost_center_id,
                 preparer_id=preparer_id,
                 requester_id=requester_id,
+                updated_by=preparer_id,
                 year=year,
                 month=month,
                 description=description,
@@ -313,14 +303,13 @@ class ProcurementRequestController:
         )
 
         procurement_request.save()
-        print("5")
+        print(f"procurement_request.id = {procurement_request.id}")
 
         failed_item_ids: List[Optional[str]] = list()
         failed_item_data: List[Optional[dict]] = list()
-        for item in item_list:
-            print("6")
+        for index, item in enumerate(item_list):
             try:
-                item_id = item.get("item_id")
+                item_id = item.get("id")
                 unit_of_measurement = item.get("unit_of_measurement")
                 quantity = item.get("quantity")
                 required_date = item.get("required_date")
@@ -329,13 +318,19 @@ class ProcurementRequestController:
                 ProcurementRequestItem(
                     procurement_request_id=procurement_request.id,
                     item_id=item_id,
+                    lnnum=(index + 1),
                     unit_of_measurement=unit_of_measurement,
                     quantity=quantity,
                     required_date=required_date,
+                    required_days_interval=datetime.fromisoformat(required_date).replace(tzinfo=None),
                     notes=notes,
+                    currency_id="IDR",
+                    aprqt=0,  # TODO: field gak guna
                 ).save()
 
-            except Exception:
+            except Exception as e:
+                error_logger.error(f"Failed to add PR Item :: {e}, data: {item}")
+
                 failed_item_ids.append(item_id)
                 failed_item_data.append(item)
                 continue
@@ -346,5 +341,4 @@ class ProcurementRequestController:
         else:
             message += " dan semua barang."
 
-        print("7")
         return HTTPStatus.OK, message, data

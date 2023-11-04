@@ -31,7 +31,7 @@ class ProcurementRequest(BaseModel):
     month = sa.Column(sa.Integer(), nullable=False)
     description = sa.Column(sa.String(500))
     document_number = sa.Column(sa.String(20))
-    app_source = sa.Column(sa.String(20))
+    app_source = sa.Column(sa.String(20), default="epro", server_default="epro")
     is_ugn = sa.Column(sa.Boolean(), nullable=False, default=False, server_default="false")
 
     allcn = sa.Column("allcn", sa.String(50))

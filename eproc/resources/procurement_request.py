@@ -1,4 +1,4 @@
-from flask import Response, request
+from flask import Response, g, request
 from flask_restful import Resource
 from http import HTTPStatus
 from traceback import format_exc
@@ -11,6 +11,7 @@ from eproc.schemas.procurement_requests import (
     ProcurementRequestDetailGetInputSchema,
     ProcurementRequestPostInputSchema,
 )
+from eproc.tools.decorator import validate_token
 from eproc.tools.response import make_json_response
 from eproc.tools.validation import schema_validate_and_load
 
@@ -56,7 +57,8 @@ class ProcurementRequestResource(Resource):
         except Exception as e:
             error_logger.error(f"Error on Procurement Request [GET] :: {e}, {format_exc()}")
             return make_json_response(HTTPStatus.INTERNAL_SERVER_ERROR)
-        
+
+    @validate_token
     def post(self):
         try:
             input_data = request.get_json()
@@ -69,6 +71,8 @@ class ProcurementRequestResource(Resource):
             )
             if not is_valid:
                 return response
+            
+            payload["preparer_id"] = g.user_id
 
             http_status, message, data = self.controller.create(**payload)
 

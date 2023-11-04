@@ -14,13 +14,13 @@ class ProcurementRequestItem(BaseModel):
     item_id = sa.Column(sa.String(20), sa.ForeignKey("items.id"), nullable=False)
     currency_id = sa.Column(sa.String(20), sa.ForeignKey("currencies.id"), nullable=False)
     unit_of_measurement = sa.Column(sa.String(20), nullable=False)
-    item_quantity = sa.Column(sa.Numeric(18, 2), nullable=False)
+    quantity = sa.Column(sa.Numeric(18, 2), nullable=False)
 
     # TODO: field names
     aprqt = sa.Column("aprqt", sa.Numeric(18, 2), nullable=False)
     esprc = sa.Column("esprc", sa.Numeric(22, 2), nullable=False, default=0, server_default="0")
     required_days_interval = sa.Column(sa.Integer(), nullable=False)
-    requested_at = sa.Column(
+    required_date = sa.Column(
         sa.DateTime(timezone=True),
         default=wibnow(),
         server_default=WIBNow(),
