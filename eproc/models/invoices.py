@@ -10,6 +10,7 @@ class Invoice(BaseModel):
     __tablename__ = "invoices"
 
     id = sa.Column(sa.BigInteger(), primary_key=True, autoincrement=True)
+    purchase_order_id = sa.Column(sa.BigInteger(), sa.ForeignKey("purchase_orders.id"))
     vendor_id = sa.Column(sa.String(100), sa.ForeignKey("vendors.id"), nullable=False)
     cost_center_id = sa.Column(sa.String(20), sa.ForeignKey("cost_centers.id"))
     reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
@@ -30,7 +31,6 @@ class Invoice(BaseModel):
     invoice_number = sa.Column(sa.String(50))
     invoice_amount = sa.Column(sa.Numeric(38, 2), nullable=False, default=0.00, server_default="0.00")
     termin = sa.Column(sa.Integer(), nullable=False)
-    po_number = sa.Column(sa.BigInteger())
     document_number = sa.Column(sa.String(20))
     app_source = sa.Column(sa.String(20), default="epro", server_default="epro")
     description = sa.Column(sa.String(500))
@@ -45,6 +45,9 @@ class Invoice(BaseModel):
     flag2 = sa.Column(sa.String(15))
     temps = sa.Column(sa.String(100))
 
+    purchase_orders = db.relationship(
+        "PurchaseOrder", backref=backref(__tablename__, uselist=False)
+    )
     vendor = db.relationship(
         "Vendor", backref=backref(__tablename__, uselist=False)
     )

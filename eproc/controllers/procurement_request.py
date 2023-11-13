@@ -276,7 +276,6 @@ class ProcurementRequestController:
         item_category_id = kwargs.get("item_category_id")
         item_list: List[dict] = kwargs.get("item_list")
 
-
         cost_center_id = ItemCategory.query.with_entities(ItemCategory.cost_center_id).filter(ItemCategory.id == item_category_id).first().cost_center_id
 
         next_sequence_number = get_next_sequence_number(year, month)

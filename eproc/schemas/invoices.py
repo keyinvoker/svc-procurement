@@ -6,6 +6,10 @@ from eproc.models.invoices import Invoice
 
 
 class InvoiceAutoSchema(SQLAlchemyAutoSchema):
+    vendor_name = fields.String()
+    cost_center_description = fields.String()
+    reference_description = fields.String()
+
     @post_dump
     def parse_data(self, data: dict, **kwargs):
         for key, value in data.items():
@@ -42,6 +46,18 @@ class InvoiceGetInputSchema(Schema):
         dump_default=0,
         load_default=0,
     )
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
+class InvoicePostInputSchema(Schema):
+    purchase_order_id = fields.Integer(required=True)
+    invoice_number = fields.String(required=True)
+    invoice_date = fields.String(required=True)
+    invoice_image = fields.Raw(required=True)
+    description = fields.String()
 
     class Meta:
         ordered = True

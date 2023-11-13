@@ -27,20 +27,19 @@ class PurchaseOrder(BaseModel):
     app_source = sa.Column(sa.String(20), nullable=False)
 
     prtno = sa.Column("prtno", sa.BigInteger(), nullable=False)
-    discn = sa.Column("discn", sa.Numeric(18, 2), nullable=False)
-    pcppn = sa.Column("pcppn", sa.Numeric(18, 2), nullable=False)
-    paypd = sa.Column("paypd", sa.String(20), nullable=False)
-    paytm = sa.Column("paytm", sa.String(200), nullable=False)
-    paypd = sa.Column("paypd", sa.String(20), nullable=False)
-    paynt = sa.Column("paynt", sa.String(200), nullable=False)
+    discount = sa.Column(sa.Numeric(18, 2), nullable=False)
+    tax_percentage = sa.Column(sa.Numeric(18, 2), nullable=False)
+    payment_time = sa.Column(sa.String(200), nullable=False)
+    payment_period = sa.Column(sa.String(20), nullable=False)
+    payment_note = sa.Column(sa.String(200), nullable=False)
 
     sequence_number = sa.Column(sa.Integer(), nullable=False)
-    dref1 = sa.Column(sa.String(100))
+    dref1 = sa.Column(sa.String(100))  # NOTE: "PR Number" (according to existing app)
     dref2 = sa.Column(sa.String(100))
     dref3 = sa.Column(sa.String(100))
     flag1 = sa.Column(sa.String(15))
     flag2 = sa.Column(sa.String(15))
-    temps = sa.Column(sa.String(100))
+    temps = sa.Column(sa.String(100))  # NOTE: "Amount" (according to existing app)
 
     vendor = db.relationship(
         "Vendor", backref=backref(__tablename__, uselist=False)
