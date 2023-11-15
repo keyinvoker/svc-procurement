@@ -54,10 +54,14 @@ class InvoiceGetInputSchema(Schema):
 
 class InvoicePostInputSchema(Schema):
     purchase_order_id = fields.Integer(required=True)
-    invoice_number = fields.String(required=True)
+    year = fields.Integer(required=True)
+    month = fields.Integer(required=True)
+    termin = fields.Integer(required=True)
     invoice_date = fields.String(required=True)
-    invoice_image = fields.Raw(required=True)
+    invoice_number = fields.String(required=True)
+    invoice_amount = fields.Float(required=True)
     description = fields.String()
+    tax_percentage = fields.Integer()
 
     class Meta:
         ordered = True

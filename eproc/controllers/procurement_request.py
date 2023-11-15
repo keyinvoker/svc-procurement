@@ -7,7 +7,7 @@ from traceback import format_exc
 from typing import List, Optional, Tuple
 
 from eproc import error_logger
-from eproc.helpers.procurement_request import get_next_sequence_number
+from eproc.helpers.commons import get_next_sequence_number
 from eproc.models.assessments.procurement_request_assessments import (
     ProcurementRequestAssessment
 )
@@ -278,8 +278,9 @@ class ProcurementRequestController:
 
         cost_center_id = ItemCategory.query.with_entities(ItemCategory.cost_center_id).filter(ItemCategory.id == item_category_id).first().cost_center_id
 
-        next_sequence_number = get_next_sequence_number(year, month)
-        print(f"next_sequence_number = {next_sequence_number}")
+        next_sequence_number = get_next_sequence_number(
+            ProcurementRequest, year, month
+        )
 
         procurement_request: ProcurementRequest = (
             ProcurementRequest(

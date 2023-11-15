@@ -61,14 +61,20 @@ class InvoiceResource(Resource):
     @validate_token
     def post(self):
         try:
-            file = request.files.get("file")
-            if not file:
-                return(
+            # print()
+            # print(request.files.to_dict())
+            # print()
+            invoice_image = (
+                request.files.to_dict()
+                .get("invoice_image")
+            )
+            if not invoice_image:
+                return make_json_response(
                     HTTPStatus.BAD_REQUEST,
                     "Mohon masukkan file."
                 )
 
-            input_data = request.form
+            input_data = request.form.to_dict()
 
             schema = InvoicePostInputSchema()
 
@@ -78,8 +84,9 @@ class InvoiceResource(Resource):
             )
             if not is_valid:
                 return response
-            
-            payload["preparer_id"] = g.user_id
+
+            payload["image_path"] = f"/path/to/{invoice_image}"
+            payload["updated_by"] = g.user_id
 
             http_status, message, data = self.controller.create(**payload)
 

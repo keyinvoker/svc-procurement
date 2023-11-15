@@ -9,7 +9,7 @@ from eproc.helpers.commons import wibnow
 class PurchaseOrder(BaseModel):
     __tablename__ = "purchase_orders"
 
-    id = sa.Column(sa.BigInteger(), primary_key=True)
+    id = sa.Column(sa.BigInteger(), primary_key=True, autoincrement=True)
     fcoid = sa.Column(sa.String(20))  # TODO: Foreign Key
     vendor_id = sa.Column(sa.String(20), sa.ForeignKey("vendors.id"), nullable=False)
     reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0)
