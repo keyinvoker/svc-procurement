@@ -1,8 +1,9 @@
 from datetime import datetime
-from flask_sqlalchemy import model
 from pytz import timezone
 from sqlalchemy.sql import func
 from typing import Dict, List
+
+from eproc import db
 
 
 def split_string_into_list(
@@ -22,7 +23,7 @@ def wibnow() -> datetime:
 
 
 def get_latest_sequence_number(
-    model: model.DefaultMeta,
+    model: db.Model,
     year: int,
     month: int
 ) -> int:
@@ -45,7 +46,7 @@ def get_latest_sequence_number(
 
 
 def get_next_sequence_number(
-    model: model.DefaultMeta,
+    model: db.Model,
     year: int,
     month: int
 ) -> int:
