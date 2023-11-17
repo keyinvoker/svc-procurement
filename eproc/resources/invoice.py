@@ -8,6 +8,7 @@ from eproc.controllers.invoice import InvoiceController
 from eproc.helpers.commons import split_string_into_list
 from eproc.models.invoices import Invoice
 from eproc.schemas.invoices import (
+    InvoiceDetailGetInputSchema,
     InvoiceGetInputSchema,
     InvoicePostInputSchema,
 )
@@ -61,9 +62,6 @@ class InvoiceResource(Resource):
     @validate_token
     def post(self):
         try:
-            # print()
-            # print(request.files.to_dict())
-            # print()
             invoice_image = (
                 request.files.to_dict()
                 .get("invoice_image")
@@ -108,8 +106,21 @@ class InvoiceDetailResource(Resource):
 
     def get(self) -> Response:
         try:
+            schema = InvoiceDetailGetInputSchema()
+
+            is_valid, response, payload = schema_validate_and_load(
+                schema=schema,
+                payload=request.args.to_dict(),
+            )
+            if not is_valid:
+                return response
+            
+            http_status, message, data = self.controller.get_detail(payload["id"])
+
             return construct_api_response(
-                self.controller(id)
+                http_status=http_status,
+                message=message,
+                data=data
             )
         except Exception as e:
             error_logger.error(f"Error on Invoice Detail [GET] :: {e}, {format_exc()}")
@@ -120,8 +131,6 @@ class InvoiceDetailResource(Resource):
 class InvoiceTerminResource(Resource):
     def get(self) -> Response:
         payload = request.args.to_dict()
-
-        print(payload)
 
         if not payload.get("purchase_order_id"):
             return construct_api_response(HTTPStatus.BAD_REQUEST, "Please input PO number.")

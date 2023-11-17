@@ -5,7 +5,10 @@ from eproc.helpers.commons import get_next_sequence_number
 from eproc.models.cost_centers import CostCenter
 from eproc.models.invoices import Invoice
 from eproc.models.references import Reference
+from eproc.models.cost_centers import CostCenter
 from eproc.models.vendors.vendors import Vendor
+from eproc.models.purchase_orders.purchase_orders import PurchaseOrder
+from eproc.models.references import Reference
 from eproc.schemas.invoices import (
     InvoiceSchema,
     InvoiceDetailSchema,
@@ -21,6 +24,33 @@ class InvoiceController:
     def get_detail(self, id: int) -> Tuple[HTTPStatus, str, Optional[dict]]:
         invoice: Invoice = (
             Invoice.query
+            .with_entities(
+                Invoice.id,
+                Invoice.purchase_order_id,
+                PurchaseOrder.document_number.label("purchase_order_document_number"),
+                PurchaseOrder.vendor_id.label("purchase_order_vendor_id"),
+                Vendor.name.label("purchase_order_vendor_name"),
+                Invoice.vendor_id,
+                Invoice.cost_center_id,
+                CostCenter.description.label("cost_center_description"),
+                Invoice.reference_id,
+                Reference.description.label("reference_description"),
+                Invoice.transaction_date,
+                Invoice.year,
+                Invoice.month,
+                Invoice.invoice_date,
+                Invoice.invoice_number,
+                Invoice.invoice_amount,
+                Invoice.termin,
+                Invoice.document_number,
+                Invoice.description,
+                # Invoice.image_path,
+                Invoice.tax_percentage,
+            )
+            .join(PurchaseOrder, PurchaseOrder.id == Invoice.purchase_order_id)
+            .join(Vendor, Vendor.id == PurchaseOrder.vendor_id)
+            .join(CostCenter, CostCenter.id == Invoice.cost_center_id)
+            .join(Reference, Reference.id == Invoice.reference_id)
             .filter(
                 Invoice.id == id,
                 Invoice.is_deleted.is_(False),
@@ -33,7 +63,7 @@ class InvoiceController:
                 f"Tidak ditemukan invoice dengan id: {id}",
                 None
             )
-        
+
         invoice_data = self.detail_schema.dump(invoice)
 
         return (

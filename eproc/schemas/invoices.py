@@ -31,6 +31,14 @@ class InvoiceSchema(InvoiceAutoSchema):
 
 
 class InvoiceDetailSchema(InvoiceAutoSchema):
+    purchase_order_document_number = fields.String()
+    # purchase_order_net_amount = fields.Float()  # TODO: ini dapat darimana hitungannya?!
+    purchase_order_vendor_id = fields.String()
+    purchase_order_vendor_name = fields.String()
+    purchase_order_document_number = fields.String()
+    cost_center_description = fields.String()
+    reference_description = fields.String()
+
     class Meta:
         ordered = True
         unknown = EXCLUDE
@@ -72,4 +80,11 @@ class InvoicePostInputSchema(Schema):
 
     class Meta:
         ordered = True
+        unknown = EXCLUDE
+
+
+class InvoiceDetailGetInputSchema(Schema):
+    id = fields.Integer(required=True)
+
+    class Meta:
         unknown = EXCLUDE

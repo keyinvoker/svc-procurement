@@ -303,7 +303,6 @@ class ProcurementRequestController:
         )
 
         procurement_request.save()
-        print(f"procurement_request.id = {procurement_request.id}")
 
         failed_item_ids: List[Optional[str]] = list()
         failed_item_data: List[Optional[dict]] = list()
