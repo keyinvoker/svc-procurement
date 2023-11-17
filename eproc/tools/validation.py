@@ -4,7 +4,7 @@ from marshmallow import Schema
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from typing import Optional, Tuple, Union
 
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 
 
 def schema_validate(
@@ -18,7 +18,7 @@ def schema_validate(
         if "_schema" in validation_error:
             validation_error["errors"] = validation_error["_schema"]
             del validation_error["_schema"]
-        return False, make_json_response(
+        return False, construct_api_response(
             http_status=HTTPStatus.BAD_REQUEST,
             message=message,
             data=validation_error

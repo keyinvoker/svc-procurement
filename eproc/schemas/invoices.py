@@ -30,6 +30,13 @@ class InvoiceSchema(InvoiceAutoSchema):
         exclude = ["image_path"]
 
 
+class InvoiceDetailSchema(InvoiceAutoSchema):
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+        include_fk = True
+
+
 class InvoiceGetInputSchema(Schema):
     id_list = fields.List(
         fields.Integer(),

@@ -6,13 +6,41 @@ from eproc.models.cost_centers import CostCenter
 from eproc.models.invoices import Invoice
 from eproc.models.references import Reference
 from eproc.models.vendors.vendors import Vendor
-from eproc.schemas.invoices import InvoiceSchema
+from eproc.schemas.invoices import (
+    InvoiceSchema,
+    InvoiceDetailSchema,
+)
 
 
 class InvoiceController:
     def __init__(self):
         self.schema = InvoiceSchema()
         self.many_schema = InvoiceSchema(many=True)
+        self.detail_schema = InvoiceDetailSchema()
+    
+    def get_detail(self, id: int) -> Tuple[HTTPStatus, str, Optional[dict]]:
+        invoice: Invoice = (
+            Invoice.query
+            .filter(
+                Invoice.id == id,
+                Invoice.is_deleted.is_(False),
+            )
+            .first()
+        )
+        if not invoice:
+            return (
+                HTTPStatus.NOT_FOUND,
+                f"Tidak ditemukan invoice dengan id: {id}",
+                None
+            )
+        
+        invoice_data = self.detail_schema.dump(invoice)
+
+        return (
+            HTTPStatus.OK,
+            "Invoice ditemukan.",
+            invoice_data,
+        )
     
     def get_list(
         self,

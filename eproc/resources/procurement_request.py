@@ -12,7 +12,7 @@ from eproc.schemas.procurement_requests import (
     ProcurementRequestPostInputSchema,
 )
 from eproc.tools.decorator import validate_token
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
@@ -49,14 +49,14 @@ class ProcurementRequestResource(Resource):
                 offset=payload["offset"],
             )
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data,
             )
         except Exception as e:
             error_logger.error(f"Error on Procurement Request [GET] :: {e}, {format_exc()}")
-            return make_json_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+            return construct_api_response(HTTPStatus.INTERNAL_SERVER_ERROR)
 
     @validate_token
     def post(self):
@@ -76,14 +76,14 @@ class ProcurementRequestResource(Resource):
 
             http_status, message, data = self.controller.create(**payload)
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data,
             )
         except Exception as e:
             error_logger.error(f"Error on Procurement Request [POST] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
@@ -107,13 +107,13 @@ class ProcurementRequestDetailResource(Resource):
                 http_status, message, data
             ) = self.controller.get_detail(payload["id"])
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data
             )
         except Exception as e:
             error_logger.error(f"Error on Procurement Request Detail [GET] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )

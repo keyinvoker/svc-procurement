@@ -9,7 +9,7 @@ from eproc.helpers.auth import (
 )
 from eproc.helpers.commons import wibnow
 from eproc.models.auth.user_tokens import UserToken
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 
 
 def validate_token(
@@ -20,14 +20,14 @@ def validate_token(
     def wrapper(*args, **kwargs) -> Union[Callable, Response]:
 
         if not request.headers.get("Authorization"):
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.UNAUTHORIZED,
                 "Token kosong."
             )
 
         split_token = request.headers.get("Authorization").split(" ")
         if split_token[0] != "Bearer":
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.UNAUTHORIZED,
                 "Token salah."
             )
@@ -41,13 +41,13 @@ def validate_token(
             .first()
         )
         if not user_token:
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.UNAUTHORIZED,
                 "Token salah."
             )
 
         if user_token.is_active is False:
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.UNAUTHORIZED,
                 "Token sudah kedaluwarsa."
             )
@@ -55,14 +55,14 @@ def validate_token(
             user_token.is_active = False
             user_token.update()
 
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.UNAUTHORIZED,
                 "Token sudah kedaluwarsa."
             )
 
         roles = get_user_roles(user_token.user_id)
         if not roles:
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.UNAUTHORIZED,
                 "User tidak memiliki role."
             )

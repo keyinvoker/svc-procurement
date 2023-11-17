@@ -5,7 +5,7 @@ from http import HTTPStatus
 from traceback import format_exc
 
 from eproc import error_logger
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 
 
 def check_db() -> bool:
@@ -53,14 +53,14 @@ class HealthzResource(Resource):
                 response["status"] = dict(database=is_db_healthy)
                 response["info"] = "Server healthy! No error detected."
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 data=response
             )
 
         except Exception as e:
             error_logger.error(f"Healthz [GET] :: error: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 data=response
             )

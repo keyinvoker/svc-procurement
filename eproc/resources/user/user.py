@@ -14,7 +14,7 @@ from eproc.schemas.users.users import (
     UserUnlockInputSchema,
 )
 from eproc.tools.decorator import validate_token
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
@@ -48,14 +48,14 @@ class UserResource(Resource):
                 offset=payload["offset"],
             )
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data
             )
         except Exception as e:
             error_logger.error(f"Error on User [GET] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
         
@@ -76,13 +76,13 @@ class UserResource(Resource):
 
             http_status, message = UserController().register_user(**payload)
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
             )
         except Exception as e:
             error_logger.error(f"Error on User [POST] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
@@ -103,14 +103,14 @@ class UserDetailResource(Resource):
                 http_status, message, data
             ) = UserController().get_detail(payload["id"])
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data
             )
         except Exception as e:
             error_logger.error(f"Error on User Detail [GET] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
@@ -123,14 +123,14 @@ class UserProfileResource(Resource):
                 http_status, message, data
             ) = UserController().get_detail(g.user_id)
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data
             )
         except Exception as e:
             error_logger.error(f"Error on User Profile [GET] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
@@ -151,11 +151,11 @@ class UserResetPasswordResource(Resource):
             http_status, message = UserController().reset_password(
                 payload["username"], payload["password"]
             )
-            return make_json_response(http_status, message)
+            return construct_api_response(http_status, message)
 
         except Exception as e:
             error_logger.error(f"Error on User Reset Password [POST] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
@@ -176,10 +176,10 @@ class UserUnlockResource(Resource):
             http_status, message = UserController().unlock(
                 payload["username"]
             )
-            return make_json_response(http_status, message)
+            return construct_api_response(http_status, message)
 
         except Exception as e:
             error_logger.error(f"Error on User Reset Password [POST] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )

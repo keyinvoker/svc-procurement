@@ -7,7 +7,7 @@ from eproc import error_logger
 from eproc.controllers.company.department import DepartmentController
 from eproc.helpers.commons import split_string_into_list
 from eproc.schemas.companies.departments import DepartmentGetInputSchema
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
@@ -41,13 +41,13 @@ class DepartmentResource(Resource):
                 offset=payload["offset"],
             )
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data
             )
         except Exception as e:
             error_logger.error(f"Error on Department [GET] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )

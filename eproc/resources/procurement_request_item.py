@@ -9,7 +9,7 @@ from eproc.helpers.commons import split_string_into_list
 from eproc.schemas.items.procurement_request_items import (
     ProcurementRequesItemGetInputSchema
 )
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
@@ -39,11 +39,11 @@ class ProcurementRequestItemResource(Resource):
                 offset=payload["offset"],
             )
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data,
             )
         except Exception as e:
             error_logger.error(f"Error on PR Item [GET] :: {e}, {format_exc()}")
-            return make_json_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+            return construct_api_response(HTTPStatus.INTERNAL_SERVER_ERROR)

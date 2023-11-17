@@ -13,7 +13,7 @@ from eproc.schemas.vendors.vendors import (
     VendorPostInputSchema,
     VendorPutInputSchema,
 )
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
@@ -47,14 +47,14 @@ class VendorResource(Resource):
                 offset=payload["offset"],
             )
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data
             )
         except Exception as e:
             error_logger.error(f"Error on Vendor [GET] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
     
@@ -72,12 +72,12 @@ class VendorResource(Resource):
 
             VendorController().insert(payload_list)
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=HTTPStatus.OK
             )
         except Exception as e:
             error_logger.error(f"Error on Vendor [POST] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
@@ -95,12 +95,12 @@ class VendorResource(Resource):
             
             VendorController().update(**payload)
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=HTTPStatus.OK
             )
         except Exception as e:
             error_logger.error(f"Error on Vendor [PUT] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
@@ -116,12 +116,12 @@ class VendorResource(Resource):
             if not is_valid:
                 return response
 
-            return make_json_response(
+            return construct_api_response(
                 VendorController().delete(payload["item_id_list"])
             )
         except Exception as e:
             error_logger.error(f"Error on Vendor [DELETE] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
@@ -142,13 +142,13 @@ class VendorDetailResource(Resource):
                 http_status, message, data
             ) = VendorController().get_detail(payload["id"])
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data
             )
         except Exception as e:
             error_logger.error(f"Error on Vendor Detail [GET] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )

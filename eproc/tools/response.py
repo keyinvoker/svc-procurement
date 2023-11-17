@@ -3,10 +3,7 @@ from flask import Response
 from http import HTTPStatus
 from typing import Optional, Union
 
-from eproc.schemas.response import (
-    DefaultResponseSchema,
-    DefaultStringResponseSchema,
-)
+from eproc.schemas.response import DefaultResponseSchema
 
 default_messages: dict = {
     status: status.name.replace("_", " ").title()
@@ -14,7 +11,7 @@ default_messages: dict = {
 }
 
 
-def make_json_response(
+def construct_api_response(
     http_status: Union[HTTPStatus, int],
     message: str = "",
     data: Optional[dict] = None,
@@ -23,25 +20,9 @@ def make_json_response(
     if not message:
         message = default_messages[http_status]
 
-    if data:
-        if data == {}:
-            if len(data) > 0:
-                response_data = DefaultResponseSchema().dump(
-                    {"message": message, "code": http_status.value}
-                )
-                response_data["data"] = data
-        else:
-            response_data = DefaultStringResponseSchema().dump(
-                {"message": message, "code": http_status.value, "data": data}
-            )
-    elif data == []:
-        response_data = DefaultStringResponseSchema().dump(
-            {"message": message, "code": http_status.value, "data": data}
-        )
-    else:
-        response_data = DefaultResponseSchema().dump(
-            {"message": message, "code": http_status.value, "data": data}
-        )
+    response_data = DefaultResponseSchema().dump(
+        {"status": http_status.value, "message": message, "data": data}
+    )
 
     return Response(
         response=json.dumps(response_data),

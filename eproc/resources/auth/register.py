@@ -6,7 +6,7 @@ from traceback import format_exc
 from eproc import error_logger
 from eproc.controllers.auth.register import RegisterController
 from eproc.schemas.auth.register import RegisterInputSchema
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
@@ -23,7 +23,7 @@ class RegisterResource(Resource):
             if not is_valid:
                 return response
 
-            return make_json_response(
+            return construct_api_response(
                 RegisterController().register(
                     name=payload["name"],
                     employee_identification_number=payload["employee_identification_number"],
@@ -33,6 +33,6 @@ class RegisterResource(Resource):
             )
         except Exception as e:
             error_logger.error(f"Error on Register [POST] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )

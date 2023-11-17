@@ -11,7 +11,7 @@ from eproc.schemas.users.employees import (
     EmployeeGetInputSchema,
 )
 from eproc.tools.decorator import validate_token
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
@@ -45,14 +45,14 @@ class EmployeeResource(Resource):
                 offset=payload["offset"],
             )
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data
             )
         except Exception as e:
             error_logger.error(f"Error on Employee [GET] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
@@ -73,13 +73,13 @@ class EmployeeDetailResource(Resource):
                 http_status, message, data
             ) = EmployeeController().get_detail(payload["id"])
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data
             )
         except Exception as e:
             error_logger.error(f"Error on Employee Detail [GET] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )

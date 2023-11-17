@@ -12,7 +12,7 @@ from eproc.schemas.invoices import (
     InvoicePostInputSchema,
 )
 from eproc.tools.decorator import validate_token
-from eproc.tools.response import make_json_response
+from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
@@ -49,14 +49,14 @@ class InvoiceResource(Resource):
                 offset=payload["offset"],
             )
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data,
             )
         except Exception as e:
             error_logger.error(f"Error on Invoice [GET] :: {e}, {format_exc()}")
-            return make_json_response(HTTPStatus.INTERNAL_SERVER_ERROR)
+            return construct_api_response(HTTPStatus.INTERNAL_SERVER_ERROR)
     
     @validate_token
     def post(self):
@@ -69,7 +69,7 @@ class InvoiceResource(Resource):
                 .get("invoice_image")
             )
             if not invoice_image:
-                return make_json_response(
+                return construct_api_response(
                     HTTPStatus.BAD_REQUEST,
                     "Mohon masukkan file."
                 )
@@ -90,17 +90,32 @@ class InvoiceResource(Resource):
 
             http_status, message, data = self.controller.create(**payload)
 
-            return make_json_response(
+            return construct_api_response(
                 http_status=http_status,
                 message=message,
                 data=data,
             )
         except Exception as e:
             error_logger.error(f"Error on Invoice [POST] :: {e}, {format_exc()}")
-            return make_json_response(
+            return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
 
+
+class InvoiceDetailResource(Resource):
+    def __init__(self):
+        self.controller = InvoiceController()
+
+    def get(self) -> Response:
+        try:
+            return construct_api_response(
+                self.controller(id)
+            )
+        except Exception as e:
+            error_logger.error(f"Error on Invoice Detail [GET] :: {e}, {format_exc()}")
+            return construct_api_response(
+                HTTPStatus.INTERNAL_SERVER_ERROR
+            )
 
 class InvoiceTerminResource(Resource):
     def get(self) -> Response:
@@ -109,7 +124,7 @@ class InvoiceTerminResource(Resource):
         print(payload)
 
         if not payload.get("purchase_order_id"):
-            return make_json_response(HTTPStatus.BAD_REQUEST, "Please input PO number.")
+            return construct_api_response(HTTPStatus.BAD_REQUEST, "Please input PO number.")
 
         invoice: Invoice = (
             Invoice.query
@@ -128,4 +143,4 @@ class InvoiceTerminResource(Resource):
 
         data = dict(next_termin=next_termin)
 
-        return make_json_response(HTTPStatus.OK, "", data)
+        return construct_api_response(HTTPStatus.OK, "", data)
