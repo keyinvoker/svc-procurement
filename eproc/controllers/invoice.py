@@ -204,10 +204,11 @@ class InvoiceController:
             )
 
         if (
-            invoice_date == str(invoice.invoice_date)
-            and invoice_number == invoice.invoice_number
-            and invoice_amount == invoice.invoice_amount
-            and image_path == invoice.image_path
+            (not invoice_date or invoice_date == str(invoice.invoice_date))
+            and (not invoice_number or invoice_number == invoice.invoice_number)
+            and (not invoice_amount or invoice_amount == invoice.invoice_amount)
+            and (not image_path or image_path == invoice.image_path)
+            and (not description or description == invoice.description)
         ):
             return (
                 HTTPStatus.OK,
@@ -223,8 +224,9 @@ class InvoiceController:
             invoice.invoice_amount = invoice_amount
         if image_path:
             invoice.image_path = image_path
+        if description:
+            invoice.description = description
 
-        invoice.description = description
         invoice.updated_by = updated_by
         invoice.update()
 
