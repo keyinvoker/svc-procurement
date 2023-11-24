@@ -11,6 +11,7 @@ from eproc.schemas.invoices import (
     InvoiceDetailGetInputSchema,
     InvoiceGetInputSchema,
     InvoicePostInputSchema,
+    InvoicePutInputSchema,
 )
 from eproc.tools.decorator import validate_token
 from eproc.tools.response import construct_api_response
@@ -95,6 +96,38 @@ class InvoiceResource(Resource):
             )
         except Exception as e:
             error_logger.error(f"Error on Invoice [POST] :: {e}, {format_exc()}")
+            return construct_api_response(
+                HTTPStatus.INTERNAL_SERVER_ERROR
+            )
+
+    @validate_token
+    def put(self) -> Response:
+        try:
+            invoice_image = (
+                request.files.to_dict()
+                .get("invoice_image")
+            )
+            input_data = request.form.to_dict()
+
+            schema = InvoicePutInputSchema()
+
+            is_valid, response, payload = schema_validate_and_load(
+                schema=schema,
+                payload=input_data,
+            )
+            if not is_valid:
+                return response
+
+            payload["image_path"] = f"/path/to/{invoice_image}"
+            payload["updated_by"] = g.user_id
+
+            http_status, message, data = self.controller.update(**payload)
+
+            return construct_api_response(
+                http_status, message, data
+            )
+        except Exception as e:
+            error_logger.error(f"Error on Invoice [PUT] :: {e}, {format_exc()}")
             return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )

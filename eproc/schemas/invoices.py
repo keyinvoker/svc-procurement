@@ -83,6 +83,18 @@ class InvoicePostInputSchema(Schema):
         unknown = EXCLUDE
 
 
+class InvoicePutInputSchema(Schema):
+    id = fields.Integer(required=True)
+    invoice_date = fields.String(required=True)
+    invoice_number = fields.String(required=True)
+    invoice_amount = fields.Float(required=True)
+    description = fields.String()
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
 class InvoiceDetailGetInputSchema(Schema):
     id = fields.Integer(required=True)
 

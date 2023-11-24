@@ -178,3 +178,46 @@ class InvoiceController:
             "Invoice baru berhasil ditambahkan.",
             self.schema.dump(invoice)
         )
+
+    def update(self, **kwargs) -> Tuple[HTTPStatus, str, Optional[dict]]:
+        id = kwargs.get("id")
+        invoice_date = kwargs.get("invoice_date")
+        invoice_number = kwargs.get("invoice_number")
+        invoice_amount = kwargs.get("invoice_amount")
+        image_path = kwargs.get("image_path")
+        description = kwargs.get("description")
+        updated_by = kwargs.get("updated_by")
+
+        invoice: Invoice = (
+            Invoice.query
+            .filter(
+                Invoice.id == id,
+                Invoice.is_deleted.is_(False)
+            )
+            .first()
+        )
+        if not invoice:
+            return (
+                HTTPStatus.NOT_FOUND,
+                f"Invoice dengan id {id} tidak ditemukan.",
+                None
+            )
+        
+        if invoice_date:
+            invoice.invoice_date = invoice_date
+        if invoice_number:
+            invoice.invoice_number = invoice_number
+        if invoice_amount:
+            invoice.invoice_amount = invoice_amount
+        if image_path:
+            invoice.image_path = image_path
+
+        invoice.description = description
+        invoice.updated_by = updated_by
+        invoice.update()
+
+        return (
+            HTTPStatus.OK,
+            "Invoice berhasil diperbarui.",
+            self.schema.dump(invoice)
+        )
