@@ -197,7 +197,7 @@ class InvoiceController:
         ):
             return (
                 HTTPStatus.BAD_REQUEST,
-                "Tidak ada data yang dimasukkan.",
+                "Tidak ada data yang diubah.",
                 None,
             )
 
