@@ -202,7 +202,19 @@ class InvoiceController:
                 f"Invoice dengan id {id} tidak ditemukan.",
                 None
             )
-        
+
+        if (
+            invoice_date == str(invoice.invoice_date)
+            and invoice_number == invoice.invoice_number
+            and invoice_amount == invoice.invoice_amount
+            and image_path == invoice.image_path
+        ):
+            return (
+                HTTPStatus.OK,
+                "Invoice tidak perlu diperbarui.",
+                None,
+            )
+
         if invoice_date:
             invoice.invoice_date = invoice_date
         if invoice_number:
