@@ -85,7 +85,7 @@ class InvoicePostInputSchema(Schema):
 
 class InvoicePutInputSchema(Schema):
     id = fields.Integer(required=True)
-    invoice_date = fields.String()
+    invoice_date = fields.DateTime()
     invoice_number = fields.String()
     invoice_amount = fields.Float()
     description = fields.String()
