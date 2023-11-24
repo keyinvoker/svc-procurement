@@ -184,9 +184,22 @@ class InvoiceController:
         invoice_date = kwargs.get("invoice_date")
         invoice_number = kwargs.get("invoice_number")
         invoice_amount = kwargs.get("invoice_amount")
-        image_path = kwargs.get("image_path")
+        invoice_image = kwargs.get("invoice_image")
         description = kwargs.get("description")
         updated_by = kwargs.get("updated_by")
+
+        if (
+            not invoice_date
+            and not invoice_number
+            and not invoice_amount
+            and not invoice_image
+            and not description
+        ):
+            return (
+                HTTPStatus.BAD_REQUEST,
+                "Tidak ada data yang dimasukkan.",
+                None,
+            )
 
         invoice: Invoice = (
             Invoice.query
@@ -202,6 +215,11 @@ class InvoiceController:
                 f"Invoice dengan id {id} tidak ditemukan.",
                 None
             )
+
+        image_path = None
+        if invoice_image:
+            image_path = f"/path/to/{invoice_image}"
+            invoice.image_path = image_path
 
         if (
             (not invoice_date or invoice_date == str(invoice.invoice_date))
@@ -222,8 +240,6 @@ class InvoiceController:
             invoice.invoice_number = invoice_number
         if invoice_amount:
             invoice.invoice_amount = invoice_amount
-        if image_path:
-            invoice.image_path = image_path
         if description:
             invoice.description = description
 

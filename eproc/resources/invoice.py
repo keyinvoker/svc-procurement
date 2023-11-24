@@ -118,7 +118,8 @@ class InvoiceResource(Resource):
             if not is_valid:
                 return response
 
-            payload["image_path"] = f"/path/to/{invoice_image}"
+            payload["invoice_image"] = invoice_image
+            # payload["image_path"] = f"/path/to/{invoice_image}"
             payload["updated_by"] = g.user_id
 
             http_status, message, data = self.controller.update(**payload)
