@@ -33,3 +33,10 @@ class MenuGetInputSchema(Schema):
     class Meta:
         ordered = True
         unknown = EXCLUDE
+
+
+class MenuDetailGetInputSchema(Schema):
+    id = fields.String(required=True)
+
+    class Meta:
+        unknown = EXCLUDE

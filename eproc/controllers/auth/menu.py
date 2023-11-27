@@ -53,3 +53,27 @@ class MenuController:
             data,
             total
         )
+    
+    def get_detail(self, id: str):
+        menu: Menu = (
+            Menu.query
+            .filter(
+                Menu.id == id,
+                Menu.is_deleted.is_(False),
+            )
+            .first()
+        )
+        if not menu:
+            return (
+                HTTPStatus.NOT_FOUND,
+                "Menu tidak ditemukan.",
+                None,
+            )
+
+        data = self.schema.dump(menu)
+
+        return (
+            HTTPStatus.OK,
+            "Detail menu ditemukan.",
+            data,
+        )

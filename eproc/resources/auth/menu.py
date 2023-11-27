@@ -5,7 +5,10 @@ from traceback import format_exc
 
 from eproc import error_logger
 from eproc.controllers.auth.menu import MenuController
-from eproc.schemas.auth.menus import MenuGetInputSchema
+from eproc.schemas.auth.menus import (
+    MenuGetInputSchema,
+    MenuDetailGetInputSchema,
+)
 from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
@@ -32,6 +35,33 @@ class MenuResource(Resource):
             )
         except Exception as e:
             error_logger.error(f"Error on Menu [GET] :: {e}, {format_exc()}")
+            return construct_api_response(
+                HTTPStatus.INTERNAL_SERVER_ERROR
+            )
+
+
+class MenuDetailResource(Resource):
+    def get(self) -> Response:
+        try:
+            schema = MenuDetailGetInputSchema()
+            is_valid, response, payload = schema_validate_and_load(
+                schema=schema,
+                payload=request.args.to_dict(),
+            )
+            if not is_valid:
+                return response
+
+            (
+                http_status, message, data
+            ) = MenuController().get_detail(**payload)
+
+            return construct_api_response(
+                http_status=http_status,
+                message=message,
+                data=dict(data=data)
+            )
+        except Exception as e:
+            error_logger.error(f"Error on MenuDetail [GET] :: {e}, {format_exc()}")
             return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
