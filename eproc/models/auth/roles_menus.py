@@ -8,8 +8,8 @@ from eproc.models.base_model import BaseModel
 class RoleMenu(BaseModel):
     __tablename__ = "roles_menus"
 
-    role_id = sa.Column(sa.String(10), sa.ForeignKey("roles.id"), nullable=False, primary_key=True, autoincrement=True)
-    menu_id = sa.Column(sa.String(12), sa.ForeignKey("menus.id"), nullable=False, primary_key=True, autoincrement=True)
+    role_id = sa.Column(sa.String(10), sa.ForeignKey("roles.id"), nullable=False, primary_key=True)
+    menu_id = sa.Column(sa.String(12), sa.ForeignKey("menus.id"), nullable=False, primary_key=True)
     aladd = sa.Column(sa.Boolean(), nullable=False)
     aledt = sa.Column(sa.Boolean(), nullable=False)
     aldel = sa.Column(sa.Boolean(), nullable=False)
