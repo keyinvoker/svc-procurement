@@ -7,7 +7,7 @@ class DefaultResponseSchema(Schema):
     status = fields.Integer()
     message = fields.String()
     timestamp = fields.DateTime(default=wibnow())
-    data = fields.Dict(default=dict())
+    data = fields.Raw(default=dict())
 
     class Meta:
         ordered = True
