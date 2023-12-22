@@ -60,10 +60,15 @@ class ItemCategoryAutoSchema(SQLAlchemyAutoSchema):
         load_instance = True
         ordered = True
         unknown = EXCLUDE
+        include_fk = True
 
 
 class ItemCategoryGetInputSchema(Schema):
-    item_class_id = fields.String(required=True)
+    item_class_id = fields.String(
+        default=None,
+        dump_default=None,
+        load_default=None,
+    )
 
     class Meta:
         ordered = True

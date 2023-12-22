@@ -114,19 +114,29 @@ class ItemController:
         item_class_id: str
     ) -> Tuple[HTTPStatus, str, Optional[List[dict]]]:
 
-        results = (
+        query = (
             ItemCategory.query
             .filter(
-                ItemCategory.item_class_id == item_class_id,
                 ItemCategory.is_active.is_(True),
                 ItemCategory.is_deleted.is_(False),
             )
-            .all()
         )
+
+        if item_class_id:
+            additional_error_message = f" dengan id Kelas Barang: {item_class_id}"
+
+            query = (
+                query
+                .filter(
+                    ItemCategory.item_class_id == item_class_id,
+                )
+            )
+
+        results = query.all()
         if not results:
             return (
                 HTTPStatus.NOT_FOUND,
-                f"Tidak ditemukan Kategori Barang dengan id Kelas Barang: {item_class_id}.",
+                f"Tidak ditemukan Kategori Barang{additional_error_message}.",
                 None
             )
         
