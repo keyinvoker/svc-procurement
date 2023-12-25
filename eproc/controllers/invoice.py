@@ -182,7 +182,6 @@ class InvoiceController:
     def update(self, **kwargs) -> Tuple[HTTPStatus, str, Optional[dict]]:
         id = kwargs.get("id")
         invoice_date = kwargs.get("invoice_date")
-        print(f"invoice_date :: {invoice_date}")
         invoice_number = kwargs.get("invoice_number")
         invoice_amount = kwargs.get("invoice_amount")
         invoice_image = kwargs.get("invoice_image")

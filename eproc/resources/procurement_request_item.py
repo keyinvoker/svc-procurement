@@ -5,7 +5,7 @@ from traceback import format_exc
 
 from eproc import error_logger
 from eproc.controllers.procurement_request import ProcurementRequestController
-from eproc.helpers.commons import split_string_into_list
+from eproc.tools.decorator import validate_token
 from eproc.schemas.items.procurement_request_items import (
     ProcurementRequesItemGetInputSchema
 )
@@ -17,6 +17,7 @@ class ProcurementRequestItemResource(Resource):
     def __init__(self):
         self.controller = ProcurementRequestController()
     
+    @validate_token
     def get(self) -> Response:
         try:
             schema = ProcurementRequesItemGetInputSchema()

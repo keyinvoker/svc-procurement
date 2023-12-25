@@ -22,6 +22,7 @@ class InvoiceResource(Resource):
     def __init__(self):
         self.controller = InvoiceController()
 
+    @validate_token
     def get(self) -> Response:
         try:
             list_param_keys = [
@@ -70,7 +71,7 @@ class InvoiceResource(Resource):
             if not invoice_image:
                 return construct_api_response(
                     HTTPStatus.BAD_REQUEST,
-                    "Mohon masukkan file."
+                    "Mohon masukkan file gambar invoice."
                 )
 
             input_data = request.form.to_dict()
@@ -137,6 +138,7 @@ class InvoiceDetailResource(Resource):
     def __init__(self):
         self.controller = InvoiceController()
 
+    @validate_token
     def get(self) -> Response:
         try:
             schema = InvoiceDetailGetInputSchema()
@@ -162,6 +164,7 @@ class InvoiceDetailResource(Resource):
             )
 
 class InvoiceTerminResource(Resource):
+    @validate_token
     def get(self) -> Response:
         payload = request.args.to_dict()
 

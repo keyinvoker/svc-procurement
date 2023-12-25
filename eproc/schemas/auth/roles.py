@@ -14,7 +14,7 @@ class RoleAutoSchema(SQLAlchemyAutoSchema):
 
 class RoleGetInputSchema(Schema):
     id_list = fields.List(
-        fields.Integer(),
+        fields.String(),
         dump_default=[],
         load_default=[],
     )

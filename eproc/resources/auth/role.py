@@ -7,11 +7,13 @@ from eproc import error_logger
 from eproc.controllers.auth.role import RoleController
 from eproc.helpers.commons import split_string_into_list
 from eproc.schemas.auth.roles import RoleGetInputSchema
+from eproc.tools.decorator import validate_token
 from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
 class RoleResource(Resource):
+    @validate_token
     def get(self) -> Response:
         try:
             list_param_keys = [

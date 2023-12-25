@@ -1,9 +1,7 @@
 from http import HTTPStatus
 from sqlalchemy import or_
-from traceback import format_exc
 from typing import List, Optional, Tuple
 
-from eproc import error_logger
 from eproc.models.price_comparisons import PriceComparison
 from eproc.schemas.price_comparisons import PriceComparisonAutoSchema
 

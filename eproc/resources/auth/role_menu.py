@@ -5,20 +5,33 @@ from traceback import format_exc
 
 from eproc import error_logger
 from eproc.controllers.auth.role_menu import RoleMenuController
+from eproc.helpers.commons import split_string_into_list
 from eproc.schemas.auth.roles_menus import RoleMenuGetInputSchema
+from eproc.tools.decorator import validate_token
 from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
 class RoleMenuResource(Resource):
+    @validate_token
     def get(self) -> Response:
         try:
+            list_param_keys = [
+                "role_id_list",
+                "menu_id_list",
+            ]
+            input_data = split_string_into_list(
+                request.args.to_dict(),
+                list_param_keys
+            )
             schema = RoleMenuGetInputSchema()
+
             is_valid, response, payload = schema_validate_and_load(
                 schema=schema,
-                payload=request.args.to_dict(),
+                payload=input_data,
             )
             if not is_valid:
+                print(payload)
                 return response
 
             (

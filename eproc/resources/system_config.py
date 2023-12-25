@@ -6,11 +6,13 @@ from traceback import format_exc
 from eproc import error_logger
 from eproc.controllers.reference import ReferenceController
 from eproc.schemas.references import SystemConfigGetInputSchema
+from eproc.tools.decorator import validate_token
 from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
 class SystemConfigResource(Resource):
+    @validate_token
     def get(self) -> Response:
         try:
             schema = SystemConfigGetInputSchema()
@@ -38,6 +40,7 @@ class SystemConfigResource(Resource):
 class ApprovalLimitPriceComparisonResource(Resource):
     def get(self) -> Response:
         try:
+            # TODO
             return construct_api_response(HTTPStatus.OK)
 
         except Exception as e:
@@ -50,6 +53,7 @@ class ApprovalLimitPriceComparisonResource(Resource):
 class ApprovalLimitPurchaseOrderResource(Resource):
     def get(self) -> Response:
         try:
+            # TODO
             return construct_api_response(HTTPStatus.OK)
 
         except Exception as e:
@@ -62,6 +66,7 @@ class ApprovalLimitPurchaseOrderResource(Resource):
 class ApprovalLimitGoodsReceivedResource(Resource):
     def get(self) -> Response:
         try:
+            # TODO
             return construct_api_response(HTTPStatus.OK)
 
         except Exception as e:

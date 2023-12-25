@@ -6,11 +6,13 @@ from traceback import format_exc
 
 from eproc import db, error_logger
 from eproc.helpers.commons import split_string_into_list
+from eproc.tools.decorator import validate_token
 from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
 class ProcurementRequestProgressResource(Resource):
+    @validate_token
     def get(self) -> Response:
         try:
             raw_query = text("""

@@ -5,6 +5,7 @@ from traceback import format_exc
 
 from eproc import error_logger
 from eproc.controllers.dashboard import DashboardController
+from eproc.tools.decorator import validate_token
 from eproc.tools.response import construct_api_response
 
 
@@ -12,6 +13,7 @@ class DashboardResource(Resource):
     def __init__(self):
         self.controller = DashboardController()
 
+    @validate_token
     def get(self) -> Response:
         try:
             data = dict(

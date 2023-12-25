@@ -6,12 +6,12 @@ from eproc.models.auth.roles_menus import RoleMenu
 
 class RoleMenuGetInputSchema(Schema):
     role_id_list = fields.List(
-        fields.Integer(),
+        fields.String(),
         dump_default=[],
         load_default=[],
     )
     menu_id_list = fields.List(
-        fields.Integer(),
+        fields.String(),
         dump_default=[],
         load_default=[],
     )
