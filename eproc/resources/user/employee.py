@@ -16,6 +16,7 @@ from eproc.tools.validation import schema_validate_and_load
 
 
 class EmployeeResource(Resource):
+    @validate_token
     def get(self):
         try:
             list_param_keys = [
@@ -58,6 +59,7 @@ class EmployeeResource(Resource):
 
 
 class EmployeeDetailResource(Resource):
+    @validate_token
     def get(self) -> Response:
         try:
             schema = EmployeeDetailGetInputSchema()

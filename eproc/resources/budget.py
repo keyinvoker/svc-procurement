@@ -6,8 +6,8 @@ from traceback import format_exc
 
 from eproc import error_logger
 from eproc.controllers.budget import BudgetController
-from eproc.helpers.commons import split_string_into_list
 from eproc.schemas.budgets import BudgetGetInputSchema
+from eproc.tools.decorator import validate_token
 from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
@@ -16,6 +16,7 @@ class BudgetResource(Resource):
     def __init__(self):
         self.controller = BudgetController()
 
+    @validate_token
     def get(self) -> Response:
         try:
             schema = BudgetGetInputSchema()
@@ -52,11 +53,12 @@ class BudgetFileUploadResource(Resource):
     def __init__(self):
         self.controller = BudgetController()
 
+    @validate_token
     def post(self):
         try:
             file = request.files.get("file")
             if not file:
-                return(
+                return construct_api_response(
                     HTTPStatus.BAD_REQUEST,
                     "Mohon masukkan file."
                 )
@@ -64,7 +66,7 @@ class BudgetFileUploadResource(Resource):
             payload = request.form
             user_id = payload.get("user_id")
             if not user_id:
-                return(
+                return construct_api_response(
                     HTTPStatus.BAD_REQUEST,
                     "Mohon masukkan user id pengupload file."
                 )

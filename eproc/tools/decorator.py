@@ -1,7 +1,7 @@
 from flask import Response, g, request
 from functools import wraps
 from http import HTTPStatus
-from typing import Callable, Optional, Union
+from typing import Callable, List, Optional, Union
 
 from eproc.helpers.auth import (
     get_role_menus,
@@ -14,6 +14,7 @@ from eproc.tools.response import construct_api_response
 
 def validate_token(
     func: Optional[Callable] = None,
+    allowlist: List[Optional[str]] = [],  # TODO: implement allowlist for allowed roles
 ) -> Callable:
 
     @wraps(func)

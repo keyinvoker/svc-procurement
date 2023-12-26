@@ -10,6 +10,7 @@ from eproc.schemas.items.items import (
     ItemGetInputSchema,
     ItemCategoryGetInputSchema,
 )
+from eproc.tools.decorator import validate_token
 from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
@@ -18,6 +19,7 @@ class ItemResource(Resource):
     def __init__(self):
         self.controller = ItemController()
 
+    @validate_token
     def get(self) -> Response:
         try:
             list_param_keys = [
@@ -61,6 +63,7 @@ class ItemClassResource(Resource):
     def __init__(self):
         self.controller = ItemController()
 
+    @validate_token
     def get(self):
         try:
             (
@@ -84,6 +87,7 @@ class ItemCategoryResource(Resource):
     def __init__(self):
         self.controller = ItemController()
 
+    @validate_token
     def get(self):
         try:
             schema = ItemCategoryGetInputSchema()

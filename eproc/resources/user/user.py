@@ -19,6 +19,7 @@ from eproc.tools.validation import schema_validate_and_load
 
 
 class UserResource(Resource):
+    @validate_token
     def get(self) -> Response:
         try:
             list_param_keys = [
@@ -59,6 +60,7 @@ class UserResource(Resource):
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
         
+    @validate_token
     def post(self) -> Response:
         try:
             input_data = request.get_json()
@@ -88,6 +90,7 @@ class UserResource(Resource):
 
 
 class UserDetailResource(Resource):
+    @validate_token
     def get(self) -> Response:
         try:
             schema = UserDetailGetInputSchema()
@@ -121,7 +124,7 @@ class UserProfileResource(Resource):
         try:
             (
                 http_status, message, data
-            ) = UserController().get_detail(g.user_id)
+            ) = UserController().get_detai(g.user_id)
 
             return construct_api_response(
                 http_status=http_status,
@@ -161,6 +164,7 @@ class UserResetPasswordResource(Resource):
 
 
 class UserUnlockResource(Resource):
+    @validate_token
     def post(self) -> Response:
         try:
             input_data = request.get_json()
