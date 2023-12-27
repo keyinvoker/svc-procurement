@@ -124,7 +124,7 @@ class UserProfileResource(Resource):
         try:
             (
                 http_status, message, data
-            ) = UserController().get_detai(g.user_id)
+            ) = UserController().get_detail(g.user_id)
 
             return construct_api_response(
                 http_status=http_status,
