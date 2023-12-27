@@ -58,12 +58,14 @@ def create_app() -> Flask:
         app.register_blueprint(link_blueprint)
         app.register_blueprint(system_config_blueprint)
 
-        print(f"\nEndpoints:")
-        for api in app.url_map.iter_rules():
-            if api.endpoint == "static":
-                continue
-            api.methods.difference_update({'HEAD', 'OPTIONS'})
-            print(f"\n{api.rule}:{api.methods}")
-        print()
+        print_all_endpoints = False
+        if print_all_endpoints:
+            print(f"\nEndpoints:")
+            for api in app.url_map.iter_rules():
+                if api.endpoint == "static":
+                    continue
+                api.methods.difference_update({'HEAD', 'OPTIONS'})
+                print(f"{api.rule}: {api.methods}")
+            print()
 
         return app
