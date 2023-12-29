@@ -175,9 +175,11 @@ class ProcurementRequestController:
 
                 ProcurementRequest.reference_id,
                 Reference.description.label("reference_description"),
+                User.full_name.label("updated_by"),
 
                 ProcurementRequest.requester_id,
                 Employee.full_name.label("requester_full_name"),
+
             )
             .filter(ProcurementRequest.is_deleted.is_(False))
             .join(Branch, Branch.id == ProcurementRequest.branch_id)
@@ -186,6 +188,7 @@ class ProcurementRequestController:
             .join(Department, Department.id == ProcurementRequest.department_id)
             .join(Reference, Reference.id == ProcurementRequest.reference_id)
             .join(Employee, Employee.id == ProcurementRequest.requester_id)
+            .join(User, User.id == ProcurementRequest.updated_by)
             .order_by(ProcurementRequest.transaction_date.desc())
         )
 

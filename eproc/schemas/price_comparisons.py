@@ -8,10 +8,7 @@ from eproc.schemas.references import ReferenceAutoSchema
 
 
 class PriceComparisonAutoSchema(SQLAlchemyAutoSchema):
-    # TODO:
-    rfq_id = fields.Integer()
-    # rfq = fields.Nested(RFQAutoSchema)
-    reference = fields.Nested(ReferenceAutoSchema)
+    reference_description = fields.String()
 
     @post_dump
     def parse_data(self, data: dict, **kwargs):
@@ -25,6 +22,7 @@ class PriceComparisonAutoSchema(SQLAlchemyAutoSchema):
         load_instance = True
         ordered = True
         unknown = EXCLUDE
+        include_fk = True
 
 
 class PriceComparisonGetInputSchema(Schema):

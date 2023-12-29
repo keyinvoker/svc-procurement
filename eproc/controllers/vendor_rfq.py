@@ -3,7 +3,9 @@ from sqlalchemy import or_
 from traceback import format_exc
 from typing import List, Optional, Tuple
 
-from eproc import error_logger
+from eproc.models.references import Reference
+from eproc.models.users.users import User
+from eproc.models.vendors.vendors import Vendor
 from eproc.models.vendor_rfqs import VendorRFQ
 from eproc.schemas.vendor_rfqs import VendorRFQAutoSchema
 
@@ -25,6 +27,38 @@ class VendorRFQController:
 
         query = (
             VendorRFQ.query
+            .with_entities(
+                VendorRFQ.id,
+                VendorRFQ.vendor_id,
+                Vendor.name.label("vendor_name"),
+                Vendor.first_address.label("vendor_address"),
+                VendorRFQ.fcoid,
+                VendorRFQ.reference_id,
+                Reference.description.label("reference_description"),
+                User.full_name.label("updated_by"),
+                VendorRFQ.document_number,
+                VendorRFQ.transaction_date,
+                VendorRFQ.year,
+                VendorRFQ.month,
+                VendorRFQ.description,
+                VendorRFQ.app_source,
+                VendorRFQ.rfqdn,
+                VendorRFQ.rfqtn,
+                VendorRFQ.pcppn,
+                VendorRFQ.paytm,
+                VendorRFQ.paypd,
+                VendorRFQ.paynt,
+                VendorRFQ.sequence_number,
+                VendorRFQ.dref1,
+                VendorRFQ.dref2,
+                VendorRFQ.dref3,
+                VendorRFQ.flag1,
+                VendorRFQ.flag2,
+                VendorRFQ.temps,
+            )
+            .join(Reference, Reference.id == VendorRFQ.reference_id)
+            .join(User, User.id == VendorRFQ.updated_by)
+            .outerjoin(Vendor, Vendor.id == VendorRFQ.vendor_id)
             .filter(VendorRFQ.is_deleted.is_(False))
             .order_by(VendorRFQ.transaction_date.desc())
         )

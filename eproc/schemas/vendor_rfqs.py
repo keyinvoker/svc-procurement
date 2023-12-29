@@ -3,13 +3,12 @@ from marshmallow import EXCLUDE, Schema, fields, post_dump
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from eproc.models.vendor_rfqs import VendorRFQ
-from eproc.schemas.references import ReferenceAutoSchema
-from eproc.schemas.vendors.vendors import VendorAutoSchema
 
 
 class VendorRFQAutoSchema(SQLAlchemyAutoSchema):
-    vendor = fields.Nested(VendorAutoSchema)
-    reference = fields.Nested(ReferenceAutoSchema)
+    vendor_name = fields.String()
+    vendor_address = fields.String()
+    reference_description = fields.String()
 
     @post_dump
     def parse_data(self, data: dict, **kwargs):
@@ -23,6 +22,7 @@ class VendorRFQAutoSchema(SQLAlchemyAutoSchema):
         load_instance = True
         ordered = True
         unknown = EXCLUDE
+        include_fk = True
 
 
 class VendorRFQGetInputSchema(Schema):
