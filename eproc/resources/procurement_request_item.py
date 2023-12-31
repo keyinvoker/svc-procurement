@@ -31,7 +31,7 @@ class ProcurementRequestItemResource(Resource):
 
             (
                 http_status, message, data, total
-            ) = self.controller.get_items(payload["procurement_request_id"])
+            ) = self.controller.get_items(**payload)
 
             data = dict(
                 data=data,

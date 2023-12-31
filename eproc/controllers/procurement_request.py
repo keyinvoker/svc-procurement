@@ -88,21 +88,21 @@ class ProcurementRequestController:
                     assessment_notes,
                     assessors,
                 )
-                .join(ItemClass, ItemClass.id == ProcurementRequest.item_class_id)
-                .join(ItemCategory, ItemCategory.id == ProcurementRequest.item_category_id)
-                .join(Branch, Branch.id == ProcurementRequest.branch_id)
-                .join(Directorate, Directorate.id == ProcurementRequest.directorate_id)
-                .join(Division, Division.id == ProcurementRequest.division_id)
-                .join(Department, Department.id == ProcurementRequest.department_id)
-                .join(Reference, Reference.id == ProcurementRequest.reference_id)
-                .join(User, User.id == ProcurementRequest.preparer_id)
-                .join(Employee, Employee.id == ProcurementRequest.requester_id)
-                .join(CostCenter, CostCenter.id == ProcurementRequest.cost_center_id)
-                .join(
+                .outerjoin(ItemClass, ItemClass.id == ProcurementRequest.item_class_id)
+                .outerjoin(ItemCategory, ItemCategory.id == ProcurementRequest.item_category_id)
+                .outerjoin(Branch, Branch.id == ProcurementRequest.branch_id)
+                .outerjoin(Directorate, Directorate.id == ProcurementRequest.directorate_id)
+                .outerjoin(Division, Division.id == ProcurementRequest.division_id)
+                .outerjoin(Department, Department.id == ProcurementRequest.department_id)
+                .outerjoin(Reference, Reference.id == ProcurementRequest.reference_id)
+                .outerjoin(User, User.id == ProcurementRequest.preparer_id)
+                .outerjoin(Employee, Employee.id == ProcurementRequest.requester_id)
+                .outerjoin(CostCenter, CostCenter.id == ProcurementRequest.cost_center_id)
+                .outerjoin(
                     ProcurementRequestAssessment,
                     ProcurementRequestAssessment.procurement_request_id == ProcurementRequest.id
                 )
-                .join(Assessor, Assessor.id == ProcurementRequestAssessment.assessor_user_id)
+                .outerjoin(Assessor, Assessor.id == ProcurementRequestAssessment.assessor_user_id)
                 .filter(ProcurementRequest.id == id)
                 .filter(ProcurementRequest.is_deleted.is_(False))
                 .group_by(
@@ -130,7 +130,7 @@ class ProcurementRequestController:
                 return (
                     HTTPStatus.NOT_FOUND,
                     "Data detail PR tidak ditemukan.",
-                    data
+                    None
                 )
 
             data = self.detail_schema.dump(result)
@@ -232,14 +232,17 @@ class ProcurementRequestController:
         )
     
     def get_items(
-        self, procurement_request_id: int
-    ) -> Tuple[HTTPStatus, str, Optional[List[dict]], int]:
+        self, **kwargs
+    ) -> Tuple[HTTPStatus, str, List[Optional[dict]], int]:
+        procurement_request_id = kwargs.get(procurement_request_id)
+        limit = kwargs.get(limit)
+        offset = kwargs.get(offset)
 
         query = (
             ProcurementRequestItem.query
             .filter(ProcurementRequestItem.procurement_request_id == procurement_request_id)
             .filter(ProcurementRequestItem.is_deleted.is_(False))
-            .order_by(ProcurementRequestItem.lnnum)
+            .order_by(ProcurementRequestItem.line_number)
         )
 
         total = query.count()
@@ -247,9 +250,15 @@ class ProcurementRequestController:
             return (
                 HTTPStatus.NOT_FOUND,
                 f"Tidak ditemukan barang dari PR dengan id: {procurement_request_id}.",
-                None,
+                [],
                 0
             )
+        
+        if limit:
+            query = query.limit(limit)
+
+        if offset:
+            query = query.offset(offset)
 
         results = query.all()
         data = ProcurementRequestItemAutoSchema(many=True).dump(results)
@@ -320,7 +329,7 @@ class ProcurementRequestController:
                 ProcurementRequestItem(
                     procurement_request_id=procurement_request.id,
                     item_id=item_id,
-                    lnnum=(index + 1),
+                    line_number=(index + 1),
                     unit_of_measurement=unit_of_measurement,
                     quantity=quantity,
                     required_date=required_date,

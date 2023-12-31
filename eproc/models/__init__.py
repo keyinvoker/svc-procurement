@@ -40,6 +40,7 @@ from eproc.models.procurement_requests import ProcurementRequest
 
 # Purchase Orders
 from eproc.models.purchase_orders.purchase_orders import PurchaseOrder
+from eproc.models.purchase_orders.purchase_order_items import PurchaseOrderItem
 
 # Invoices
 from eproc.models.invoices import Invoice

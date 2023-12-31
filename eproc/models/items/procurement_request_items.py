@@ -9,7 +9,7 @@ from eproc.models.base_model import BaseModel, WIBNow
 class ProcurementRequestItem(BaseModel):
     __tablename__ = "procurement_request_items"
 
-    lnnum = sa.Column("lnnum", sa.Integer(), nullable=False, primary_key=True, autoincrement=True)
+    line_number = sa.Column(sa.Integer(), nullable=False, primary_key=True, autoincrement=True)
     procurement_request_id = sa.Column(sa.BigInteger(), sa.ForeignKey("procurement_requests.id"), nullable=False, primary_key=True)
     item_id = sa.Column(sa.String(20), sa.ForeignKey("items.id"), nullable=False)
     currency_id = sa.Column(sa.String(20), sa.ForeignKey("currencies.id"), nullable=False)
