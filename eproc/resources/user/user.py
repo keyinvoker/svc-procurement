@@ -6,6 +6,7 @@ from traceback import format_exc
 from eproc import error_logger
 from eproc.controllers.user import UserController
 from eproc.helpers.commons import split_string_into_list
+from eproc.models.enums import Roles
 from eproc.schemas.users.users import (
     UserDetailGetInputSchema,
     UserGetInputSchema,
@@ -19,7 +20,12 @@ from eproc.tools.validation import schema_validate_and_load
 
 
 class UserResource(Resource):
-    @validate_token
+    @validate_token(allowlist=[
+        Roles.ADMIN.value,
+        Roles.ADMIN_SISTEM.value,
+        Roles.ADMIN_SISTEM_APPROVER_1.value,
+        Roles.GA_AND_PROCUREMENT_ADMIN.value,
+    ])
     def get(self) -> Response:
         try:
             list_param_keys = [
@@ -60,7 +66,10 @@ class UserResource(Resource):
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )
         
-    @validate_token
+    @validate_token(allowlist=[
+        Roles.ADMIN.value,
+        Roles.ADMIN_SISTEM.value,
+    ])
     def post(self) -> Response:
         try:
             input_data = request.get_json()
@@ -90,7 +99,12 @@ class UserResource(Resource):
 
 
 class UserDetailResource(Resource):
-    @validate_token
+    @validate_token(allowlist=[
+        Roles.ADMIN.value,
+        Roles.ADMIN_SISTEM.value,
+        Roles.ADMIN_SISTEM_APPROVER_1.value,
+        Roles.GA_AND_PROCUREMENT_ADMIN.value,
+    ])
     def get(self) -> Response:
         try:
             schema = UserDetailGetInputSchema()
@@ -124,7 +138,7 @@ class UserProfileResource(Resource):
         try:
             (
                 http_status, message, data
-            ) = UserController().get_detail(g.user_id)
+            ) = UserController().get_profile_info(g.user_id)
 
             return construct_api_response(
                 http_status=http_status,
@@ -164,7 +178,7 @@ class UserResetPasswordResource(Resource):
 
 
 class UserUnlockResource(Resource):
-    @validate_token
+    @validate_token(allowlist=[Roles.ADMIN_SISTEM.value])
     def post(self) -> Response:
         try:
             input_data = request.get_json()
@@ -183,7 +197,7 @@ class UserUnlockResource(Resource):
             return construct_api_response(http_status, message)
 
         except Exception as e:
-            error_logger.error(f"Error on User Reset Password [POST] :: {e}, {format_exc()}")
+            error_logger.error(f"Error on User Unlock [POST] :: {e}, {format_exc()}")
             return construct_api_response(
                 HTTPStatus.INTERNAL_SERVER_ERROR
             )

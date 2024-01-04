@@ -1,9 +1,11 @@
 from marshmallow import EXCLUDE, Schema, fields, validate
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from typing import List
 
-from eproc.constants import ALL_ROLE_ID_LIST
+from eproc.models.enums import Roles
 from eproc.models.users.users import User
-from eproc.schemas.references import ReferenceAutoSchema
+
+ALL_ROLE_ID_LIST: List[str] = [role.value for role in Roles]
 
 
 class UserAutoSchema(SQLAlchemyAutoSchema):

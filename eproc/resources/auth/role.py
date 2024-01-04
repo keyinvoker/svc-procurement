@@ -13,7 +13,7 @@ from eproc.tools.validation import schema_validate_and_load
 
 
 class RoleResource(Resource):
-    @validate_token
+    @validate_token(admin_only=True)
     def get(self) -> Response:
         try:
             list_param_keys = [

@@ -4,16 +4,11 @@ from hashlib import md5
 from http import HTTPStatus
 from sqlalchemy import insert, or_
 from sqlalchemy.orm import aliased
-from sqlalchemy.sql import func
 from traceback import format_exc
 from typing import List, Optional, Tuple
 
-from eproc import db
 from eproc import app_logger, error_logger
-from eproc.helpers.auth import get_user_role_info
-from eproc.models.auth.menus import Menu
-from eproc.models.auth.roles import Role
-from eproc.models.auth.roles_menus import RoleMenu
+from eproc.helpers.auth import get_user_roles
 from eproc.models.auth.users_roles import UserRole
 from eproc.models.base_model import session
 from eproc.models.companies.branches import Branch
@@ -36,7 +31,29 @@ class UserController:
         self.many_schema = UserAutoSchema(many=True)
         self.detail_schema = UserDetailSchema()
     
-    def get_detail(self, user_id: str) -> Tuple[HTTPStatus, str, Optional[dict]]:
+    def get_profile_info(
+        self, user_id: str
+    ) -> Tuple[HTTPStatus, str, Optional[dict]]:
+
+        (
+            http_status, message, user_detail
+        ) = self.get_detail(user_id)
+        if http_status != HTTPStatus.OK:
+            return http_status, message, user_detail
+
+        roles = get_user_roles(user_id)
+        user_detail.update(roles=roles)
+
+        return (
+            HTTPStatus.OK,
+            "Info profil user ditemukan.",
+            user_detail
+        )
+
+    def get_detail(
+        self, user_id: str
+    ) -> Tuple[HTTPStatus, str, Optional[dict]]:
+
         FirstApprover = aliased(User)
         SecondApprover = aliased(User)
         ThirdApprover = aliased(User)
@@ -118,9 +135,6 @@ class UserController:
             )
 
         user_data: dict = self.detail_schema.dump(user)
-
-        # role_info = get_user_role_info(user_id)
-        # user_data.update(role_info=role_info)
 
         return HTTPStatus.OK, "Detail user ditemukan.", user_data
 

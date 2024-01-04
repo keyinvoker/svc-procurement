@@ -234,9 +234,9 @@ class ProcurementRequestController:
     def get_items(
         self, **kwargs
     ) -> Tuple[HTTPStatus, str, List[Optional[dict]], int]:
-        procurement_request_id = kwargs.get(procurement_request_id)
-        limit = kwargs.get(limit)
-        offset = kwargs.get(offset)
+        procurement_request_id = kwargs.get("procurement_request_id")
+        limit = kwargs.get("limit")
+        offset = kwargs.get("offset")
 
         query = (
             ProcurementRequestItem.query

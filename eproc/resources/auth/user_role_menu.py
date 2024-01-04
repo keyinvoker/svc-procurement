@@ -12,7 +12,7 @@ from eproc.tools.validation import schema_validate_and_load
 
 
 class UserRoleMenuResource(Resource):
-    @validate_token
+    @validate_token(admin_only=True)
     def get(self) -> Response:
         try:
             is_valid, response, payload = schema_validate_and_load(
@@ -36,3 +36,6 @@ class UserRoleMenuResource(Resource):
             )
         except Exception as e:
             error_logger.error(f"Error on User Role Menu [GET] :: {e}, {format_exc()}")
+            return construct_api_response(
+                HTTPStatus.INTERNAL_SERVER_ERROR
+            )
