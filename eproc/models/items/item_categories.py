@@ -21,7 +21,7 @@ class ItemCategory(BaseModel):
     pcsem = sa.Column("pcsem", sa.String(50), nullable=False)
     coadp = sa.Column("coadp", sa.String(20))
     coatr = sa.Column("coatr", sa.String(20))
-    slavl = sa.Column("slavl", sa.Boolean(), nullable=False, default=False, server_default="false")
+    sla = sa.Column(sa.Boolean(), nullable=False, default=False, server_default="false")
     is_active = sa.Column(sa.Boolean(), nullable=False, default=True, server_default="true")
 
     item_class = db.relationship(

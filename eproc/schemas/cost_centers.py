@@ -18,3 +18,24 @@ class CostCenterAutoSchema(SQLAlchemyAutoSchema):
         load_instance = True
         ordered = True
         unknown = EXCLUDE
+
+class CostCenterGetInputSchema(Schema):
+    id_list = fields.List(
+        fields.Integer(),
+        dump_default=[],
+        load_default=[],
+    )
+    limit = fields.Integer(
+        allow_none=True,
+        dump_default=None,
+        load_default=None,
+    )
+    offset = fields.Integer(
+        allow_none=True,
+        dump_default=0,
+        load_default=0,
+    )
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE

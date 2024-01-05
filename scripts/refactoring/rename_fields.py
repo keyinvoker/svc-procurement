@@ -1211,8 +1211,7 @@ if __name__ == "__main__":
         # execute("ALTER TABLE items RENAME COLUMN descr TO description;")
         # execute("ALTER TABLE items RENAME COLUMN unoms TO unit_of_measurement;")
         # execute("ALTER TABLE items RENAME COLUMN minqt TO minimum_quantity;")
-        # # execute("ALTER TABLE items RENAME COLUMN slavl TO ;")
-        # # execute("ALTER TABLE items RENAME COLUMN isadj TO ;")
+        # execute("ALTER TABLE items RENAME COLUMN slavl TO sla;")
         # execute(
         #     """
         #     ALTER TABLE items
@@ -1223,6 +1222,7 @@ if __name__ == "__main__":
         #     ALTER COLUMN isadj SET DEFAULT FALSE;
         #     """
         # )
+        # execute("ALTER TABLE items RENAME COLUMN isadj TO is_adjustable;")
         # execute("ALTER TABLE items RENAME COLUMN isact TO is_active;")
         # execute(
         #     """
@@ -1293,7 +1293,7 @@ if __name__ == "__main__":
         #     ALTER COLUMN slavl SET DEFAULT TRUE;
         #     """
         # )
-        # # execute("ALTER TABLE item_categories RENAME COLUMN slavl TO ;")
+        # execute("ALTER TABLE item_categories RENAME COLUMN slavl TO sla;")
         # endregion: item_categories
 
 

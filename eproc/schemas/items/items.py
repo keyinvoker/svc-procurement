@@ -8,6 +8,10 @@ from eproc.models.items.item_classes import ItemClass
 
 
 class ItemAutoSchema(SQLAlchemyAutoSchema):
+    item_category_description = fields.String()
+    item_class_id = fields.String()
+    item_class_description = fields.String()
+    cost_center_description = fields.String()
     required_days_interval = fields.Integer()
 
     @post_dump
@@ -21,11 +25,12 @@ class ItemAutoSchema(SQLAlchemyAutoSchema):
         model = Item
         ordered = True
         unknown = EXCLUDE
+        include_fk = True
 
 
 class ItemGetInputSchema(Schema):
     id_list = fields.List(
-        fields.Integer(),
+        fields.String(),
         dump_default=[],
         load_default=[],
     )
@@ -40,6 +45,22 @@ class ItemGetInputSchema(Schema):
         dump_default=0,
         load_default=0,
     )
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
+class ItemPostInputSchema(Schema):
+    id = fields.String(required=True)
+    description = fields.String(required=True)
+    unit_of_measurement = fields.String(required=True)
+    cost_center_id = fields.String(required=True)
+    minimum_quantity = fields.Float(required=True)
+    item_category_id = fields.String(required=True)
+    sla = fields.Integer(required=True)
+    is_adjustable = fields.Boolean()
+    is_active = fields.Boolean()
 
     class Meta:
         ordered = True

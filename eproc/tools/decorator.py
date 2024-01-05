@@ -77,11 +77,6 @@ def validate_token(
             g.roles = roles
             g.menus = get_role_menus(g.roles)
 
-            print()
-            print(f"roles :: {roles}")
-            print(f"allowlist :: {allowlist}")
-            print()
-
             if (
                 admin_only
                 and not Roles.ADMIN.value in roles

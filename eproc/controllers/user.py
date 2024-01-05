@@ -2,15 +2,14 @@ import secrets
 import string
 from hashlib import md5
 from http import HTTPStatus
-from sqlalchemy import insert, or_
+from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 from traceback import format_exc
 from typing import List, Optional, Tuple
 
 from eproc import app_logger, error_logger
 from eproc.helpers.auth import get_user_roles
-from eproc.models.auth.users_roles import UserRole
-from eproc.models.base_model import session
+from eproc.helpers.user_role import add_user_roles
 from eproc.models.companies.branches import Branch
 from eproc.models.companies.departments import Department
 from eproc.models.companies.directorates import Directorate
@@ -278,18 +277,13 @@ class UserController:
         app_logger.info(f"UserController:register_user() :: creation email to be sent to: {email}")
         app_logger.info(f"UserController:register_user() :: approval request email to be sent to: {first_approver.email}")
 
-        successful_role_id_list: list = kwargs.get("role_id_list").copy()
-        failed_role_id_list = list()
-        for role_id in kwargs.get("role_id_list"):
-            try:
-                # UserRole(user_id=user_id, role_id=role_id).save()
-                statement = insert(UserRole).values(user_id=user_id, role_id=role_id)
-                session.execute(statement)
-            except Exception as e:
-                session.rollback()
-                successful_role_id_list.remove(role_id)
-                failed_role_id_list.append(role_id)
-                error_logger.error(f"Error on UserController:register_user() while saving roles :: user_id: {user_id}, role_id: {role_id}, error: {e}, {format_exc()}")
+        (
+            successful_role_id_list,
+            failed_role_id_list
+        ) = add_user_roles(
+            user_id=user_id,
+            role_id_list=kwargs.get("role_id_list"),
+        )
 
         return (
             HTTPStatus.CREATED,
