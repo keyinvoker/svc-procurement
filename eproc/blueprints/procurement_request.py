@@ -1,8 +1,10 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from eproc.resources.procurement_request import ProcurementRequestResource
-from eproc.resources.procurement_request import ProcurementRequestDetailResource
+from eproc.resources.procurement_request import (
+    ProcurementRequestResource,
+    ProcurementRequestDetailResource,
+)
 from eproc.resources.procurement_request_item import ProcurementRequestItemResource
 
 procurement_request_blueprint = Blueprint("procurement_request_blueprint", __name__, url_prefix="/procurement-request")

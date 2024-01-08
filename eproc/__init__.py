@@ -32,6 +32,7 @@ def create_app() -> Flask:
         from eproc.blueprints.invoice import invoice_blueprint
         from eproc.blueprints.item import item_blueprint
         from eproc.blueprints.link import link_blueprint
+        from eproc.blueprints.petty_cash_claim import petty_cash_claim_blueprint
         from eproc.blueprints.procurement_request import procurement_request_blueprint
         from eproc.blueprints.price_comparison import price_comparison_blueprint
         from eproc.blueprints.purchase_order import purchase_order_blueprint
@@ -49,6 +50,7 @@ def create_app() -> Flask:
         app.register_blueprint(price_comparison_blueprint)
         app.register_blueprint(purchase_order_blueprint)
         app.register_blueprint(procurement_request_progress_blueprint)
+        app.register_blueprint(petty_cash_claim_blueprint)
         app.register_blueprint(invoice_blueprint)
         app.register_blueprint(company_blueprint)
         app.register_blueprint(user_blueprint)

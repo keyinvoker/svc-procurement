@@ -138,3 +138,9 @@ class Roles(Enum):
     VENDOR_SCORING_APPROVER_1 = "M.SCR.AP1"
     VENDOR_SCORING_LIST_ONLY = "M.SCR.LST"
     VENDOR_SCORING_USER = "M.SCR"
+
+
+class TransactionType(Enum):
+    B2B = "B2B"
+    REG = "Procurement Request"
+    TDR = "Project Request"

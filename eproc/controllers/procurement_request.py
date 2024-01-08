@@ -157,11 +157,13 @@ class ProcurementRequestController:
         search_query: str = kwargs.get("search_query").strip()
         limit: Optional[int] = kwargs.get("limit")
         offset: int = kwargs.get("offset")
+        transaction_type: str = kwargs.get("transaction_type")
 
         query = (
             ProcurementRequest.query
             .with_entities(
                 ProcurementRequest.id,
+                ProcurementRequest.transaction_type,
                 ProcurementRequest.document_number,
 
                 ProcurementRequest.branch_id,
@@ -181,6 +183,7 @@ class ProcurementRequestController:
                 Employee.full_name.label("requester_full_name"),
 
             )
+            .filter(ProcurementRequest.transaction_type == transaction_type)
             .filter(ProcurementRequest.is_deleted.is_(False))
             .join(Branch, Branch.id == ProcurementRequest.branch_id)
             .join(Directorate, Directorate.id == ProcurementRequest.directorate_id)
@@ -214,20 +217,20 @@ class ProcurementRequestController:
         if offset > 0:
             query = query.offset(offset)
 
-        item_list: List[ProcurementRequest] = query.all()
-        if not item_list:
+        results: List[ProcurementRequest] = query.all()
+        if not results:
             return (
                 HTTPStatus.NOT_FOUND,
                 "Procurement Request tidak ditemukan.",
                 [],
                 total,
             )
-        item_data_list = self.many_schema.dump(item_list)
+        data_list = self.many_schema.dump(results)
 
         return (
             HTTPStatus.OK,
             "Procurement Request ditemukan.",
-            item_data_list,
+            data_list,
             total,
         )
     
@@ -261,12 +264,12 @@ class ProcurementRequestController:
             query = query.offset(offset)
 
         results = query.all()
-        data = ProcurementRequestItemAutoSchema(many=True).dump(results)
+        data_list = ProcurementRequestItemAutoSchema(many=True).dump(results)
 
         return (
             HTTPStatus.OK,
             f"Ditemukan barang dari PR dengan id: {procurement_request_id}.",
-            data,
+            data_list,
             total
         )
     
@@ -284,6 +287,7 @@ class ProcurementRequestController:
         year = kwargs.get("year")
         month = kwargs.get("month")
         description = kwargs.get("description")
+        transaction_type = kwargs.get("transaction_type")
         item_class_id = kwargs.get("item_class_id")
         item_category_id = kwargs.get("item_category_id")
         item_list: List[dict] = kwargs.get("item_list")
@@ -310,7 +314,7 @@ class ProcurementRequestController:
                 item_class_id=item_class_id,
                 item_category_id=item_category_id,
                 sequence_number=next_sequence_number,
-                transaction_type="REG",
+                transaction_type=transaction_type,
             )
         )
 

@@ -1388,6 +1388,40 @@ if __name__ == "__main__":
 
 
 
+        # region: group: petty_cash_claims
+        # region: petty_cash_claims
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN trnno TO id")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN brcid TO branch_id")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN trndt TO transaction_date")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN fisyr TO `year`")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN fismn TO `month`")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN catcd TO item_class_id")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN grpcd TO item_category_id")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN sqenc TO sequence_number")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN docno TO document_number")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN coacd TO cost_center_id")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN descr TO description")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN reqdt TO required_date")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN reqby TO requester_id")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN entby TO preparer_id")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN stats TO reference_id")
+        # execute("ALTER TABLE petty_cash_claims RENAME COLUMN appsc TO app_source")
+        # endregion: petty_cash_claims
+
+        # region: petty_cash_claim_assessments
+        # execute("ALTER TABLE petty_cash_claim_assessments RENAME COLUMN apvno TO id;")
+        # execute("ALTER TABLE petty_cash_claim_assessments RENAME COLUMN trnno TO procurement_request_id;")
+        # execute("ALTER TABLE petty_cash_claim_assessments RENAME COLUMN stats TO reference_id;")
+        # execute("ALTER TABLE petty_cash_claim_assessments RENAME COLUMN apvnt TO assessment_notes;")
+        # execute("ALTER TABLE petty_cash_claim_assessments RENAME COLUMN apvun TO assessor_user_id;")
+        # execute("ALTER TABLE petty_cash_claim_assessments DROP COLUMN created_at;")
+        # execute("ALTER TABLE petty_cash_claim_assessments RENAME COLUMN apvdt TO created_at;")
+        # endregion: petty_cash_claim_assessments
+        # endregion: group: petty_cash_claims
+
+
+
+
         # region: links
         # execute("ALTER TABLE links RENAME COLUMN lnkid TO id;")
         # execute("ALTER TABLE links RENAME COLUMN lnktx TO url;")

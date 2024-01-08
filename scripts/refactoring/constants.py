@@ -90,8 +90,8 @@ to_be_renamed_tables = {
     "tpaym": "payments",
     "tpaymah": "payment_assessments",
     "tpaymhist": "payment_histories",
-    "tpcas": "cash_claims",  # TODO kosong
-    "tpcasah": "cash_claim_assessments",  # TODO kosong
+    "tpcas": "petty_cash_claims",  # TODO kosong
+    "tpcasah": "petty_cash_claim_assessments",  # TODO kosong
     # "tpcdt": "",  # TODO kosong
     # "tpcfl": "",  # TODO kosong
     "tpodt": "purchase_order_items",

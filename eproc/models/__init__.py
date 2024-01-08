@@ -45,10 +45,14 @@ from eproc.models.purchase_orders.purchase_order_items import PurchaseOrderItem
 # Invoices
 from eproc.models.invoices import Invoice
 
+# Petty Cash Claims
+from eproc.models.petty_cash_claims import PettyCashClaim
+
 # Assessments
 from eproc.models.assessments.vendor_assessments import VendorAssessment
 from eproc.models.assessments.procurement_request_assessments import ProcurementRequestAssessment
 from eproc.models.assessments.invoice_assessments import InvoiceAssessment
+from eproc.models.assessments.petty_cash_claim_assessments import PettyCashClaimAssessment
 
 # (ungrouped)
 from eproc.models.cost_centers import CostCenter

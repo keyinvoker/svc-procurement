@@ -1,7 +1,11 @@
 from marshmallow import EXCLUDE, Schema, fields, validate
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from typing import List
 
+from eproc.models.enums import TransactionType
 from eproc.models.procurement_requests import ProcurementRequest
+
+TRANSACTION_TYPES: List[str] = TransactionType._member_names_
 
 
 class ProcurementRequestAutoSchema(SQLAlchemyAutoSchema):
@@ -40,6 +44,10 @@ class ProcurementRequestGetInputSchema(Schema):
         allow_none=True,
         dump_default=0,
         load_default=0,
+    )
+    transaction_type = fields.String(
+        validate=validate.OneOf(TRANSACTION_TYPES),
+        required=True,
     )
 
     class Meta:
@@ -90,6 +98,10 @@ class ProcurementRequestPostInputSchema(Schema):
     item_category_id = fields.String(required=True)
     item_list = fields.List(fields.Dict(), required=True)
     description = fields.String(validate=validate.Length(max=120))
+    transaction_type = fields.String(
+        validate=validate.OneOf(TRANSACTION_TYPES),
+        required=True,
+    )
 
     class Meta:
         ordered = True
