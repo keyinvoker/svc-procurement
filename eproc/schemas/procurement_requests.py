@@ -90,7 +90,6 @@ class ProcurementRequestPostInputSchema(Schema):
     directorate_id = fields.String(required=True)
     division_id = fields.String(required=True)
     department_id = fields.String(required=True)
-    preparer_id = fields.String(required=True)
     requester_id = fields.String(required=True)
     year = fields.Integer(required=True)
     month = fields.Integer(required=True)

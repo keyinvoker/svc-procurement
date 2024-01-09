@@ -31,7 +31,7 @@ def add_user_roles(
             )
             session.execute(statement)
             session.commit()
-            app_logger.info(f"Added to UserRole :: {log_data}")
+            app_logger.info(f"Added to users_roles :: {log_data}")
         except Exception as e:
             session.rollback()
             error_logger.error(

@@ -1,4 +1,3 @@
-from datetime import datetime
 from http import HTTPStatus
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
@@ -8,6 +7,7 @@ from typing import List, Optional, Tuple
 
 from eproc import error_logger
 from eproc.helpers.commons import get_next_sequence_number
+from eproc.helpers.procurement_request import add_items
 from eproc.models.assessments.procurement_request_assessments import (
     ProcurementRequestAssessment
 )
@@ -275,7 +275,6 @@ class ProcurementRequestController:
     
     def create(self, **kwargs) -> Tuple[HTTPStatus, str, Optional[dict]]:
 
-        message = "Berhasil menambahkan PR"
         data = None
 
         branch_id = kwargs.get("branch_id")
@@ -292,7 +291,13 @@ class ProcurementRequestController:
         item_category_id = kwargs.get("item_category_id")
         item_list: List[dict] = kwargs.get("item_list")
 
-        cost_center_id = ItemCategory.query.with_entities(ItemCategory.cost_center_id).filter(ItemCategory.id == item_category_id).first().cost_center_id
+        cost_center_id = (
+            ItemCategory.query
+            .with_entities(ItemCategory.cost_center_id)
+            .filter(ItemCategory.id == item_category_id)
+            .first()
+            .cost_center_id
+        )
 
         next_sequence_number = get_next_sequence_number(
             ProcurementRequest, year, month
@@ -320,38 +325,14 @@ class ProcurementRequestController:
 
         procurement_request.save()
 
-        failed_item_ids: List[Optional[str]] = list()
-        failed_item_data: List[Optional[dict]] = list()
-        for index, item in enumerate(item_list):
-            try:
-                item_id = item.get("id")
-                unit_of_measurement = item.get("unit_of_measurement")
-                quantity = item.get("quantity")
-                required_date = item.get("required_date")
-                notes = item.get("notes")
+        message = f"Berhasil menambahkan PR baru dengan id: {procurement_request.id}"
 
-                ProcurementRequestItem(
-                    procurement_request_id=procurement_request.id,
-                    item_id=item_id,
-                    line_number=(index + 1),
-                    unit_of_measurement=unit_of_measurement,
-                    quantity=quantity,
-                    required_date=required_date,
-                    required_days_interval=datetime.fromisoformat(required_date).replace(tzinfo=None),
-                    notes=notes,
-                    currency_id="IDR",
-                    aprqt=0,  # TODO: field gak guna
-                ).save()
-
-            except Exception as e:
-                error_logger.error(f"Failed to add PR Item :: {e}, data: {item}")
-
-                failed_item_ids.append(item_id)
-                failed_item_data.append(item)
-                continue
-        
+        failed_item_ids, failed_item_data = add_items(
+            procurement_request_id=procurement_request.id,
+            item_list=item_list,
+        )
         if failed_item_ids:
-            message += f", gagal menambahkan barang dengan ID: {failed_item_ids}"
+            message += f", gagal menambahkan barang dengan id: {failed_item_ids}"
             data = dict(failed_item_data=failed_item_data)
         else:
             message += " dan semua barang."

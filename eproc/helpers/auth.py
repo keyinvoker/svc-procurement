@@ -1,4 +1,3 @@
-from sqlalchemy import text
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql import func
 from typing import List, Optional
