@@ -1,6 +1,5 @@
 from http import HTTPStatus
 from sqlalchemy import or_
-from traceback import format_exc
 from typing import List, Optional, Tuple
 
 from eproc.models.references import Reference
@@ -32,7 +31,7 @@ class VendorRFQController:
                 VendorRFQ.vendor_id,
                 Vendor.name.label("vendor_name"),
                 Vendor.first_address.label("vendor_address"),
-                VendorRFQ.fcoid,
+                VendorRFQ.branch_id,
                 VendorRFQ.reference_id,
                 Reference.description.label("reference_description"),
                 User.full_name.label("updated_by"),

@@ -8,8 +8,9 @@ from eproc.models.purchase_orders.purchase_order_items import PurchaseOrderItem
 
 class PurchaseOrderAutoSchema(SQLAlchemyAutoSchema):
     branch_id = fields.String()
-    branch_location = fields.String()
-    branch_address = fields.String()
+    branch_description = fields.String()
+    branch_first_address = fields.String()
+    branch_second_address = fields.String()
     vendor_name = fields.String()
     vendor_address = fields.String()
     reference_description = fields.String()

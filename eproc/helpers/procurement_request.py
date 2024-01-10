@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import Response
 from http import HTTPStatus
 from sqlalchemy import insert
+from traceback import format_exc
 from typing import List, Optional, Tuple
 
 from eproc import app_logger, error_logger
@@ -136,3 +137,23 @@ def add_items(
             continue
     
     return failed_item_ids, failed_item_data
+
+
+def get_next_document_number(
+    transaction_type: str,
+    year: int,
+    month: int,
+    sequence_number: int,
+) -> str:
+
+    try:
+        year_string = str(year)[::2]
+        month_string = str(month).zfill(2)
+        sequence_string = str(sequence_number).zfill(4)
+
+        document_number = f"BSS/{transaction_type}/{year_string}{month_string}{sequence_string}"
+
+        return document_number
+
+    except Exception as e:
+        error_logger.error(f"Error on get_next_document_number() :: {e}, {format_exc()}")

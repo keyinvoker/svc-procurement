@@ -3,8 +3,6 @@ from marshmallow import EXCLUDE, Schema, fields, post_dump
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from eproc.models.price_comparisons import PriceComparison
-from eproc.schemas.references import ReferenceAutoSchema
-# from eproc.schemas.rfqs import RFQAutoSchema
 
 
 class PriceComparisonAutoSchema(SQLAlchemyAutoSchema):

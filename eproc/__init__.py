@@ -37,6 +37,7 @@ def create_app() -> Flask:
         from eproc.blueprints.price_comparison import price_comparison_blueprint
         from eproc.blueprints.purchase_order import purchase_order_blueprint
         from eproc.blueprints.procurement_request_progress import procurement_request_progress_blueprint
+        from eproc.blueprints.rfq import rfq_blueprint
         from eproc.blueprints.system_config import system_config_blueprint
         from eproc.blueprints.user.employee import employee_blueprint
         from eproc.blueprints.user.user import user_blueprint
@@ -46,6 +47,7 @@ def create_app() -> Flask:
         app.register_blueprint(auth_blueprint)
         app.register_blueprint(dashboard_blueprint)
         app.register_blueprint(procurement_request_blueprint)
+        app.register_blueprint(rfq_blueprint)
         app.register_blueprint(vendor_rfq_blueprint)
         app.register_blueprint(price_comparison_blueprint)
         app.register_blueprint(purchase_order_blueprint)
@@ -62,9 +64,10 @@ def create_app() -> Flask:
         app.register_blueprint(link_blueprint)
         app.register_blueprint(system_config_blueprint)
 
+        print("\n")
         print_all_endpoints = False
         if print_all_endpoints:
-            print(f"\nEndpoints:")
+            print("Endpoints:")
             for api in app.url_map.iter_rules():
                 if api.endpoint == "static":
                     continue

@@ -50,6 +50,6 @@ class ProcurementRequestItem(BaseModel):
     item = db.relationship(
         "Item", backref=backref(__tablename__, uselist=False)
     )
-    # currency = db.relationship(
-    #     "Currency", backref=backref(__tablename__, uselist=False)
-    # )  # TODO: currency table 
+    currency = db.relationship(
+        "Currency", backref=backref(__tablename__, uselist=False)
+    )  # TODO: currency table 

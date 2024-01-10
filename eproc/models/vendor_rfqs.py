@@ -9,9 +9,9 @@ from eproc.helpers.commons import wibnow
 class VendorRFQ(BaseModel):
     __tablename__ = "vendor_rfqs"
 
-    id = sa.Column(sa.BigInteger(), primary_key=True)
+    id = sa.Column(sa.BigInteger(), primary_key=True, autoincrement=True)
     vendor_id = sa.Column(sa.String(20), sa.ForeignKey("vendors.id"), nullable=False)
-    fcoid = sa.Column(sa.String())  # TODO: Foreign Key
+    branch_id = sa.Column(sa.String(10), sa.ForeignKey("branches.id"), nullable=False)
     reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
     document_number = sa.Column(sa.String(20))
     transaction_date = sa.Column(
@@ -42,6 +42,9 @@ class VendorRFQ(BaseModel):
 
     vendor = db.relationship(
         "Vendor", backref=backref(__tablename__, uselist=False)
+    )
+    branch = db.relationship(
+        "Branch", backref=backref(__tablename__, uselist=False)
     )
     reference = db.relationship(
         "Reference", backref=backref(__tablename__, uselist=False)

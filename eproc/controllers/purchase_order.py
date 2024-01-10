@@ -35,7 +35,10 @@ class PurchaseOrderController:
             PurchaseOrder.query
             .with_entities(
                 PurchaseOrder.id,
-                PurchaseOrder.fcoid,
+                PurchaseOrder.branch_id,
+                Branch.description.label("branch_description"),
+                Branch.first_address.label("branch_first_address"),
+                Branch.second_address.label("branch_second_address"),
                 PurchaseOrder.vendor_id,
                 Vendor.name.label("vendor_name"),
                 Vendor.first_address.label("vendor_address"),
@@ -66,6 +69,7 @@ class PurchaseOrderController:
             .join(Reference, Reference.id == PurchaseOrder.reference_id)
             .join(User, User.id == PurchaseOrder.updated_by)
             .outerjoin(Vendor, Vendor.id == PurchaseOrder.vendor_id)
+            .outerjoin(Branch, Branch.id == PurchaseOrder.branch_id)
             .filter(PurchaseOrder.is_deleted.is_(False))
             .order_by(PurchaseOrder.transaction_date.desc())
         )
@@ -114,9 +118,10 @@ class PurchaseOrderController:
             PurchaseOrder.query
             .with_entities(
                 PurchaseOrder.id,
-                PurchaseOrder.fcoid.label("branch_id"),
-                Branch.description.label("branch_location"),
-                Branch.first_address.label("branch_address"),
+                PurchaseOrder.branch_id,
+                Branch.description.label("branch_description"),
+                Branch.first_address.label("branch_first_address"),
+                Branch.second_address.label("branch_second_address"),
                 PurchaseOrder.vendor_id,
                 Vendor.name.label("vendor_name"),
                 Vendor.first_address.label("vendor_address"),
@@ -147,7 +152,7 @@ class PurchaseOrderController:
             .outerjoin(Vendor, Vendor.id == PurchaseOrder.vendor_id)
             .outerjoin(Reference, Reference.id == PurchaseOrder.reference_id)
             .outerjoin(User, User.id == PurchaseOrder.updated_by)
-            .outerjoin(Branch, Branch.id == PurchaseOrder.fcoid)
+            .outerjoin(Branch, Branch.id == PurchaseOrder.branch_id)
             .filter(
                 PurchaseOrder.id == id,
                 PurchaseOrder.is_deleted.is_(False),

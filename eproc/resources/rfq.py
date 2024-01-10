@@ -4,39 +4,23 @@ from http import HTTPStatus
 from traceback import format_exc
 
 from eproc import error_logger
-from eproc.controllers.procurement_request import ProcurementRequestController
+from eproc.controllers.rfq import RFQController
 from eproc.helpers.commons import split_string_into_list
-from eproc.helpers.procurement_request import (
-    ALL_ADMIN_ROLES,
-    ALL_ROLES,
-    has_corresponding_roles,
-)
-from eproc.models.enums import Roles
-from eproc.schemas.procurement_requests import (
-    ProcurementRequestGetInputSchema,
-    ProcurementRequestDetailGetInputSchema,
-    ProcurementRequestPostInputSchema,
+from eproc.schemas.rfqs import (
+    RFQGetInputSchema,
+    RFQDetailGetInputSchema,
+    RFQPostInputSchema,
 )
 from eproc.tools.decorator import validate_token
 from eproc.tools.response import construct_api_response
 from eproc.tools.validation import schema_validate_and_load
 
 
-class ProcurementRequestResource(Resource):
+class RFQResource(Resource):
     def __init__(self):
-        self.controller = ProcurementRequestController()
+        self.controller = RFQController()
 
-    @validate_token(allowlist=(
-        ALL_ROLES
-        + [
-            Roles.RFQ_APPROVER_1,
-            Roles.RFQ_LIST_ONLY,
-            Roles.RFQ_USER,
-            Roles.QUOTATION_APPROVER_1,
-            Roles.QUOTATION_LIST_ONLY,
-            Roles.QUOTATION_USER,
-        ]
-    ))
+    @validate_token
     def get(self) -> Response:
         try:
             list_param_keys = [
@@ -48,17 +32,10 @@ class ProcurementRequestResource(Resource):
             )
 
             is_valid, response, payload = schema_validate_and_load(
-                schema=ProcurementRequestGetInputSchema(),
+                schema=RFQGetInputSchema(),
                 payload=input_data,
             )
             if not is_valid:
-                return response
-
-            is_eligible, response = has_corresponding_roles(
-                user_roles=g.roles,
-                transaction_type=payload["transaction_type"],
-            )
-            if not is_eligible:
                 return response
 
             (
@@ -78,29 +55,22 @@ class ProcurementRequestResource(Resource):
                 data=data,
             )
         except Exception as e:
-            error_logger.error(f"Error on Procurement Request [GET] :: {e}, {format_exc()}")
+            error_logger.error(f"Error on RFQ [GET] :: {e}, {format_exc()}")
             return construct_api_response(HTTPStatus.INTERNAL_SERVER_ERROR)
-
-    @validate_token(allowlist=ALL_ADMIN_ROLES)
+    
+    @validate_token
     def post(self):
         try:
             input_data = request.get_json()
 
             is_valid, response, payload = schema_validate_and_load(
-                schema=ProcurementRequestPostInputSchema(),
+                schema=RFQPostInputSchema(),
                 payload=input_data,
             )
             if not is_valid:
                 return response
-
-            is_eligible, response = has_corresponding_roles(
-                user_roles=g.roles,
-                transaction_type=payload["transaction_type"],
-            )
-            if not is_eligible:
-                return response
             
-            payload["preparer_id"] = g.user_id
+            payload["procured_by"] = g.user_id
 
             http_status, message, data = self.controller.create(**payload)
 
@@ -116,26 +86,18 @@ class ProcurementRequestResource(Resource):
             )
 
 
-class ProcurementRequestDetailResource(Resource):
+class RFQDetailResource(Resource):
     def __init__(self):
-        self.controller = ProcurementRequestController()
+        self.controller = RFQController()
 
-    @validate_token(allowlist=ALL_ROLES)
+    @validate_token
     def get(self) -> Response:
         try:
-
             is_valid, response, payload = schema_validate_and_load(
-                schema=ProcurementRequestDetailGetInputSchema(),
+                schema=RFQDetailGetInputSchema(),
                 payload=request.args.to_dict(),
             )
             if not is_valid:
-                return response
-
-            is_eligible, response = has_corresponding_roles(
-                user_roles=g.roles,
-                transaction_type=payload["transaction_type"],
-            )
-            if not is_eligible:
                 return response
 
             (
@@ -145,10 +107,8 @@ class ProcurementRequestDetailResource(Resource):
             return construct_api_response(
                 http_status=http_status,
                 message=message,
-                data=data
+                data=data,
             )
         except Exception as e:
-            error_logger.error(f"Error on Procurement Request Detail [GET] :: {e}, {format_exc()}")
-            return construct_api_response(
-                HTTPStatus.INTERNAL_SERVER_ERROR
-            )
+            error_logger.error(f"Error on RFQ Detail [GET] :: {e}, {format_exc()}")
+            return construct_api_response(HTTPStatus.INTERNAL_SERVER_ERROR)

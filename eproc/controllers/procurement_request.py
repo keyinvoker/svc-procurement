@@ -7,7 +7,7 @@ from typing import List, Optional, Tuple
 
 from eproc import error_logger
 from eproc.helpers.commons import get_next_sequence_number
-from eproc.helpers.procurement_request import add_items
+from eproc.helpers.procurement_request import add_items, get_next_document_number
 from eproc.models.assessments.procurement_request_assessments import (
     ProcurementRequestAssessment
 )
@@ -275,8 +275,6 @@ class ProcurementRequestController:
     
     def create(self, **kwargs) -> Tuple[HTTPStatus, str, Optional[dict]]:
 
-        data = None
-
         branch_id = kwargs.get("branch_id")
         directorate_id = kwargs.get("directorate_id")
         division_id = kwargs.get("division_id")
@@ -291,6 +289,30 @@ class ProcurementRequestController:
         item_category_id = kwargs.get("item_category_id")
         item_list: List[dict] = kwargs.get("item_list")
 
+        existing_entry: ProcurementRequest = (
+            ProcurementRequest.query
+            .filter(
+                ProcurementRequest.branch_id == branch_id,
+                ProcurementRequest.directorate_id == directorate_id,
+                ProcurementRequest.division_id == division_id,
+                ProcurementRequest.department_id == department_id,
+                ProcurementRequest.preparer_id == preparer_id,
+                ProcurementRequest.requester_id == requester_id,
+                ProcurementRequest.year == year,
+                ProcurementRequest.month == month,
+                ProcurementRequest.description == description,
+                ProcurementRequest.transaction_type == transaction_type,
+                ProcurementRequest.item_class_id == item_class_id,
+                ProcurementRequest.item_category_id == item_category_id,
+            )
+        )
+        if existing_entry:
+            return (
+                HTTPStatus.CONFLICT,
+                f"Sudah ada PR dengan id: {existing_entry.id}",
+                None
+            )
+
         cost_center_id = (
             ItemCategory.query
             .with_entities(ItemCategory.cost_center_id)
@@ -301,6 +323,10 @@ class ProcurementRequestController:
 
         next_sequence_number = get_next_sequence_number(
             ProcurementRequest, year, month
+        )
+
+        next_document_number = get_next_document_number(
+            transaction_type, year, month, next_sequence_number
         )
 
         procurement_request: ProcurementRequest = (
@@ -320,12 +346,14 @@ class ProcurementRequestController:
                 item_category_id=item_category_id,
                 sequence_number=next_sequence_number,
                 transaction_type=transaction_type,
+                document_number=next_document_number,
             )
         )
 
         procurement_request.save()
 
         message = f"Berhasil menambahkan PR baru dengan id: {procurement_request.id}"
+        data = None
 
         failed_item_ids, failed_item_data = add_items(
             procurement_request_id=procurement_request.id,

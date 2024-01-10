@@ -1,7 +1,7 @@
 # Masters
 from eproc.models.masters.entities import Entity
 from eproc.models.masters.regionals import Regional
-from eproc.models.masters.currency import Currency
+from eproc.models.masters.currencies import Currency
 
 # Auth
 from eproc.models.auth.roles import Role
@@ -15,7 +15,7 @@ from eproc.models.users.employees import Employee
 from eproc.models.users.users import User
 from eproc.models.references import Reference
 
-# # Companies
+# Companies
 from eproc.models.companies.branches import Branch
 from eproc.models.companies.departments import Department
 from eproc.models.companies.directorates import Directorate
@@ -31,7 +31,8 @@ from eproc.models.items.item_classes import ItemClass
 from eproc.models.items.item_categories import ItemCategory
 
 # RFQs
-from eproc.models.rfqs import RFQ
+from eproc.models.rfqs.rfqs import RFQ
+from eproc.models.rfqs.rfq_items import RFQItem
 from eproc.models.vendor_rfqs import VendorRFQ
 from eproc.models.price_comparisons import PriceComparison
 

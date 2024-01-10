@@ -117,8 +117,8 @@ to_be_renamed_tables = {
     "trefq": "rfqs",
     "trefqah": "rfq_assessments",
     "trefqhist": "rfq_histories",
-    "trfqd": "rfq_details",
-    "trfqdhist": "rfq_details_histories",
+    "trfqd": "rfq_items",
+    "trfqdhist": "rfq_item_histories",
     "trfqp": "",
     # "trfqphist": "",  # TODO kosong
     "trfqv": "vendor_rfqs",

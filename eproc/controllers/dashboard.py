@@ -1,4 +1,4 @@
-from eproc.models.rfqs import RFQ
+from eproc.models.rfqs.rfqs import RFQ
 from eproc.models.vendors.vendors import Vendor
 from eproc.models.vendor_rfqs import VendorRFQ
 

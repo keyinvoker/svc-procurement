@@ -960,6 +960,7 @@ if __name__ == "__main__":
         # endregion: vendors
         # region: vendor_rfqs
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN trnno TO id")
+        # execute("ALTER TABLE vendor_rfqs RENAME COLUMN fcoid TO branch_id")
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN vdrid TO vendor_id")
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN stats TO reference_id")
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN docno TO document_number")
@@ -969,13 +970,11 @@ if __name__ == "__main__":
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN descr TO description")
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN appsc TO app_source")
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN sqenc TO sequence_number")
-
-    #     # TODO
-    #     ...
         # endregion: vendor_rfqs
 
         # region: rfqs
         # execute("ALTER TABLE rfqs RENAME COLUMN trnno TO id")
+        # execute("ALTER TABLE rfqs RENAME COLUMN fcoid TO branch_id")
         # execute("ALTER TABLE rfqs RENAME COLUMN vdrid TO vendor_id")
         # execute("ALTER TABLE rfqs RENAME COLUMN prcby TO procured_by")
         # execute("ALTER TABLE rfqs RENAME COLUMN stats TO reference_id")
@@ -988,8 +987,19 @@ if __name__ == "__main__":
         # execute("ALTER TABLE rfqs RENAME COLUMN appsc TO app_source")
         # execute("ALTER TABLE rfqs RENAME COLUMN sqenc TO sequence_number")
 
-    #     # TODO
-    #     ...
+
+        # region: rfq_items
+        # execute("ALTER TABLE rfq_items RENAME COLUMN trnno TO rfq_id;")
+        # execute("ALTER TABLE rfq_items RENAME COLUMN lnnum TO line_number;")
+        # execute("ALTER TABLE rfq_items RENAME COLUMN itmcd TO item_id;")
+        # execute("ALTER TABLE rfq_items RENAME COLUMN prqty TO quantity;")
+        # execute("ALTER TABLE rfq_items RENAME COLUMN unoms TO unit_of_measurement;")
+        # execute("ALTER TABLE rfq_items RENAME COLUMN curcd TO currency;")
+        # # execute("ALTER TABLE rfq_items RENAME COLUMN bgprc TO ;")
+        # execute("ALTER TABLE rfq_items RENAME COLUMN descr TO description;")
+        # execute("ALTER TABLE rfq_items RENAME COLUMN prnum TO pr_document_number;")
+        # execute("ALTER TABLE rfq_items RENAME COLUMN prtno TO procurement_request_id;")
+        # endregion: rfq_items
         # endregion: rfqs
 
         # endregion: group: vendors
@@ -1066,6 +1076,8 @@ if __name__ == "__main__":
 
         # region: group: purchase_orders
         # region: purchase_orders
+        # execute("ALTER TABLE purchase_orders RENAME COLUMN trnno TO id")
+        # execute("ALTER TABLE purchase_orders RENAME COLUMN fcoid TO branch_id")
         # execute("ALTER TABLE purchase_orders RENAME COLUMN descr TO description;")
         # execute("ALTER TABLE purchase_orders RENAME COLUMN isact TO is_active;")
         # execute("ALTER TABLE purchase_orders RENAME COLUMN vdrid TO vendor_id;")

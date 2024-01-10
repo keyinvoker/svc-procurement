@@ -1,30 +1,27 @@
-from decimal import Decimal
-from marshmallow import EXCLUDE, Schema, fields, post_dump
+from marshmallow import EXCLUDE, Schema, fields, validate
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from typing import List
 
-from eproc.models.rfqs import RFQ
-from eproc.schemas.references import ReferenceAutoSchema
-from eproc.schemas.users.users import UserAutoSchema
-from eproc.schemas.vendors.vendors import VendorAutoSchema
+from eproc.models.enums import TransactionType
+from eproc.models.rfqs.rfqs import RFQ
+
+TRANSACTION_TYPES: List[str] = TransactionType._member_names_
 
 
 class RFQAutoSchema(SQLAlchemyAutoSchema):
-    vendor = fields.Nested(VendorAutoSchema)
-    assessor = fields.Nested(UserAutoSchema)
-    reference = fields.Nested(ReferenceAutoSchema)
-
-    @post_dump
-    def parse_data(self, data: dict, **kwargs):
-        for key, value in data.items():
-            if isinstance(value, Decimal):
-                data[key] = float(value)
-        return data
+    vendor_name = fields.String()
+    branch_first_address = fields.String()
+    branch_second_address = fields.String()
+    reference_description = fields.String()
+    procurer_id = fields.String()
+    procurer_full_name = fields.String()
 
     class Meta:
         model = RFQ
         load_instance = True
         ordered = True
         unknown = EXCLUDE
+        include_fk = True
 
 
 class RFQGetInputSchema(Schema):
@@ -48,6 +45,31 @@ class RFQGetInputSchema(Schema):
         dump_default=0,
         load_default=0,
     )
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
+class RFQPostInputSchema(Schema):
+    branch_id = fields.String(required=True)
+    year = fields.Integer(required=True)
+    month = fields.Integer(required=True)
+    vendor_id_list = fields.List(fields.String(), required=True)
+    purchase_request_id_list = fields.List(fields.Integer(), required=True)
+    description = fields.String(validate=validate.Length(max=120))
+    transaction_type = fields.String(
+        validate=validate.OneOf(TRANSACTION_TYPES),
+        required=True,
+    )
+
+    class Meta:
+        ordered = True
+        unknown = EXCLUDE
+
+
+class RFQDetailGetInputSchema(Schema):
+    id = fields.Integer(required=True)
 
     class Meta:
         ordered = True
