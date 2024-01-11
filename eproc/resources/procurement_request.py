@@ -29,12 +29,12 @@ class ProcurementRequestResource(Resource):
     @validate_token(allowlist=(
         ALL_ROLES
         + [
-            Roles.RFQ_APPROVER_1,
-            Roles.RFQ_LIST_ONLY,
-            Roles.RFQ_USER,
-            Roles.QUOTATION_APPROVER_1,
-            Roles.QUOTATION_LIST_ONLY,
-            Roles.QUOTATION_USER,
+            Roles.RFQ_APPROVER_1.value,
+            Roles.RFQ_LIST_ONLY.value,
+            Roles.RFQ_USER.value,
+            Roles.QUOTATION_APPROVER_1.value,
+            Roles.QUOTATION_LIST_ONLY.value,
+            Roles.QUOTATION_USER.value,
         ]
     ))
     def get(self) -> Response:
