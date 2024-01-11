@@ -30,7 +30,10 @@ class ProcurementRequestItemAutoSchema(SQLAlchemyAutoSchema):
 
 
 class ProcurementRequesItemGetInputSchema(Schema):
-    procurement_request_id = fields.Integer(required=True)
+    procurement_request_id_list = fields.List(
+        fields.Integer(),
+        required=True
+    )
     limit = fields.Integer(
         allow_none=True,
         dump_default=None,

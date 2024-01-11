@@ -3,6 +3,8 @@ from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 from typing import List, Optional, Tuple
 
+from eproc.helpers.commons import get_next_sequence_number
+from eproc.helpers.rfq import get_next_document_number
 from eproc.models.companies.branches import Branch
 from eproc.models.references import Reference
 from eproc.models.users.users import User
@@ -107,12 +109,13 @@ class RFQController:
     def create(self, **kwargs) -> Tuple[HTTPStatus, str, Optional[dict]]:
 
         branch_id = kwargs.get("branch_id")
+        vendor_id_list: str = kwargs.get("vendor_id_list")
         procured_by = kwargs.get("procured_by")
         year = kwargs.get("year")
         month = kwargs.get("month")
         description = kwargs.get("description")
         transaction_type = kwargs.get("transaction_type")
-        item_list: List[dict] = kwargs.get("item_list")
+        purchase_request_id_list: List[int] = kwargs.get("purchase_request_id_list")
 
         existing_entry: RFQ = (
             RFQ.query
@@ -124,6 +127,7 @@ class RFQController:
                 RFQ.description == description,
                 RFQ.transaction_type == transaction_type,
             )
+            .first()
         )
         if existing_entry:
             return (
@@ -132,52 +136,43 @@ class RFQController:
                 None
             )
 
-        # cost_center_id = (
-        #     ItemCategory.query
-        #     .with_entities(ItemCategory.cost_center_id)
-        #     .filter(ItemCategory.id == item_category_id)
-        #     .first()
-        #     .cost_center_id
-        # )
-
         next_sequence_number = get_next_sequence_number(
-            ProcurementRequest, year, month
+            RFQ, year, month
         )
 
         next_document_number = get_next_document_number(
-            transaction_type, year, month, next_sequence_number
+            year, month, next_sequence_number
         )
 
-        procurement_request: RFQ = (
+        rfq: RFQ = (
             RFQ(
                 branch_id=branch_id,
                 procured_by=procured_by,
-                requester_id=requester_id,
-                updated_by=preparer_id,
+                updated_by=procured_by,
+                vendor_id_list=vendor_id_list,
                 year=year,
                 month=month,
                 description=description,
-                item_class_id=item_class_id,
-                item_category_id=item_category_id,
                 sequence_number=next_sequence_number,
                 transaction_type=transaction_type,
                 document_number=next_document_number,
             )
         )
 
-        procurement_request.save()
+        rfq.save()
 
-        message = f"Berhasil menambahkan PR baru dengan id: {procurement_request.id}"
+        message = f"Berhasil menambahkan RFQ baru dengan id: {rfq.id}"
         data = None
 
-        failed_item_ids, failed_item_data = add_items(
-            procurement_request_id=procurement_request.id,
-            item_list=item_list,
-        )
-        if failed_item_ids:
-            message += f", gagal menambahkan barang dengan id: {failed_item_ids}"
-            data = dict(failed_item_data=failed_item_data)
-        else:
-            message += " dan semua barang."
+        # TODO: tambahin data ke `rfq_items`: rfq.id, procurement_request_id -> item_id(s)
+        # failed_item_ids, failed_item_data = add_items(
+        #     rfq_id=rfq.id,
+        #     purchase_request_id_list=purchase_request_id_list,
+        # )
+        # if failed_item_ids:
+        #     message += f", gagal menambahkan barang dari PR dengan id: {failed_item_ids}"
+        #     data = dict(failed_item_data=failed_item_data)
+        # else:
+        #     message += " dan semua barang."
 
         return HTTPStatus.OK, message, data

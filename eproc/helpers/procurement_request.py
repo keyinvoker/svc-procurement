@@ -156,4 +156,4 @@ def get_next_document_number(
         return document_number
 
     except Exception as e:
-        error_logger.error(f"Error on get_next_document_number() :: {e}, {format_exc()}")
+        error_logger.error(f"Error on helpers:procurement_request:get_next_document_number() :: {e}, {format_exc()}")

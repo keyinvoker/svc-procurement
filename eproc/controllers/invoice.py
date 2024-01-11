@@ -4,11 +4,10 @@ from typing import List, Optional, Tuple
 from eproc.helpers.commons import get_next_sequence_number
 from eproc.models.cost_centers import CostCenter
 from eproc.models.invoices import Invoice
-from eproc.models.references import Reference
-from eproc.models.cost_centers import CostCenter
-from eproc.models.vendors.vendors import Vendor
 from eproc.models.purchase_orders.purchase_orders import PurchaseOrder
 from eproc.models.references import Reference
+from eproc.models.users.users import User
+from eproc.models.vendors.vendors import Vendor
 from eproc.schemas.invoices import (
     InvoiceSchema,
     InvoiceDetailSchema,
@@ -35,6 +34,7 @@ class InvoiceController:
                 CostCenter.description.label("cost_center_description"),
                 Invoice.reference_id,
                 Reference.description.label("reference_description"),
+                User.full_name.label("updated_by"),
                 Invoice.transaction_date,
                 Invoice.year,
                 Invoice.month,
@@ -51,6 +51,7 @@ class InvoiceController:
             .join(Vendor, Vendor.id == PurchaseOrder.vendor_id)
             .join(CostCenter, CostCenter.id == Invoice.cost_center_id)
             .join(Reference, Reference.id == Invoice.reference_id)
+            .join(User, User.id == Invoice.updated_by)
             .filter(
                 Invoice.id == id,
                 Invoice.is_deleted.is_(False),
@@ -91,6 +92,7 @@ class InvoiceController:
                 CostCenter.description.label("cost_center_description"),
                 Invoice.reference_id,
                 Reference.description.label("reference_description"),
+                User.full_name.label("updated_by"),
                 Invoice.transaction_date,
                 Invoice.year,
                 Invoice.month,
@@ -106,6 +108,7 @@ class InvoiceController:
             .join(Vendor, Vendor.id == Invoice.vendor_id)
             .join(CostCenter, CostCenter.id == Invoice.cost_center_id)
             .join(Reference, Reference.id == Invoice.reference_id)
+            .join(User, User.id == Invoice.updated_by)
             .filter(Invoice.is_deleted.is_(False))
             .order_by(Invoice.id)
         )
@@ -141,7 +144,7 @@ class InvoiceController:
             total,
         )
 
-    def create(self, **kwargs) -> Tuple[HTTPStatus, str, dict]:
+    def create(self, **kwargs) -> Tuple[HTTPStatus, str, Optional[dict]]:
         purchase_order_id = kwargs.get("purchase_order_id")
         year = kwargs.get("year")
         month = kwargs.get("month")
@@ -152,6 +155,21 @@ class InvoiceController:
         image_path = kwargs.get("image_path")
         description = kwargs.get("description")
         updated_by = kwargs.get("updated_by")
+
+        existing_entry: Invoice = (
+            Invoice.query
+            .filter(
+                Invoice.year == year,
+                Invoice.month == month,
+                Invoice.invoice_number == invoice_number,
+            )
+        )
+        if existing_entry:
+            return (
+                HTTPStatus.CONFLICT,
+                f"Sudah ada invoice dengan nomor: {invoice_number} (periode: {year}/{month}) pada id: {existing_entry.id}.",
+                None
+            )
 
         sequence_number = get_next_sequence_number(
             Invoice, year, month

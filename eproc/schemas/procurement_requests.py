@@ -10,6 +10,7 @@ TRANSACTION_TYPES: List[str] = TransactionType._member_names_
 
 class ProcurementRequestAutoSchema(SQLAlchemyAutoSchema):
     branch_name = fields.String()
+    item_category_description = fields.String()
     directorate_name = fields.String()
     division_name = fields.String()
     department_name = fields.String()
@@ -79,6 +80,10 @@ class ProcurementRequestDetailSchema(SQLAlchemyAutoSchema):
 
 class ProcurementRequestDetailGetInputSchema(Schema):
     id = fields.Integer(required=True)
+    transaction_type = fields.String(
+        validate=validate.OneOf(TRANSACTION_TYPES),
+        required=True,
+    )
 
     class Meta:
         ordered = True

@@ -1,5 +1,5 @@
 import pandas as pd
-from flask import Response, request
+from flask import Response, g, request
 from flask_restful import Resource
 from http import HTTPStatus
 from traceback import format_exc
@@ -56,25 +56,18 @@ class BudgetFileUploadResource(Resource):
     @validate_token
     def post(self):
         try:
-            file = request.files.get("file")
+            print(request.files.to_dict())
+            file = request.files.to_dict().get("file")
             if not file:
                 return construct_api_response(
                     HTTPStatus.BAD_REQUEST,
                     "Mohon masukkan file."
                 )
 
-            payload = request.form
-            user_id = payload.get("user_id")
-            if not user_id:
-                return construct_api_response(
-                    HTTPStatus.BAD_REQUEST,
-                    "Mohon masukkan user id pengupload file."
-                )
-
             df = pd.read_csv(file, header=0)
 
             http_status, message = self.controller.file_upload(
-                user_id=user_id,
+                user_id=g.user_id,
                 df=df,
             )
 

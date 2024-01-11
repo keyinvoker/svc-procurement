@@ -11,7 +11,7 @@ class RFQ(BaseModel):
 
     id = sa.Column(sa.BigInteger(), primary_key=True)
     branch_id = sa.Column(sa.String(10), sa.ForeignKey("branches.id"), nullable=False)
-    vendor_id = sa.Column(sa.String(100), sa.ForeignKey("vendors.id"), nullable=False)
+    vendor_id_list = sa.Column(sa.String(100), sa.ForeignKey("vendors.id"), nullable=False)
     procured_by = sa.Column(sa.String(20), sa.ForeignKey("users.id"), nullable=False)
     reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
     transaction_type = sa.Column(sa.String(4), nullable=False)
@@ -25,7 +25,7 @@ class RFQ(BaseModel):
     year = sa.Column(sa.Integer(), nullable=False)
     month = sa.Column(sa.Integer(), nullable=False)
     description = sa.Column(sa.String(500), nullable=False)
-    app_source = sa.Column(sa.String(20), nullable=False)
+    app_source = sa.Column(sa.String(20), nullable=False, default="epro", server_default="epro")
 
     sequence_number = sa.Column(sa.Integer(), nullable=False)
     dref1 = sa.Column(sa.String(100))

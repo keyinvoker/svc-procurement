@@ -175,6 +175,9 @@ class ProcurementRequestController:
                 ProcurementRequest.department_id,
                 Department.description.label("department_name"),
 
+                ProcurementRequest.item_category_id,
+                ItemCategory.description.label("item_category_description"),
+
                 ProcurementRequest.reference_id,
                 Reference.description.label("reference_description"),
                 User.full_name.label("updated_by"),
@@ -192,6 +195,7 @@ class ProcurementRequestController:
             .join(Reference, Reference.id == ProcurementRequest.reference_id)
             .join(Employee, Employee.id == ProcurementRequest.requester_id)
             .join(User, User.id == ProcurementRequest.updated_by)
+            .join(ItemCategory, ItemCategory.id == ProcurementRequest.item_category_id)
             .order_by(ProcurementRequest.transaction_date.desc())
         )
 
@@ -237,13 +241,13 @@ class ProcurementRequestController:
     def get_items(
         self, **kwargs
     ) -> Tuple[HTTPStatus, str, List[Optional[dict]], int]:
-        procurement_request_id = kwargs.get("procurement_request_id")
+        procurement_request_id_list = kwargs.get("procurement_request_id_list")
         limit = kwargs.get("limit")
         offset = kwargs.get("offset")
 
         query = (
             ProcurementRequestItem.query
-            .filter(ProcurementRequestItem.procurement_request_id == procurement_request_id)
+            .filter(ProcurementRequestItem.procurement_request_id.in_(procurement_request_id_list))
             .filter(ProcurementRequestItem.is_deleted.is_(False))
             .order_by(ProcurementRequestItem.line_number)
         )
@@ -252,7 +256,7 @@ class ProcurementRequestController:
         if total == 0:
             return (
                 HTTPStatus.NOT_FOUND,
-                f"Tidak ditemukan barang dari PR dengan id: {procurement_request_id}.",
+                f"Tidak ditemukan barang dari PR dengan id: {procurement_request_id_list}.",
                 [],
                 0
             )
@@ -268,7 +272,7 @@ class ProcurementRequestController:
 
         return (
             HTTPStatus.OK,
-            f"Ditemukan barang dari PR dengan id: {procurement_request_id}.",
+            f"Ditemukan barang dari PR dengan id: {procurement_request_id_list}.",
             data_list,
             total
         )

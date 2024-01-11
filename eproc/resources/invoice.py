@@ -168,13 +168,17 @@ class InvoiceTerminResource(Resource):
     def get(self) -> Response:
         payload = request.args.to_dict()
 
-        if not payload.get("purchase_order_id"):
-            return construct_api_response(HTTPStatus.BAD_REQUEST, "Please input PO number.")
+        purchase_order_id = int(payload.get("purchase_order_id"))
+        if not purchase_order_id:
+            return construct_api_response(
+                HTTPStatus.BAD_REQUEST,
+                "Please input PO number."
+            )
 
         invoice: Invoice = (
             Invoice.query
             .filter(
-                Invoice.purchase_order_id == int(payload.get("purchase_order_id")),
+                Invoice.purchase_order_id == purchase_order_id,
                 Invoice.is_deleted.is_(False)
             )
             .order_by(Invoice.termin.desc())
@@ -186,6 +190,7 @@ class InvoiceTerminResource(Resource):
         else:
             next_termin = invoice.termin + 1
 
-        data = dict(next_termin=next_termin)
-
-        return construct_api_response(HTTPStatus.OK, "", data)
+        return construct_api_response(
+            http_status=HTTPStatus.OK,
+            data=dict(next_termin=next_termin)
+        )

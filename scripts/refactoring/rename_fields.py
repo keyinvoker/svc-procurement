@@ -974,8 +974,15 @@ if __name__ == "__main__":
 
         # region: rfqs
         # execute("ALTER TABLE rfqs RENAME COLUMN trnno TO id")
+        # execute("""
+        #     CREATE SEQUENCE rfqs_id_seq
+        #     OWNED BY rfqs.id;
+
+        #     ALTER TABLE rfqs
+        #     ALTER COLUMN id SET DEFAULT nextval('rfqs_id_seq');
+        # """)
         # execute("ALTER TABLE rfqs RENAME COLUMN fcoid TO branch_id")
-        # execute("ALTER TABLE rfqs RENAME COLUMN vdrid TO vendor_id")
+        # execute("ALTER TABLE rfqs RENAME COLUMN vdrid TO vendor_id_list")
         # execute("ALTER TABLE rfqs RENAME COLUMN prcby TO procured_by")
         # execute("ALTER TABLE rfqs RENAME COLUMN stats TO reference_id")
         # execute("ALTER TABLE rfqs RENAME COLUMN trnty TO transaction_type")
@@ -991,14 +998,15 @@ if __name__ == "__main__":
         # region: rfq_items
         # execute("ALTER TABLE rfq_items RENAME COLUMN trnno TO rfq_id;")
         # execute("ALTER TABLE rfq_items RENAME COLUMN lnnum TO line_number;")
-        # execute("ALTER TABLE rfq_items RENAME COLUMN itmcd TO item_id;")
-        # execute("ALTER TABLE rfq_items RENAME COLUMN prqty TO quantity;")
-        # execute("ALTER TABLE rfq_items RENAME COLUMN unoms TO unit_of_measurement;")
-        # execute("ALTER TABLE rfq_items RENAME COLUMN curcd TO currency;")
-        # # execute("ALTER TABLE rfq_items RENAME COLUMN bgprc TO ;")
-        # execute("ALTER TABLE rfq_items RENAME COLUMN descr TO description;")
-        # execute("ALTER TABLE rfq_items RENAME COLUMN prnum TO pr_document_number;")
         # execute("ALTER TABLE rfq_items RENAME COLUMN prtno TO procurement_request_id;")
+        # execute("ALTER TABLE rfq_items RENAME COLUMN itmcd TO item_id;")
+        # execute("ALTER TABLE rfq_items DROP COLUMN itmcd;")
+        # execute("ALTER TABLE rfq_items DROP COLUMN prqty;")
+        # execute("ALTER TABLE rfq_items DROP COLUMN unoms;")
+        # execute("ALTER TABLE rfq_items DROP COLUMN curcd;")
+        # # execute("ALTER TABLE rfq_items RENAME COLUMN bgprc TO ;")
+        # execute("ALTER TABLE rfq_items DROP COLUMN descr;")
+        # execute("ALTER TABLE rfq_items DROP COLUMN prnum;")
         # endregion: rfq_items
         # endregion: rfqs
 
