@@ -72,12 +72,11 @@ class RFQResource(Resource):
             
             payload["procured_by"] = g.user_id
 
-            http_status, message, data = self.controller.create(**payload)
+            http_status, message = self.controller.create(**payload)
 
             return construct_api_response(
                 http_status=http_status,
                 message=message,
-                data=data,
             )
         except Exception as e:
             error_logger.error(f"Error on Procurement Request [POST] :: {e}, {format_exc()}")

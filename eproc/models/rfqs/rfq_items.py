@@ -13,12 +13,12 @@ class RFQItem(BaseModel):
     procurement_request_id = sa.Column(sa.BigInteger(), sa.ForeignKey("procurement_requests.id"), nullable=False)
     item_id = sa.Column(sa.String(20), sa.ForeignKey("items.id"), nullable=False)
 
+    rfq = db.relationship(
+        "RFQ", backref=backref(__tablename__, uselist=False)
+    )
     procurement_request = db.relationship(
         "ProcurementRequest", backref=backref(__tablename__, uselist=False)
     )
     item = db.relationship(
         "Item", backref=backref(__tablename__, uselist=False)
-    )
-    currency = db.relationship(
-        "Currency", backref=backref(__tablename__, uselist=False)
     )

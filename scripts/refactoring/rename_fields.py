@@ -961,6 +961,7 @@ if __name__ == "__main__":
         # region: vendor_rfqs
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN trnno TO id")
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN fcoid TO branch_id")
+        execute("ALTER TABLE vendor_rfqs DROP CONSTRAINT fk_trefq_qfrnc;")
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN vdrid TO vendor_id")
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN stats TO reference_id")
         # execute("ALTER TABLE vendor_rfqs RENAME COLUMN docno TO document_number")

@@ -13,7 +13,7 @@ class RFQ(BaseModel):
     branch_id = sa.Column(sa.String(10), sa.ForeignKey("branches.id"), nullable=False)
     vendor_id_list = sa.Column(sa.String(100), sa.ForeignKey("vendors.id"), nullable=False)
     procured_by = sa.Column(sa.String(20), sa.ForeignKey("users.id"), nullable=False)
-    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False, default=0, server_default="0")
+    reference_id = sa.Column(sa.Integer(), sa.ForeignKey("references.id"), nullable=False)
     transaction_type = sa.Column(sa.String(4), nullable=False)
     document_number = sa.Column(sa.String(20))
     transaction_date = sa.Column(

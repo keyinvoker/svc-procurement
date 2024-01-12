@@ -55,9 +55,12 @@ class RFQPostInputSchema(Schema):
     branch_id = fields.String(required=True)
     year = fields.Integer(required=True)
     month = fields.Integer(required=True)
-    vendor_id_list = fields.String(required=True)
+    vendor_id_list = fields.List(fields.String(), required=True)
     purchase_request_id_list = fields.List(fields.Integer(), required=True)
-    description = fields.String(validate=validate.Length(max=120))
+    description = fields.String(
+        validate=validate.Length(max=500),
+        required=True,
+    )
     transaction_type = fields.String(
         validate=validate.OneOf(TRANSACTION_TYPES),
         required=True,

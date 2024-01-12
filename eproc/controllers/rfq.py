@@ -4,7 +4,10 @@ from sqlalchemy.orm import aliased
 from typing import List, Optional, Tuple
 
 from eproc.helpers.commons import get_next_sequence_number
-from eproc.helpers.rfq import get_next_document_number
+from eproc.helpers.rfq import (
+    add_items,
+    get_next_document_number,
+)
 from eproc.models.companies.branches import Branch
 from eproc.models.references import Reference
 from eproc.models.users.users import User
@@ -17,6 +20,19 @@ class RFQController:
     def __init__(self):
         self.schema = RFQAutoSchema()
         self.many_schema = RFQAutoSchema(many=True)
+    
+    def _stringify_vendor_id_list(
+        self, vendor_id_list: List[str]
+    ) -> str:
+
+        return (
+            str(vendor_id_list)
+            .replace("'", "")
+            .replace("\"", "")
+            .replace("[", "")
+            .replace("]", "")
+            .replace(", ", ";")
+        )
 
     def get_list(
         self,
@@ -106,16 +122,16 @@ class RFQController:
             total,
         )
     
-    def create(self, **kwargs) -> Tuple[HTTPStatus, str, Optional[dict]]:
+    def create(self, **kwargs) -> Tuple[HTTPStatus, str]:
 
         branch_id = kwargs.get("branch_id")
-        vendor_id_list: str = kwargs.get("vendor_id_list")
         procured_by = kwargs.get("procured_by")
         year = kwargs.get("year")
         month = kwargs.get("month")
+        purchase_request_id_list = kwargs.get("purchase_request_id_list")
+        vendor_id_list = kwargs.get("vendor_id_list")
         description = kwargs.get("description")
         transaction_type = kwargs.get("transaction_type")
-        purchase_request_id_list: List[int] = kwargs.get("purchase_request_id_list")
 
         existing_entry: RFQ = (
             RFQ.query
@@ -133,7 +149,6 @@ class RFQController:
             return (
                 HTTPStatus.CONFLICT,
                 f"Sudah ada PR dengan id: {existing_entry.id}",
-                None
             )
 
         next_sequence_number = get_next_sequence_number(
@@ -144,35 +159,37 @@ class RFQController:
             year, month, next_sequence_number
         )
 
+        vendor_id_list_string = (
+            self._stringify_vendor_id_list(vendor_id_list)
+        )
+
         rfq: RFQ = (
             RFQ(
                 branch_id=branch_id,
                 procured_by=procured_by,
                 updated_by=procured_by,
-                vendor_id_list=vendor_id_list,
+                vendor_id_list=vendor_id_list_string,
                 year=year,
                 month=month,
                 description=description,
                 sequence_number=next_sequence_number,
                 transaction_type=transaction_type,
                 document_number=next_document_number,
+                reference_id=0,
             )
         )
 
         rfq.save()
 
         message = f"Berhasil menambahkan RFQ baru dengan id: {rfq.id}"
-        data = None
 
-        # TODO: tambahin data ke `rfq_items`: rfq.id, procurement_request_id -> item_id(s)
-        # failed_item_ids, failed_item_data = add_items(
-        #     rfq_id=rfq.id,
-        #     purchase_request_id_list=purchase_request_id_list,
-        # )
-        # if failed_item_ids:
-        #     message += f", gagal menambahkan barang dari PR dengan id: {failed_item_ids}"
-        #     data = dict(failed_item_data=failed_item_data)
-        # else:
-        #     message += " dan semua barang."
+        failed_item_ids = add_items(
+            rfq_id=rfq.id,
+            purchase_request_id_list=purchase_request_id_list
+        )
+        if failed_item_ids:
+            message += f", gagal menambahkan barang dari PR dengan id: {failed_item_ids}"
+        else:
+            message += " dan semua barang."
 
-        return HTTPStatus.OK, message, data
+        return HTTPStatus.CREATED, message
