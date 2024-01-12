@@ -50,7 +50,7 @@ class RFQController:
             RFQ.query
             .with_entities(
                 RFQ.id,
-                RFQ.vendor_id,
+                RFQ.vendor_id_list,
                 Vendor.name.label("vendor_name"),
                 RFQ.branch_id,
                 Branch.first_address.label("branch_first_address"),
@@ -77,7 +77,6 @@ class RFQController:
             .join(Reference, Reference.id == RFQ.reference_id)
             .join(Procurer, Procurer.id == RFQ.procured_by)
             .join(User, User.id == RFQ.updated_by)
-            .outerjoin(Vendor, Vendor.id == RFQ.vendor_id)
             .outerjoin(Branch, Branch.id == RFQ.branch_id)
             .filter(RFQ.is_deleted.is_(False))
             .order_by(RFQ.transaction_date.desc())
